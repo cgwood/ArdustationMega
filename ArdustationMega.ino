@@ -1,0 +1,176 @@
+// Ardustation Mega
+// Created 2013 By Colin G http://www.diydrones.com/profile/ColinG
+//
+// Special thanks go to the ArduPilot and Mavlink dev teams and Michael Smith
+
+// AVR runtime
+#include <avr/io.h>
+#include <avr/eeprom.h>
+#include <avr/pgmspace.h>
+#include <math.h>
+
+// Mavlink libraries - Path requires updating per install
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/mavlink/v1.0/ardupilotmega/mavlink.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/mavlink/v1.0/common/common.h"
+
+// Arduino Libraries
+#include <Servo.h>
+#include <Wire.h>
+#include <SD.h>
+
+// LCD Includes
+#include "glcd.h"
+#include "fonts/allFonts.h"
+
+// Local modules
+#include "GCS.h"                // Controls the ground station comms
+#include "RotaryEncoder.h";     // Handles the rotary encoder events
+#include "Tracker.h"            // Controls the antenna tracker
+#include "Buttons.h"            // Routines for button presses
+#include "Beep.h"               // Sounds the piezo buzzer
+
+// Variables and definitions
+#include "hardware.h"           // Definitions for the ground station's hardware
+#include "uav.h"                // Class containing the UAV variables
+#include "asm.h"                // Class containing the ardustation mega's variables
+#include "pages.h"	        // Contains the LCD pages
+
+////////////////////////////////////////////////////////////////////////////////
+// GCS selection
+////////////////////////////////////////////////////////////////////////////////
+//
+GCS_MAVLINK	gcs0(110);
+GCS_MAVLINK	gcs3(110);
+static uint8_t      apm_mav_system; 
+static uint8_t      apm_mav_component;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// System Timers
+////////////////////////////////////////////////////////////////////////////////
+// Time in miliseconds of start of main control loop.  Milliseconds
+static unsigned long 	fast_loopTimer;
+static unsigned long 	med_loopTimer;
+static unsigned long 	slow_loopTimer;
+static unsigned long 	vslow_loopTimer;
+unsigned long loopwait;
+unsigned long maxloopwait=0;
+
+// Heartbeat counter
+unsigned long hbcount=0;
+
+void setup()
+{
+  // Initialise the display driver object
+  GLCD.Init(NON_INVERTED);
+
+  // Print the welcome message
+  lcd.print("Starting up");
+
+  // Initialize the keypad
+  Wire.begin();
+
+  // SD Card
+  pinMode(chipSelect, OUTPUT);
+  init_sdcard();
+
+  // Attach the rotary encoder
+  attachInterrupt(0, doEncoder, CHANGE);
+  attachInterrupt(1, doEncoder, CHANGE);
+  rotary.configure(&ASM.encoderval, 500, 0, -4);
+
+  // Initialize stuff that needs to go in a class
+  init_batt();
+
+  // Initialise the serial ports
+  Serial.begin(57600);
+  Serial3.begin(57600);
+
+  // Initialise the GCS
+  gcs0.init(&Serial);
+  gcs3.init(&Serial3);
+
+  // Write centre positions to servos
+  Pan.attach(6,800,2200);// Ultimately make the end points as variables on some input screen
+  Tilt.attach(7,800,2200);
+  //  Pan.write(90);
+  //  Tilt.write(90);
+}
+
+void loop()
+{
+  uint8_t buttonid;
+
+  // Update comms as fast as possible
+  if (gcs3.initialised) {
+    gcs3.update();
+  }
+  else {
+    Serial.println("GCS not initialised");
+  }
+
+  // This loop is to execute at 50Hz
+  // -------------------------------------------
+  loopwait = millis()-fast_loopTimer;
+  if (loopwait  > 19) {
+    maxloopwait = max(loopwait,maxloopwait);
+
+    // Sample analog sensors
+    sample_batt();
+
+    // Listen for button presses
+    buttonid = keypad.pressed();
+    switch(buttonid) {
+      // By default all keypad presses are sent to the pages
+    default:
+      Pages::interact(buttonid);
+      break;
+    }
+
+    // Listen for encoder updates, notify the pages
+    if (rotary.haschanged())
+      Pages::interact(B_ENCODER);
+
+    // update the currently-playing tune
+    beep.update();
+    
+    // Update the antenna tracker
+    tracker.update();
+
+    // Update the fast loop timer
+    fast_loopTimer = millis();
+
+
+    // This loop is to execute at 10Hz
+    // -------------------------------------------
+    if (millis()-med_loopTimer > 99) {
+
+      // Update the pages
+      Pages::refresh_med();
+      if (ASM.encoderval == 20) {
+        beep.play(BEEP_LAND);
+        ASM.encoderval = 0;
+      }
+
+      // Update the medium loop timer
+      med_loopTimer = millis();
+    }
+
+    //    // This loop is to execute at 5Hz
+    //    // -------------------------------------------
+    //    if (millis()-slow_loopTimer > 199) {
+    //      slow_loopTimer = millis();
+    //    }
+
+
+    // This loop is to execute at 0.5Hz
+    // -------------------------------------------
+    if (millis()-vslow_loopTimer > 1999) {
+      Pages::refresh_slow();
+      maxloopwait = 0;
+
+      vslow_loopTimer = millis();
+    }
+  }
+}
+
