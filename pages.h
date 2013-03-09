@@ -16,6 +16,7 @@ public:
   enum PAGEIDS {
     P_HARDWARE = 0,
     P_UAVTEST,
+    P_COMMANDS,
     P_GLCD,
     P_SD,
     P_PID,
@@ -172,8 +173,7 @@ protected:
   virtual uint8_t _enter();
 
   /// Force update the page
-  virtual uint8_t _forceUpdate(uint8_t reason) {
-  };
+  virtual uint8_t _forceUpdate(uint8_t reason) {};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
@@ -183,6 +183,55 @@ protected:
 
   /// Interact with the page
   virtual uint8_t _interact(uint8_t buttonid);
+};
+
+// Commands page
+class PageCommands : 
+public Pages {
+public:
+  PageCommands();
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason) {};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+  
+protected:
+  void            _clearMarker(void);
+  void            _paintMarker(void);
+  void            _drawLocal();
+  void  _commandConfirm();
+  void  _commandConfirmMessage(const prog_char *str);
+  void  _commandSend();
+//  void            _alterLocal(float alterMag);
+//  void            _redrawLocal();
+//  void            _voidLocal(void);
+//  void            _uploadConfirm(void);
+//  void            _uploadLocal(void);
+
+private:
+  /// text to be displayed for APM settings, up to xxx characters
+  const prog_char *_textCommands;
+  
+  /// current state of the internal navigation state machine
+  uint8_t                     _state;
+  
+  /// Position on the screen when scrolling
+  /// Refers to first value out of four being displayed
+  uint8_t                     _stateFirstVal;
+  /// flag indicating that the data the page should be redrawn
+  bool            _updated;
 };
 
 // PID Page

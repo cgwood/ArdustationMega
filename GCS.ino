@@ -163,7 +163,7 @@ GCS_MAVLINK::params_request(void)
 
   Serial.println("Requesting params");
 
-  mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
+  mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, apm_mav_system, apm_mav_component);
   uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
   _port->write(buf, len);
 }

@@ -80,10 +80,10 @@ init_sdcard() {
   pinMode(chipSelect, OUTPUT);
 
   if (!SD.begin(chipSelect)) {
-    lcd.println("SD initialization failed!");
+    lcd.println("SD init fail!");
     return;
   }
-  lcd.println("SD initialization done.");
+  lcd.println("SD init ok");
 }
 
 void printDirectory(File dir, int numTabs) {

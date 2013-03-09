@@ -7,6 +7,7 @@ PageUAVtest  UAVtestPage;
 PageGLCDtest  GLCDPage;
 PageSDtest  SDPage;
 PagePID  PIDPage;
+PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
 uint8_t pageindex=0;
@@ -21,6 +22,9 @@ Pages::_currPage(uint8_t pageid)
     break;
   case P_UAVTEST:
     return(&UAVtestPage);
+    break;
+  case P_COMMANDS:
+    return(&CommandsPage);
     break;
   case P_GLCD:
     return(&GLCDPage);
@@ -37,7 +41,9 @@ Pages::_currPage(uint8_t pageid)
 uint8_t
 Pages::move(int8_t dir)
 {
-  if (dir > 0 || pageindex > 0)
+  if (dir == 0)
+    pageindex = 0;
+  else if (dir > 0 || pageindex > 0)
     pageindex += dir;
   else
     return(0);

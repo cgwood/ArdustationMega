@@ -30,7 +30,7 @@ PagePID::PagePID() //const prog_char *textHeader, const uint8_t *pidTypes, const
   _pid_d[1] = RATE_PIT_D;
   _pid_d[2] = RATE_YAW_D;
 
-  uav.param[RATE_RLL_P] = 0.15;
+//  uav.param[RATE_RLL_P] = 0.15;
 
   /// XXX Initially, all values are available (will require attention)
   _avail[0] = 1;
@@ -46,7 +46,7 @@ PagePID::PagePID() //const prog_char *textHeader, const uint8_t *pidTypes, const
 
 uint8_t
 PagePID::_enter() {
-  gcs3.params_request();
+//  gcs3.params_request();
   _drawLocal();
 
   return 0;
@@ -305,13 +305,13 @@ PagePID::_redrawLocal(void)
   uint32_t        value;
   float			value_local;
 
-  // Check that the state is not in confirmation mode
-  if (_state < 200) {
+  // Check that the state is not in confirmation mode and a value is being pointed at
+  if (_state < 200 && _state > 0) {
     if (_state > 100) {
       value_local = _value_temp;
       lcd.CursorTo(((_state-101)%3+1)*6-3,(_state-101)/3+1);
     }
-    else if(_state>0) {
+    else {
       lcd.CursorTo(((_state-1)%3+1)*6-3,(_state-1)/3+1);
       Serial.println(_state);
       Serial.println(((_state-1)%3+1)*6-3);
@@ -417,6 +417,27 @@ PagePID::_uploadLocal(void)
   default:
     return;
   }
+  
+  Serial.println("Uploading value");
+  
+  
+    char str_param_id[15];
+    
+	// First initialise the string to be empty
+	for (uint8_t i=0;i<15;i++)
+		str_param_id[i] = 0;
+
+	// Copy the relevant one into memory
+    strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable[j])));
+    
+    // Construct the packet
+    mavlink_message_t msg;
+    uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+//static inline uint16_t mavlink_msg_param_set_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
+//						       uint8_t target_system, uint8_t target_component, const char *param_id, float param_value, uint8_t param_type)
+    mavlink_msg_param_set_pack(0xFF, 0x00, &msg, apm_mav_system, apm_mav_component, (const char*)&str_param_id, _value_temp, MAV_PARAM_TYPE_REAL32);
+    uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+    Serial3.write(buf, len);
 
   //  params.set_param(j, _value_temp); // want this one, but need params
 
@@ -520,16 +541,19 @@ PagePID::_interact(uint8_t buttonid)
       // Save the value
       //_leave(OK);
       _uploadLocal();
+      _drawLocal();
       return 0; // Leave before we draw the marker again
     }
     break;
   case B_ENCODER:
-    _value_temp = _value_encoder / 100.0;
-    _redrawLocal();
+    if (_state > 100 && _state < 200) {
+      _value_temp = _value_encoder / 100.0;
+      _redrawLocal();
+    }
     break;
   case B_CANCEL:
     if (_state == 0) {
-      //                  _leave(CANCEL);
+      Pages::move(0);
       return 0;         // avoid drawing the cursor
     }
     else {
