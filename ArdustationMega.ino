@@ -39,6 +39,7 @@
 #include "pages.h"	        // Contains the LCD pages
 
 // GPS declarations
+#define T3 1000
 #define T6 1000000
 #define T7 10000000
 AP_GPS_UBLOX gps(&Serial2);

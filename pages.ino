@@ -120,8 +120,6 @@ PageHardware::_interact(uint8_t buttonid)
 {
   switch(buttonid) {
   case B_OK:
-    ASM.lat = 1;
-    ASM.lon = 1;
     break;
   case B_RIGHT:
     Pages::move(1);
@@ -135,23 +133,46 @@ PageHardware::_interact(uint8_t buttonid)
 uint8_t
 PageUAVtest::_refresh_med()
 {
-  lcd.CursorTo(0, 0);
-  lcd.print("Roll  ");
-  lcd.println(uav.roll);
-  lcd.print("Pitch ");
-  lcd.println(uav.pitch);
-  lcd.print("Yaw   ");
-  lcd.println(uav.yaw);
+//  lcd.CursorTo(0, 0);
+//  lcd.print("Roll  ");
+//  lcd.println(uav.roll);
+//  lcd.print("Pitch ");
+//  lcd.println(uav.pitch);
+//  lcd.print("Yaw   ");
+//  lcd.println(uav.yaw);
 }
 
 uint8_t
 PageUAVtest::_refresh_slow()
 {
-  lcd.CursorTo(0, 3);
-  lcd.print("Lat ");
-  lcd.println(uav.lat);
-  lcd.print("Lon ");
-  lcd.println(uav.lon);
+  // Find difference
+  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
+  float lat2 = uav.lat * 3.14159/180.0;
+  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
+  float lon2 = uav.lon * 3.14159/180.0;
+  float dlat = lat2 - lat1;
+  float dlong = lon2 - lon1;
+  
+  // Calculate distance
+  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+  
+  // Calculate bearing
+  float y = sin(dlong)*cos(lat2);
+  float x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dlong);
+  float bear = atan2(y,x) * 180.0 / 3.14159;
+                  
+  lcd.CursorTo(0, 0);
+  lcd.print("UAV Lat ");
+  lcd.println(uav.lat, 5);
+  lcd.print("UAV Lon ");
+  lcd.println(uav.lon, 5);
+  lcd.print("UAV alt ");
+  lcd.println(uav.alt, 2);
+  lcd.print("Dist ");
+  lcd.println(dist);
+  lcd.print("Bearing ");
+  lcd.println(bear);
   lcd.print("GCS Lat ");
   lcd.println((float)gps.latitude / T7, 5);
   lcd.print("GCS Lon ");
@@ -166,8 +187,10 @@ PageUAVtest::_interact(uint8_t buttonid)
 {
   switch(buttonid) {
   case B_OK:
-    ASM.lat = uav.lat;
-    ASM.lon = uav.lon;
+    break;
+  case B_UP:
+    break;
+  case B_DOWN:
     break;
   case B_CANCEL:
     gcs3.data_stream_request();

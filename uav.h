@@ -57,6 +57,7 @@ struct vehicle {
   float lat;
   float lon;
   float alt;
+  int sat_count;
   float roll2srvP;
   float param[PARAM_COUNT];
 };

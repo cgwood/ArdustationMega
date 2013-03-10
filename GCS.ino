@@ -89,8 +89,14 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
     break;
   case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: 
     {
-      alt = mavlink_msg_command_long_get_param4(msg);
-      //Serial.println(alt);
+      // decode
+      mavlink_global_position_int_t packet;
+      mavlink_msg_global_position_int_decode(msg, &packet);
+      
+      // Save the position
+      uav.lat = packet.lat/10000000.0;
+      uav.lon = packet.lon/10000000.0;
+      uav.alt = packet.alt/1000.0;
     }
 
   case MAVLINK_MSG_ID_ATTITUDE:
@@ -182,10 +188,10 @@ GCS_MAVLINK::data_stream_request(void)
   //        MAV_DATA_STREAM_EXTRA2};
   //    const uint16_t MAVRates[maxStreams] = {0x02, 0x02, 0x05, 0x02, 0x05, 0x02};
 
-  const int  maxStreams = 2;
+  const int  maxStreams = 4;
   const uint8_t MAVStreams[maxStreams] = {
-    MAV_DATA_STREAM_EXTRA1, MAV_DATA_STREAM_EXTENDED_STATUS  };
-  const uint16_t MAVRates[maxStreams] = {0x20, 0x01};
+    MAV_DATA_STREAM_EXTRA1, MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION, MAV_DATA_STREAM_RAW_SENSORS };
+  const uint16_t MAVRates[maxStreams] = {0x20, 0x01, 0x01, 0x01};
 
   for (int i=0; i < maxStreams; i++) {
     //        mavlink_msg_request_data_stream_send(chan,
