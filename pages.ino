@@ -109,10 +109,10 @@ PageHardware::_refresh_slow()
   lcd.CursorTo(0, 2);
   lcd.print("LiPo ");
   lcd.println(get_batt());
-  lcd.print("Lat ");
-  lcd.println(ASM.lat);
-  lcd.print("Lon ");
-  lcd.println(ASM.lon);
+  lcd.print("Sat count ");
+  lcd.println(gps.num_sats);
+  lcd.print("3D fix ");
+  lcd.println(gps.fix);
 }
 
 uint8_t
@@ -152,6 +152,12 @@ PageUAVtest::_refresh_slow()
   lcd.println(uav.lat);
   lcd.print("Lon ");
   lcd.println(uav.lon);
+  lcd.print("GCS Lat ");
+  lcd.println((float)gps.latitude / T7, 5);
+  lcd.print("GCS Lon ");
+  lcd.println((float)gps.longitude / T7, 5);
+  lcd.print("GCS Alt ");
+  lcd.println((float)gps.altitude / 100.0, 2);
 }
 
 

@@ -89,6 +89,8 @@ public:
 protected:
   /// One off function, executes on page enter
   virtual uint8_t _enter() {
+    _refresh_med();
+    _refresh_slow();
   };
 
   /// Force update the page
