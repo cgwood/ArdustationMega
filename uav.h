@@ -58,6 +58,7 @@ struct vehicle {
   float lon;
   float alt;
   int sat_count;
+  float dist; // Distance from gcs
   float roll2srvP;
   float param[PARAM_COUNT];
 };

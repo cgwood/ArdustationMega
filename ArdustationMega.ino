@@ -24,6 +24,11 @@
 // LCD Includes
 #include "glcd.h"
 #include "fonts/allFonts.h"
+#include "bitmaps/icon_altitude_small.h"
+#include "bitmaps/sat.h"
+#include "bitmaps/icn_conn.h"
+#include "bitmaps/icn_batt.h"
+#include "bitmaps/icn_speed.h"
 
 // Local modules
 #include "GCS.h"                // Controls the ground station comms
@@ -74,7 +79,7 @@ void setup()
   GLCD.Init(NON_INVERTED);
 
   // Print the welcome message
-  lcd.print("Starting up");
+  //lcd.print("Starting up");
 
   // Initialize the keypad
   Wire.begin();
@@ -112,6 +117,9 @@ void setup()
   Tilt.attach(7,800,2200);
   //  Pan.write(90);
   //  Tilt.write(90);
+  
+  // Start the first page
+  Pages::enter();
 }
 
 void loop()
@@ -161,9 +169,6 @@ void loop()
   if (loopwait  > 19) {
     maxloopwait = max(loopwait,maxloopwait);
 
-    // Sample analog sensors
-    sample_batt();
-
     // Listen for button presses
     buttonid = keypad.pressed();
     switch(buttonid) {
@@ -190,6 +195,8 @@ void loop()
     // This loop is to execute at 10Hz
     // -------------------------------------------
     if (millis()-med_loopTimer > 99) {
+      // Sample battery sensor
+      sample_batt();
 
       // Update the pages
       Pages::refresh_med();

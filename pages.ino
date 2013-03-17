@@ -2,6 +2,7 @@
 // Created 2012 By Colin G http://www.diydrones.com/profile/ColinG
 
 // ------ Declare each page ------ //
+PageMain mainPage;
 PageHardware hardwarePage;
 PageUAVtest  UAVtestPage;
 PageGLCDtest  GLCDPage;
@@ -17,6 +18,9 @@ Pages::_currPage(uint8_t pageid)
 {
   // ----- Assign each page declared above to the page ordering enumerated in pages.h ----- //
   switch(pageid) {
+  case P_MAIN:
+    return(&mainPage);
+    break;
   case P_HARDWARE:
     return(&hardwarePage);
     break;
@@ -41,10 +45,12 @@ Pages::_currPage(uint8_t pageid)
 uint8_t
 Pages::move(int8_t dir)
 {
-  if (dir == 0)
+  if (dir == 0) {
     pageindex = 0;
-  else if (dir > 0 || pageindex > 0)
+  }
+  else if (dir > 0 || pageindex > 0) {
     pageindex += dir;
+  }
   else
     return(0);
 
@@ -58,10 +64,22 @@ Pages::move(int8_t dir)
 
   // Draw all of the new page now
   lcd.ClearArea();
+  GLCD.ClearScreen();
   _currPage(pageindex)->_enter();
   _currPage(pageindex)->_refresh_slow();
   _currPage(pageindex)->_refresh_med();
   return(0);
+}
+
+uint8_t
+Pages::enter() {
+  lcd.ClearArea();
+  GLCD.ClearScreen();
+  _currPage(pageindex)->_enter();
+  _currPage(pageindex)->_refresh_slow();
+  _currPage(pageindex)->_refresh_med();
+  
+  return 0;
 }
 
 void
@@ -88,6 +106,152 @@ Pages::refresh_slow()
 {
   _currPage(pageindex)->_refresh_slow();
   return(0);
+}
+
+uint8_t
+PageMain::_enter()
+{
+//  GLCD.DrawRoundRect(GLCD.CenterX + 2, 0, GLCD.CenterX -3, GLCD.Bottom, 5);  // rounded rectangle around text area 
+//  _textArea.DefineArea(GLCD.CenterX + 5, 3, GLCD.Right-2, GLCD.Bottom-4, SCROLL_UP); 
+//  _textArea.SelectFont(System5x7, BLACK);
+//  _textArea.CursorTo(0,0);
+//  _textArea.print('A');
+
+  GLCD.CursorToXY(3,3);
+  GLCD.SelectFont(Arial_bold_14);
+  GLCD.print("Twinstar");
+  
+  GLCD.CursorToXY(20,20);
+  GLCD.SelectFont(System5x7);
+  GLCD.print("Auto WP:3");
+
+  // Remote Battery bar on right side of screen
+  GLCD.DrawRect(GLCD.Right-8, 2, 6, GLCD.Bottom-12);
+
+  // Bearing to UAV, circle  
+  GLCD.DrawCircle(GLCD.Right-27, 16, 12);
+  GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
+  
+  // Local Battery bar on left side of screen
+  GLCD.DrawRect(2, 20, 6, GLCD.Bottom-30);
+  
+  // Local RSSI bar on left side of screen
+  GLCD.DrawRect(10, 20, 6, GLCD.Bottom-30);
+  
+  // Altitude bitmap
+  GLCD.DrawBitmap(_alt_icon, 27, GLCD.Bottom - 26);
+  
+  // Speed bitmap
+  GLCD.DrawBitmap(_speed_icon, 63, GLCD.Bottom - 26);
+  
+  // Sat bitmap
+  GLCD.DrawBitmap(_sat_icon, GLCD.Right-26, GLCD.Bottom - 25);
+  
+  // Batt bitmaps
+  GLCD.DrawBitmap(_batt_icon, 1, GLCD.Bottom - 8);
+  GLCD.DrawBitmap(_batt_icon, GLCD.Right-9, GLCD.Bottom - 8);
+  
+  // Conn bitmap
+  GLCD.DrawBitmap(_conn_icon, 10, GLCD.Bottom - 8);
+}
+
+uint8_t
+PageMain::_refresh_med()
+{
+  
+//  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
+  GLCD.CursorToXY(GLCD.Right-17, GLCD.Bottom - 8);
+  GLCD.SelectFont(System5x7);
+  GLCD.print(gps.num_sats);
+  
+}
+
+uint8_t
+PageMain::_refresh_slow()
+{
+  uint8_t batt_height;
+  uint8_t rssi_height;
+  float batt_ratio, rssi_ratio;
+  
+  int rssi;
+  
+  // Local battery level
+  batt_height = GLCD.Bottom-32;
+  GLCD.FillRect(3, 21, 4, batt_height, WHITE); // Clear area
+  batt_ratio = constrain((get_batt()-3.2),0.0,1.0); // Allows range between 3.2 and 4.2  
+  batt_height = batt_height * batt_ratio;
+  GLCD.FillRect(3, 21+GLCD.Bottom-32-batt_height, 4, batt_height, BLACK); // Fill area
+  
+  // RSSI level
+  rssi = get_rssi();
+  rssi_height = GLCD.Bottom-32;
+  GLCD.FillRect(11, 21, 4, rssi_height, WHITE); // Clear area
+  rssi_ratio = rssi/1023.0;
+  rssi_height = rssi_height * rssi_ratio;
+  GLCD.FillRect(11, 21+GLCD.Bottom-32-rssi_height, 4, rssi_height, BLACK); // Fill area
+  
+  // Remote battery level
+  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-14, BLACK);
+
+  // Clear bottom line
+  GLCD.FillRect(23,GLCD.Bottom-8,GLCD.Right-43,7,WHITE);
+  
+  // Print Altitude
+  GLCD.CursorToXY(23,GLCD.Bottom-8);
+//  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
+  if (gps.altitude > 10000)
+    GLCD.print(constrain((int)(gps.altitude/100.0),0,9999));
+  else if (gps.altitude > 0)
+    GLCD.print(constrain(gps.altitude/100.0,0,99.9),1);
+  else
+    GLCD.print(constrain(gps.altitude/100.0,-99,0),1);
+  GLCD.print('m');
+  
+  // Print Velocity
+  GLCD.CursorToXY(59,GLCD.Bottom-8);
+  if (gps.speed_3d > 10000)
+    GLCD.print(constrain((int)(gps.speed_3d/100.0),0,999));
+  else
+    GLCD.print(constrain(gps.speed_3d/100.0,-9.9,99.9),1);
+  GLCD.print("m/s");
+  
+  
+  // Find difference in latitude and longitude between GCS and UAV
+  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
+  float lat2 = uav.lat * 3.14159/180.0;
+  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
+  float lon2 = uav.lon * 3.14159/180.0;
+  float dlat = lat2 - lat1;
+  float dlong = lon2 - lon1;
+  
+  // Calculate distance from Home
+  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+  
+  // Calculate bearing from Home
+  float y = sin(dlong)*cos(lat2);
+  float x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dlong);
+  float bear = atan2(y,x) * 180.0 / 3.14159;
+  
+  // Print UAV Distance from Home
+  GLCD.CursorToXY(GLCD.Right-40, 30);
+  GLCD.print((int)constrain(dist,-999,9999));
+  GLCD.print('m');
+}
+
+uint8_t
+PageMain::_interact(uint8_t buttonid)
+{
+  switch(buttonid) {
+  case B_OK:
+    break;
+  case B_RIGHT:
+    Pages::move(1);
+    break;
+  case B_LEFT:
+    Pages::move(-1);
+    break;
+  }
 }
 
 uint8_t

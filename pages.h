@@ -14,7 +14,8 @@ class Pages {
 public:
   // ----- Declare page order here ----- //
   enum PAGEIDS {
-    P_HARDWARE = 0,
+    P_MAIN = 0,
+    P_HARDWARE,
     P_UAVTEST,
     P_COMMANDS,
     P_GLCD,
@@ -36,6 +37,9 @@ public:
 
   /// Interact with the page
   static void interact(uint8_t buttonid);
+  
+  /// Force the page enter function (used for startup)
+  static uint8_t enter();
 
   /// refresh page - medium items (10Hz)
   static uint8_t refresh_med();
@@ -72,12 +76,52 @@ protected:
 
   /// Interact with the page
   virtual uint8_t _interact(uint8_t buttonid);
+  
+  /// One off function, executes on leaving a page
+  //virtual uint8_t _leave();
 
 private:
   /// Access to the pages
   static Pages		*_currPage(uint8_t pageid);
 };
 
+
+// Main page
+class PageMain : 
+public Pages {
+public:
+  PageMain() {
+    _alt_icon=icon_altitude_small;
+    _sat_icon=sat;
+    _batt_icon=icn_batt;
+    _conn_icon=icn_conn;
+    _speed_icon=icn_speed;
+  };
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason) {};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+  
+private:
+  gText _textArea;
+  Image_t _alt_icon;
+  Image_t _sat_icon;
+  Image_t _batt_icon;
+  Image_t _conn_icon;
+  Image_t _speed_icon;
+};
 
 // Hardware display page
 class PageHardware : 

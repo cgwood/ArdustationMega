@@ -13,6 +13,10 @@ struct ArduStation {
   int batt_sum;
   int batt_sample[BATTSAMPLES]; // Average over last BATTSAMPLES readings
   uint8_t batt_i; // Which index of batt did we last write to
+  
+  int rssi_sum;
+  int rssi_sample[BATTSAMPLES]; // Average over last BATTSAMPLES readings
+  uint8_t rssi_i; // Which index of rssi did we last write to
 };
 
 ArduStation ASM;
@@ -20,9 +24,12 @@ ArduStation ASM;
 // Initialize default values (this will later be in the construction section of the class)
 void
 init_batt() {
+  int initval = analogRead(A8);
   ASM.batt_i=0;
   for (uint8_t i=0;i<BATTSAMPLES;i++)
-    ASM.batt_sample[i] = 0;
+    ASM.batt_sample[i] = initval;
+    
+  ASM.batt_sum = initval*BATTSAMPLES;
 }
 
 
@@ -43,8 +50,19 @@ float
 get_batt() {
   float v = ASM.batt_sum;
 
-  v /= BATTSAMPLES;
+  v /= 30.0;//BATTSAMPLES;
   v *= 0.0048828125;
-  return v;
+  return v+0.1;
+}
+
+int get_rssi() {
+  int rssi;
+  
+  rssi = analogRead(A0);
+  
+  // Scale as working on 3.3v logic
+  rssi*=1.5;
+  
+  return rssi;
 }
 
