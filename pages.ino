@@ -117,14 +117,30 @@ PageMain::_enter()
 //  _textArea.CursorTo(0,0);
 //  _textArea.print('A');
 
+  // Name by autopilot type and system id (later could assign these to names, e.g. Twinstar)
   GLCD.CursorToXY(3,3);
   GLCD.SelectFont(Arial_bold_14);
-  GLCD.print("Twinstar");
-  
-  GLCD.CursorToXY(20,20);
+  switch (uav.autopilot) {
+    case MAV_AUTOPILOT_GENERIC:
+      GLCD.Printf("MAV-%03i", uav.sysid);
+      break;
+    case MAV_AUTOPILOT_PIXHAWK:
+      GLCD.Printf("PIX-%03i", uav.sysid);
+      break;
+    case MAV_AUTOPILOT_ARDUPILOTMEGA:
+      GLCD.Printf("APM-%03i", uav.sysid);
+      break;
+    case MAV_AUTOPILOT_UDB:
+      GLCD.Printf("UDB-%03i", uav.sysid);
+      break;
+    case MAV_AUTOPILOT_PX4:
+      GLCD.Printf("PX4-%03i", uav.sysid);
+      break;
+    default:
+      GLCD.Printf("MAV-%03i", uav.sysid);
+  }
   GLCD.SelectFont(System5x7);
-  GLCD.print("Auto WP:3");
-
+  
   // Remote Battery bar on right side of screen
   GLCD.DrawRect(GLCD.Right-8, 2, 6, GLCD.Bottom-12);
 
@@ -164,6 +180,26 @@ PageMain::_refresh_med()
   GLCD.SelectFont(System5x7);
   GLCD.print(gps.num_sats);
   
+  // UAV Mode
+  GLCD.CursorToXY(20,20);
+  GLCD.print("           ");
+  GLCD.CursorToXY(20,20);
+  GLCD.SelectFont(System5x7);
+//  GLCD.print("Auto WP:3");
+  if (uav.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) {
+    GLCD.print("Armed");
+  }
+  else {
+    GLCD.print("Safe");
+  }
+  
+  if (uav.base_mode & MAV_MODE_FLAG_STABILIZE_ENABLED) {
+    GLCD.print(", Stab");
+  }
+  else {
+    GLCD.print(", Acro");
+  }
+  
 }
 
 uint8_t
@@ -191,12 +227,16 @@ PageMain::_refresh_slow()
   GLCD.FillRect(11, 21+GLCD.Bottom-32-rssi_height, 4, rssi_height, BLACK); // Fill area
   
   // Remote battery level
-  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-14, BLACK);
+  batt_height = GLCD.Bottom-14;
+  GLCD.FillRect(GLCD.Right-7, 3, 4, batt_height, WHITE);
+  batt_height = batt_height * uav.load/1000.0;
+  GLCD.FillRect(GLCD.Right-7, 3+GLCD.Bottom-14-batt_height, 4, batt_height, BLACK);
 
   // Clear bottom line
   GLCD.FillRect(23,GLCD.Bottom-8,GLCD.Right-43,7,WHITE);
   
   // Print Altitude
+  GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(23,GLCD.Bottom-8);
 //  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
   if (gps.altitude > 10000)
@@ -208,6 +248,7 @@ PageMain::_refresh_slow()
   GLCD.print('m');
   
   // Print Velocity
+  GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(59,GLCD.Bottom-8);
   if (gps.speed_3d > 10000)
     GLCD.print(constrain((int)(gps.speed_3d/100.0),0,999));
@@ -234,6 +275,7 @@ PageMain::_refresh_slow()
   float bear = atan2(y,x) * 180.0 / 3.14159;
   
   // Print UAV Distance from Home
+  GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(GLCD.Right-40, 30);
   GLCD.print((int)constrain(dist,-999,9999));
   GLCD.print('m');

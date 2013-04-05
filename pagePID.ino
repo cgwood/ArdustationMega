@@ -435,7 +435,7 @@ PagePID::_uploadLocal(void)
     uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 //static inline uint16_t mavlink_msg_param_set_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
 //						       uint8_t target_system, uint8_t target_component, const char *param_id, float param_value, uint8_t param_type)
-    mavlink_msg_param_set_pack(0xFF, 0x00, &msg, apm_mav_system, apm_mav_component, (const char*)&str_param_id, _value_temp, MAV_PARAM_TYPE_REAL32);
+    mavlink_msg_param_set_pack(0xFF, 0x00, &msg, uav.sysid, apm_mav_component, (const char*)&str_param_id, _value_temp, MAV_PARAM_TYPE_REAL32);
     uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
     Serial3.write(buf, len);
 

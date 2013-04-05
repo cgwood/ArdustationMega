@@ -103,7 +103,7 @@ protected:
   virtual uint8_t _enter();
 
   /// Force update the page
-  virtual uint8_t _forceUpdate(uint8_t reason) {};
+  virtual uint8_t _forceUpdate(uint8_t reason) {lcd.ClearArea();GLCD.ClearScreen();_enter();};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();

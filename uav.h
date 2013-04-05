@@ -54,6 +54,12 @@ struct vehicle {
   float rollspeed; ///< Roll angular speed (rad/s)
   float pitchspeed; ///< Pitch angular speed (rad/s)
   float yawspeed; ///< Yaw angular speed (rad/s)
+  uint16_t load; ///< Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000
+  uint16_t voltage_battery; ///< Battery voltage, in millivolts (1 = 1 millivolt)
+  uint8_t type; ///< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
+  uint8_t autopilot; ///< Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+  uint8_t sysid; ///< MAV System ID
+  uint8_t base_mode; ///< System mode bitfield, see MAV_MODE_FLAGS ENUM in mavlink/include/mavlink_types.h
   float lat;
   float lon;
   float alt;

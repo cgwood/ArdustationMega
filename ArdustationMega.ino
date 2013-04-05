@@ -55,7 +55,7 @@ AP_GPS_UBLOX gps(&Serial2);
 //
 GCS_MAVLINK	gcs0(110);
 GCS_MAVLINK	gcs3(110);
-static uint8_t      apm_mav_system; 
+//static uint8_t      apm_mav_system; 
 static uint8_t      apm_mav_component;
 
 

@@ -82,7 +82,67 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
   case MAVLINK_MSG_ID_HEARTBEAT:
     {
       //      Serial.println("Heartbeat");
-      apm_mav_system    = msg->sysid;
+      // decode some info
+      mavlink_heartbeat_t packet;
+      mavlink_msg_heartbeat_decode(msg, &packet);
+      
+      // Update mode
+      uav.base_mode = packet.base_mode;
+      
+      if (uav.sysid != msg->sysid) {
+        Serial.println("Connected to a new UAV");
+        // Update system id, type and autopilot
+        uav.sysid = msg->sysid;
+        uav.type = packet.type;
+        uav.autopilot = packet.autopilot;
+        
+        Serial.print("UAV Type: ");
+        switch (uav.type) {
+          case MAV_TYPE_GENERIC:
+            Serial.println("Generic");
+            break;
+          case MAV_TYPE_FIXED_WING:
+            Serial.println("Fixed wing");
+            break;
+          case MAV_TYPE_QUADROTOR:
+            Serial.println("Quadrotor");
+            break;
+          case MAV_TYPE_HELICOPTER:
+            Serial.println("Helicopter");
+            break;
+          case MAV_TYPE_TRICOPTER:
+            Serial.println("Tricopter (Nice one!)");
+            break;
+          default:
+            Serial.println("Unknown");
+        }
+        
+        Serial.print("Autopilot Type: ");
+        switch (uav.autopilot) {
+          case MAV_AUTOPILOT_GENERIC:
+            Serial.println("Generic");
+            break;
+          case MAV_AUTOPILOT_PIXHAWK:
+            Serial.println("Pixhawk");
+            break;
+          case MAV_AUTOPILOT_ARDUPILOTMEGA:
+            Serial.println("Ardupilot Mega");
+            break;
+          case MAV_AUTOPILOT_UDB:
+            Serial.println("UAV Devboard");
+            break;
+          case MAV_AUTOPILOT_PX4:
+            Serial.println("PX4");
+            break;
+          default:
+            Serial.println("Unknown");
+        }
+            
+        // Update the page due to the new info
+        Pages::forceUpdate(0);
+      }
+      
+      uav.sysid    = msg->sysid;
       apm_mav_component = msg->compid;
       hbcount++;
     }
@@ -145,17 +205,54 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 
       break;
     }
+  case MAVLINK_MSG_ID_SYS_STATUS: {
+    mavlink_sys_status_t packet;
+    mavlink_msg_sys_status_decode(msg, &packet);
+    
+//    Serial.print("Voltage: ");
+//    Serial.println(packet.voltage_battery);
+//    Serial.print("Drop rate: ");
+//    Serial.println(packet.drop_rate_comm);
+//    Serial.print("Load: ");
+//    Serial.println(packet.load);
+    uav.load = packet.load;
+    uav.voltage_battery = packet.voltage_battery;
+    break;
+  }
   case MAVLINK_MSG_ID_RAW_IMU:
   case MAVLINK_MSG_ID_SCALED_PRESSURE:
   case MAV_COMP_ID_SERVO11: //?
   case MAV_COMP_ID_SERVO13: //?
-  case MAVLINK_MSG_ID_SYS_STATUS:
   case MAVLINK_MSG_ID_MISSION_CURRENT:
   case MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
   case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
+  case MAVLINK_MSG_ID_HIGHRES_IMU:
+  case MAVLINK_MSG_ID_ROLL_PITCH_YAW_THRUST_SETPOINT:
+  case MAVLINK_MSG_ID_ROLL_PITCH_YAW_RATES_THRUST_SETPOINT:
+  case MAVLINK_MSG_ID_MANUAL_CONTROL:
     break;
+  case MAVLINK_MSG_ID_NAMED_VALUE_FLOAT: {
+//      mavlink_named_value_float_t packet;
+//      mavlink_msg_named_value_float_decode(msg, &packet);
+//
+//      Serial.print("Debug: ");
+//      Serial.print(packet.name);
+//      Serial.print(" = ");
+//      Serial.println(packet.value);
+  
+      break;
+  }
+  case MAVLINK_MSG_ID_STATUSTEXT: {
+      mavlink_statustext_t packet;
+      mavlink_msg_statustext_decode(msg, &packet);
 
-    break;
+      Serial.print("Severity: ");
+      Serial.println(packet.severity);
+      Serial.println(packet.text);
+      
+  
+      break;
+  }
   default:
     Serial.println(msg->msgid);
   }
@@ -169,7 +266,7 @@ GCS_MAVLINK::params_request(void)
 
   Serial.println("Requesting params");
 
-  mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, apm_mav_system, apm_mav_component);
+  mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, uav.sysid, apm_mav_component);
   uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
   _port->write(buf, len);
 }
@@ -197,7 +294,7 @@ GCS_MAVLINK::data_stream_request(void)
     //        mavlink_msg_request_data_stream_send(chan,
     //            apm_mav_system, apm_mav_component,
     //            MAVStreams[i], MAVRates[i], 1);
-    mavlink_msg_request_data_stream_pack(20, MAV_COMP_ID_IMU, &msg, apm_mav_system, apm_mav_component, MAVStreams[i], MAVRates[i], 1);
+    mavlink_msg_request_data_stream_pack(20, MAV_COMP_ID_IMU, &msg, uav.sysid, apm_mav_component, MAVStreams[i], MAVRates[i], 1);
     uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
     _port->write(buf, len);
     //Serial.println(MAVStreams[i]);
@@ -207,7 +304,7 @@ GCS_MAVLINK::data_stream_request(void)
   //	mavlink_msg_request_data_stream_send(chan, 1, 1, MAV_DATA_STREAM_EXTENDED_STATUS, 2, 1);
   //	mavlink_msg_request_data_stream_send(chan, 1, 1, MAV_DATA_STREAM_EXTRA1, 2, 1);  
   Serial.print("Requesting mavlink data with ");
-  Serial.print(apm_mav_system);
+  Serial.print(uav.sysid);
   Serial.print(", ");
   Serial.print(apm_mav_component);
   Serial.println();
