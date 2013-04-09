@@ -121,6 +121,9 @@ private:
   Image_t _batt_icon;
   Image_t _conn_icon;
   Image_t _speed_icon;
+  
+private:
+  uint8_t _last_base_mode;
 };
 
 // Hardware display page

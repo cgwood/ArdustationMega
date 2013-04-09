@@ -95,6 +95,7 @@ void setup()
 
   // Initialize stuff that needs to go in a class
   init_batt();
+  uav.sysid = 0;
 
   // Initialise the serial ports
   Serial.begin(57600);   // USB comm port

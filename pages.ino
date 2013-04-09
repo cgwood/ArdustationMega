@@ -111,6 +111,9 @@ Pages::refresh_slow()
 uint8_t
 PageMain::_enter()
 {
+  // Reset last base mode to force the screen update
+  _last_base_mode = 0;
+    
 //  GLCD.DrawRoundRect(GLCD.CenterX + 2, 0, GLCD.CenterX -3, GLCD.Bottom, 5);  // rounded rectangle around text area 
 //  _textArea.DefineArea(GLCD.CenterX + 5, 3, GLCD.Right-2, GLCD.Bottom-4, SCROLL_UP); 
 //  _textArea.SelectFont(System5x7, BLACK);
@@ -120,24 +123,29 @@ PageMain::_enter()
   // Name by autopilot type and system id (later could assign these to names, e.g. Twinstar)
   GLCD.CursorToXY(3,3);
   GLCD.SelectFont(Arial_bold_14);
-  switch (uav.autopilot) {
-    case MAV_AUTOPILOT_GENERIC:
-      GLCD.Printf("MAV-%03i", uav.sysid);
-      break;
-    case MAV_AUTOPILOT_PIXHAWK:
-      GLCD.Printf("PIX-%03i", uav.sysid);
-      break;
-    case MAV_AUTOPILOT_ARDUPILOTMEGA:
-      GLCD.Printf("APM-%03i", uav.sysid);
-      break;
-    case MAV_AUTOPILOT_UDB:
-      GLCD.Printf("UDB-%03i", uav.sysid);
-      break;
-    case MAV_AUTOPILOT_PX4:
-      GLCD.Printf("PX4-%03i", uav.sysid);
-      break;
-    default:
-      GLCD.Printf("MAV-%03i", uav.sysid);
+  if (uav.sysid == 0) {
+    GLCD.print("No Connection");
+  }
+  else {
+    switch (uav.autopilot) {
+      case MAV_AUTOPILOT_GENERIC:
+        GLCD.Printf("MAV-%03i", uav.sysid);
+        break;
+      case MAV_AUTOPILOT_PIXHAWK:
+        GLCD.Printf("PIX-%03i", uav.sysid);
+        break;
+      case MAV_AUTOPILOT_ARDUPILOTMEGA:
+        GLCD.Printf("APM-%03i", uav.sysid);
+        break;
+      case MAV_AUTOPILOT_UDB:
+        GLCD.Printf("UDB-%03i", uav.sysid);
+        break;
+      case MAV_AUTOPILOT_PX4:
+        GLCD.Printf("PX4-%03i", uav.sysid);
+        break;
+      default:
+        GLCD.Printf("MAV-%03i", uav.sysid);
+    }
   }
   GLCD.SelectFont(System5x7);
   
@@ -145,8 +153,10 @@ PageMain::_enter()
   GLCD.DrawRect(GLCD.Right-8, 2, 6, GLCD.Bottom-12);
 
   // Bearing to UAV, circle  
-  GLCD.DrawCircle(GLCD.Right-27, 16, 12);
-  GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
+  if (uav.sysid != 0) {
+    GLCD.DrawCircle(GLCD.Right-27, 16, 12);
+    GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
+  }
   
   // Local Battery bar on left side of screen
   GLCD.DrawRect(2, 20, 6, GLCD.Bottom-30);
@@ -181,25 +191,27 @@ PageMain::_refresh_med()
   GLCD.print(gps.num_sats);
   
   // UAV Mode
-  GLCD.CursorToXY(20,20);
-  GLCD.print("           ");
-  GLCD.CursorToXY(20,20);
-  GLCD.SelectFont(System5x7);
-//  GLCD.print("Auto WP:3");
-  if (uav.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) {
-    GLCD.print("Armed");
+  if (uav.sysid != 0 && _last_base_mode != uav.base_mode) {
+    _last_base_mode = uav.base_mode; // Only update when mode changes
+    
+    GLCD.CursorToXY(20,20);
+    GLCD.print("           ");
+    GLCD.CursorToXY(20,20);
+    GLCD.SelectFont(System5x7);
+    if (uav.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) {
+      GLCD.print("Armed");
+    }
+    else {
+      GLCD.print("Safe");
+    }
+    
+    if (uav.base_mode & MAV_MODE_FLAG_STABILIZE_ENABLED) {
+      GLCD.print(", Stab");
+    }
+    else {
+      GLCD.print(", Acro");
+    }
   }
-  else {
-    GLCD.print("Safe");
-  }
-  
-  if (uav.base_mode & MAV_MODE_FLAG_STABILIZE_ENABLED) {
-    GLCD.print(", Stab");
-  }
-  else {
-    GLCD.print(", Acro");
-  }
-  
 }
 
 uint8_t
@@ -274,11 +286,13 @@ PageMain::_refresh_slow()
   float x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dlong);
   float bear = atan2(y,x) * 180.0 / 3.14159;
   
-  // Print UAV Distance from Home
-  GLCD.SelectFont(System5x7);
-  GLCD.CursorToXY(GLCD.Right-40, 30);
-  GLCD.print((int)constrain(dist,-999,9999));
-  GLCD.print('m');
+  // Print UAV Distance from Home 
+  if (uav.sysid != 0) {
+    GLCD.SelectFont(System5x7);
+    GLCD.CursorToXY(GLCD.Right-40, 30);
+    GLCD.print((int)constrain(dist,-999,9999));
+    GLCD.print('m');
+  }
 }
 
 uint8_t
