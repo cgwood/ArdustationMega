@@ -24,11 +24,11 @@
 // LCD Includes
 #include "glcd.h"
 #include "fonts/allFonts.h"
-#include "bitmaps/icon_altitude_small.h"
-#include "bitmaps/sat.h"
-#include "bitmaps/icn_conn.h"
-#include "bitmaps/icn_batt.h"
-#include "bitmaps/icn_speed.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/bitmaps/icon_altitude_small.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/bitmaps/sat.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/bitmaps/icn_conn.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/bitmaps/icn_batt.h"
+#include "C:/Users/Colin/Documents/Arduino/ArduStation/ArdustationMega/bitmaps/icn_speed.h"
 
 // Local modules
 #include "GCS.h"                // Controls the ground station comms
