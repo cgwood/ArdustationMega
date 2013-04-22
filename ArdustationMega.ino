@@ -107,10 +107,10 @@ void setup()
   gcs3.init(&Serial3);
   
   // Initialise the GPS  
-    stderr = stdout;
-    gps.print_errors = true;
+  stderr = stdout;
+  gps.print_errors = true;
 
-    Serial.println("GPS UBLOX library test");
+  Serial.println("GPS UBLOX library test");
   gps.init(GPS::GPS_ENGINE_AIRBORNE_2G);       // GPS Initialization
 
   // Write centre positions to servos

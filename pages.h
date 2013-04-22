@@ -5,6 +5,39 @@
 #define PAGES_H_
 
 
+// Parameter settings
+#define PARAMNAMEFIELDWIDTH 12
+#define PARAMVALCOUNT 10
+
+//                                      "123456789012"
+PROGMEM const prog_char ParamNames[]  = "Loiter rad\n"
+                                        "Waypoint rad\n"
+                                        "xtrack gain\n"
+                                        "xtrack angle\n"
+                                        "Cruise speed\n"
+                                        "ASP FBW min\n"
+                                        "ASP FBW max\n"
+                                        "Pitch2Thrtl\n"
+                                        "Thrtl2Pitch\n"
+			                "Log bitmask\n";
+
+const uint8_t ParamScales[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0}; // *10^(-x)
+const uint8_t ParamDPs[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    0}; // 99 in both denotes boolean
+
+//const uint8_t ParamIDs[] = {0,1,2,3,4,5,6,7,8,9};
+//{
+//	WP_LOITER_RAD,
+//	WP_RADIUS,
+//	XTRK_GAIN_SC,
+//	XTRK_ANGLE_CD,
+//	TRIM_ARSPD_CM,
+//	ARSPD_FBW_MIN,
+//	ARSPD_FBW_MAX,
+//	KFF_PTCH2THR,
+//	KFF_THR2PTCH,
+//	LOG_BITMASK,
+//};
+
 /* Look-up sine table for integer math */
 byte byteSine[16] = {
   0,  27,  54,  79, 104, 128, 150, 171, 190, 201, 221, 233, 243, 250, 254, 255} 
@@ -15,9 +48,10 @@ public:
   // ----- Declare page order here ----- //
   enum PAGEIDS {
     P_MAIN = 0,
+    P_COMMANDS,
+    P_PARAMETERS,
     P_HARDWARE,
     P_UAVTEST,
-    P_COMMANDS,
     P_GLCD,
     P_SD,
     P_PID,
@@ -351,6 +385,73 @@ protected:
   uint8_t   _pid_p[3];
   uint8_t   _pid_i[3];
   uint8_t   _pid_d[3];
+};
+
+// Parameters Page
+class PageParameters : 
+public Pages {
+public:
+  PageParameters();
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+
+protected:
+  void            _clearMarker(void);
+  void            _paintMarker(void);
+  void            _drawLocal();
+  void            _alterLocal(float alterMag);
+  void            _redrawLocal();
+  void            _voidLocal(void);
+  void            _uploadConfirm(void);
+  void            _uploadLocal(void);
+private:
+  /// current state of the internal navigation state machine
+  uint8_t                 _state;
+
+  /// Local editing temp value
+  ///
+  float _value_temp;
+  int   _value_encoder;
+
+  /// Availability of paramter values
+  bool            _avail[PARAMVALCOUNT];
+        
+  /// Position on the screen when scrolling
+  /// Refers to first value out of four being displayed
+  uint8_t	_stateFirstVal;
+
+protected:
+  /// flag indicating that the data the page should be redrawn
+  bool            _updated;
+  
+  /// timestamp of the last page redraw, used to rate-limit redraw operations
+  unsigned long   _lastRedraw;
+  
+  /// text to be displayed for APM settings, up to xxx characters
+  const prog_char *_textHeader;
+  
+  /// Types to be displayed (in same order as _textHeader)
+  uint8_t   _Types[PARAMVALCOUNT];
+  
+  /// Scaling for values, e.g. / 1000 is -3
+  const uint8_t   *_scale;
+  
+  /// How many decimal places the value is given
+  const uint8_t   *_decPos;
 };
 
 

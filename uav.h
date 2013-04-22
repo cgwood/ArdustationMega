@@ -2,7 +2,8 @@
 // Created 2012 By Colin G http://www.diydrones.com/profile/ColinG
 
 // Enumerate the parameters
-enum PARAMS {  
+enum PARAMS {
+  // PID Paramters  
   RATE_RLL_P,
   RATE_RLL_I,
   RATE_RLL_D,
@@ -19,6 +20,18 @@ enum PARAMS {
   THR_RATE_I,
   THR_RATE_D,
   THR_RATE_IMAX,
+  // Parameter page parameters
+  WP_LOITER_RAD,
+  WP_RADIUS,
+  XTRK_GAIN_SC,
+  XTRK_ANGLE_CD,
+  TRIM_ARSPD_CM,
+  ARSPD_FBW_MIN,
+  ARSPD_FBW_MAX,
+  KFF_PTCH2THR,
+  KFF_THR2PTCH,
+  LOG_BITMASK,
+  // Parameter count
   PARAM_COUNT
 };
 
@@ -39,11 +52,22 @@ prog_char param_12[] PROGMEM = "THR_RATE_P";
 prog_char param_13[] PROGMEM = "THR_RATE_I";
 prog_char param_14[] PROGMEM = "THR_RATE_D";
 prog_char param_15[] PROGMEM = "THR_RATE_IMAX";
+// Parameter page params
+prog_char param_16[]  PROGMEM = "WP_LOITER_RAD";
+prog_char param_17[]  PROGMEM = "WP_RADIUS";
+prog_char param_18[]  PROGMEM = "XTRK_GAIN_SC";
+prog_char param_19[]  PROGMEM = "XTRK_ANGLE_CD";
+prog_char param_20[] PROGMEM = "TRIM_ARSPD_CM";
+prog_char param_21[] PROGMEM = "ARSPD_FBW_MIN";
+prog_char param_22[] PROGMEM = "ARSPD_FBW_MAX";
+prog_char param_23[] PROGMEM = "KFF_PTCH2THR";
+prog_char param_24[] PROGMEM = "KFF_THR2PTCH";
+prog_char param_25[] PROGMEM = "LOG_BITMASK";
 
 PROGMEM const char *paramTable[] = {
   param_0, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9,
-  param_10, param_11, param_12, param_13, param_14, param_15 }; //, param_16, param_17, param_18,
-//		param_19, param_20, param_21, param_22, param_23, param_24, param_25, param_26, param_27,
+  param_10, param_11, param_12, param_13, param_14, param_15,  param_16, param_17, param_18,
+  param_19, param_20, param_21, param_22, param_23, param_24, param_25}; //, param_26, param_27,
 //		param_28, param_29, param_30, param_31, param_32, param_33, param_34, param_35, param_36,
 //		param_37, param_38, param_39, param_40, param_41 };
 

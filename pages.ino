@@ -8,6 +8,7 @@ PageUAVtest  UAVtestPage;
 PageGLCDtest  GLCDPage;
 PageSDtest  SDPage;
 PagePID  PIDPage;
+PageParameters  ParametersPage;
 PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -38,6 +39,9 @@ Pages::_currPage(uint8_t pageid)
     break;
   case P_PID:
     return(&PIDPage);
+    break;
+  case P_PARAMETERS:
+    return(&ParametersPage);
     break;
   }
 }
@@ -307,6 +311,9 @@ PageMain::_interact(uint8_t buttonid)
   case B_LEFT:
     Pages::move(-1);
     break;
+  case B_CANCEL:
+    Pages::move(0);
+    break;
   }
 }
 
@@ -346,6 +353,9 @@ PageHardware::_interact(uint8_t buttonid)
     break;
   case B_LEFT:
     Pages::move(-1);
+    break;
+  case B_CANCEL:
+    Pages::move(0);
     break;
   }
 }
@@ -457,6 +467,9 @@ PageSDtest::_interact(uint8_t buttonid)
   case B_LEFT:
     Pages::move(-1);
     break;
+  case B_CANCEL:
+    Pages::move(0);
+    break;
   }
 }
 
@@ -528,6 +541,9 @@ PageGLCDtest::_interact(uint8_t buttonid)
     break;
   case B_LEFT:
     Pages::move(-1);
+    break;
+  case B_CANCEL:
+    Pages::move(0);
     break;
   }
 }
