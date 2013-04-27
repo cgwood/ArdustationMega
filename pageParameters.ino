@@ -145,34 +145,44 @@ PageParameters::_drawLocal(void)
               else {
                 decBuf[0] = 'F'; decBuf[1] = 'F'; decBuf[2] = 'O'; j = 3;
               }
+              
+              // Display the data
+              lcd.write(' ');
+              while (j-- > 0)
+                lcd.write(decBuf[j]);
+              lcd.write(' ');
             }
             else {
-              // Scale the value and fix for the number of decimal places
-              value *= pow(10,_decPos[i] - _scale[i]);
-              decBuf[0] = '0' + (value % 10);
-              value /= 10;
-              for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
-                if (j == _decPos[i]) {
-                  decBuf[j] = '.';
-                } else if ((0 == value) && (j > (_decPos[i] + 1))) {
-                  decBuf[j] = ' ';
-                } else {
-                  decBuf[j] = '0' + (value % 10);
-                  value /= 10;
-                }
-              }
+              GLCD.CursorTo(PARAMNAMEFIELDWIDTH+2, lineno);
+              GLCD.print(value*pow(10,-_scale[i]),_decPos[i]);
+              GLCD.print("  ");
+//              // Scale the value and fix for the number of decimal places
+//              value *= pow(10,_decPos[i] - _scale[i]);
+//              decBuf[0] = '0' + (value % 10);
+//              value /= 10;
+//              for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
+//                if (j == _decPos[i]) {
+//                  decBuf[j] = '.';
+//                } else if ((0 == value) && (j > (_decPos[i] + 1))) {
+//                  decBuf[j] = ' ';
+//                } else {
+//                  decBuf[j] = '0' + (value % 10);
+//                  value /= 10;
+//                }
+//              }
             }
           }
           else {
             // Data unavailable, display dashes
             for (j=0;j<16-PARAMNAMEFIELDWIDTH;j++)
               decBuf[j] = '-';
+              
+              // Display the data
+              lcd.write(' ');
+              while (j-- > 0)
+                lcd.write(decBuf[j]);
+              lcd.write(' ');
           }
-          // Display the data
-          lcd.write(' ');
-          while (j-- > 0)
-            lcd.write(decBuf[j]);
-          lcd.write(' ');
         }
         
         // redraw the "choosing" marker
@@ -212,7 +222,7 @@ PageParameters::_alterLocal(float alterMag)
 {
   // Is it an on off?
 //  if (99 == _scale[_state-101] && 99 == _decPos[_state-101]) {
-//    Serial.println(alterMag, DEC);
+    Serial.println(alterMag, DEC);
 //    if (alterMag > 0) {
 //      switch (_value_temp) {
 //        case 0x50: _value_temp = LOGBIT_ATTITUDE_FAST; break;
@@ -238,7 +248,7 @@ PageParameters::_alterLocal(float alterMag)
 //  }
 
   // Keep the encoder value updated
-  _value_encoder = _value_temp*100;
+  _value_encoder = (int)(_value_temp/(pow(10,_scale[_state-101]-_decPos[_state-101])));// * 100;
     
   // kick the update function
   _updated = true;
@@ -268,26 +278,29 @@ PageParameters::_redrawLocal(void)
     
     // Write the value
     lineno = i-_stateFirstVal;
-    lcd.CursorTo(PARAMNAMEFIELDWIDTH+2, lineno);
+    GLCD.CursorTo(PARAMNAMEFIELDWIDTH+2, lineno);
+    GLCD.print(value_local*pow(10,-_scale[i]),_decPos[i]);
+    GLCD.print("  ");
     
-    value_local *= pow(10,_decPos[i] - _scale[i]);
-    value = (uint32_t)(floor(value_local+0.5));
-    decBuf[0] = '0' + (value % 10);
-    value /= 10;
-    for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
-      if (j == _decPos[i]) {
-        decBuf[j] = '.';
-      } else if ((0 == value) && (j > (_decPos[i] + 1))) {
-        decBuf[j] = ' ';
-      } else {
-        decBuf[j] = '0' + (value % 10);
-        value /= 10;
-      }
-    }
-
-    // Display the data
-    while (j-- > 0)
-      lcd.write(decBuf[j]);
+//    value = (uint32_t)(floor(value_local+0.5));
+//    value *= pow(10,_decPos[i] - _scale[i]);
+//    Serial.println(value);
+//    decBuf[0] = '0' + (value % 10);
+//    value /= 10;
+//    for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
+//      if (j == _decPos[i]) {
+//        decBuf[j] = '.';
+//      } else if ((0 == value) && (j > (_decPos[i] + 1))) {
+//        decBuf[j] = ' ';
+//      } else {
+//        decBuf[j] = '0' + (value % 10);
+//        value /= 10;
+//      }
+//    }
+//
+//    // Display the data
+//    while (j-- > 0)
+//      lcd.write(decBuf[j]);
 
   }
 }
@@ -366,8 +379,10 @@ PageParameters::_interact(uint8_t buttonid)
                   _state--;
                 }
                 // Editing
-                else if (_state > 100 && _state < 200)
+                else if (_state > 100 && _state < 200) {
                   _alterLocal(1 * pow(10,_scale[_state-101]-_decPos[_state-101]));
+                  _redrawLocal();
+                }
                 // Confirming
                 else if (_state > 200)
                   return 0;
@@ -388,8 +403,10 @@ PageParameters::_interact(uint8_t buttonid)
                   _state++;
                 }
                 // Editing
-                else if (_state > 100 && _state < 200)
+                else if (_state > 100 && _state < 200) {
                   _alterLocal(-1 * pow(10,_scale[_state-101]-_decPos[_state-101]));
+                  _redrawLocal();
+                }
                 // Confirming
                 else if (_state > 200)
                   return 0;
@@ -407,7 +424,7 @@ PageParameters::_interact(uint8_t buttonid)
                       j = _Types[_state-1];
                       //nvram.load_param(&j,&_value_temp);
                       _value_temp = uav.param[j];
-                      _value_encoder = (int)(_value_temp/(pow(10,_scale[_state-101]-_decPos[_state-101])));// * 100;
+                      _value_encoder = (int)(_value_temp/(pow(10,_scale[_state-1]-_decPos[_state-1])));// * 100;
                       rotary.configure(&_value_encoder, 1000, 0, -4);
 
                     // Copy the value to temp for editing
@@ -437,8 +454,10 @@ PageParameters::_interact(uint8_t buttonid)
                 if (_state == 0)
                   Pages::move(-1);
                 // Editing
-                else if (_state > 100 && _state < 200)
+                else if (_state > 100 && _state < 200) {
                   _alterLocal(-10 * pow(10,_scale[_state-101]-_decPos[_state-101]));
+                  _redrawLocal();
+                }
                 // Confirming
                 else if (_state > 200)
                   return 0;
@@ -448,8 +467,10 @@ PageParameters::_interact(uint8_t buttonid)
                 if (_state == 0)
                   Pages::move(1);
                 // Editing
-                else if (_state > 100 && _state < 200)
+                else if (_state > 100 && _state < 200) {
                   _alterLocal(10 * pow(10,_scale[_state-101]-_decPos[_state-101]));
+                  _redrawLocal();
+                }
                 // Confirming
                 else if (_state > 200)
                   return 0;
@@ -469,8 +490,10 @@ PageParameters::_interact(uint8_t buttonid)
 				break;
         case B_ENCODER:
           if (_state > 100 && _state < 200) {
-            _value_temp = _value_encoder / 100.0;
+            _value_temp = _value_encoder * pow(10,_scale[_state-101]-_decPos[_state-101]);
             _redrawLocal();
+            Serial.println(_value_encoder);
+            Serial.println(_value_temp);
           }
           break;
         }
