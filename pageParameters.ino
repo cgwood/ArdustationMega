@@ -197,7 +197,7 @@ PageParameters::_paintMarker(void)
           lcd.CursorTo(PARAMNAMEFIELDWIDTH,_state-1 - _stateFirstVal);
           lcd.write('>');
         }
-        else if (_state > 100)
+        else if (_state > 100 && _state < 200)
         {
           lcd.CursorTo(PARAMNAMEFIELDWIDTH,_state-101 - _stateFirstVal);
           lcd.write('#');
@@ -308,6 +308,11 @@ PageParameters::_redrawLocal(void)
 void
 PageParameters::_voidLocal(void)
 {
+  // Reset the variable and redraw
+  int j = _Types[(_state%100)-1];
+  _value_temp = uav.param[j];
+  _redrawLocal();
+  
   // Reset _state
   _state = 0;
   
@@ -481,13 +486,17 @@ PageParameters::_interact(uint8_t buttonid)
                   return 0;         // avoid drawing the cursor
                 }
                 else {
-                  if (_state > 100)
+                  if (_state > 200) {
+                    _drawLocal();
+                    _state = 0;
+                  }
+                  else if (_state > 100)
                     // Don't save the changes to local variable
                     _voidLocal();
                   else
                     _state = 0;
                 }
-				break;
+		break;
         case B_ENCODER:
           if (_state > 100 && _state < 200) {
             _value_temp = _value_encoder * pow(10,_scale[_state-101]-_decPos[_state-101]);

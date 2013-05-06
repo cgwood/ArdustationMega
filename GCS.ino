@@ -180,14 +180,16 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       mavlink_param_value_t packet;
       mavlink_msg_param_value_decode(msg, &packet);
       char txt_id[15];
+      
+      // DEV: Display the parameters over serial
+      Serial.print(packet.param_id);
+      Serial.print(" = ");
+      Serial.println(packet.param_value);
 
       for (uint8_t i=0;i<PARAM_COUNT;i++) {
         strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable[i])));
         if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
           uav.param[i] = packet.param_value;
-          Serial.print(packet.param_id);
-          Serial.print(" = ");
-          Serial.println(uav.param[i]);
 
           // Update the parameter pages
           Pages::forceUpdate(Pages::R_PARAM);
