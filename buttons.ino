@@ -33,8 +33,8 @@ Buttons::pressed(void)
 
     // if we are reporting an actual button press, give
     // audio feedback
-    //                if (0 != newButton)
-    //                        beep.play(BEEP_KEY);
+    if (0 != newButton)
+      beep.play(BEEP_KEY);
 
     return(newButton);
   }
@@ -116,6 +116,7 @@ Buttons::_scanDebounced(void)
   // None of the above
   return(0);
 }
+
 
 
 

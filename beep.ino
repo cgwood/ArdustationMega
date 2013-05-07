@@ -34,7 +34,7 @@ const Beep::note Beep::_tune[BEEP_TUNES_MAX][BEEP_TUNE_MAX] = {
         {{1200, 250}, {750, 250}, {300, 250}, {0, 0}},  // BEEP_LAND
         {{831, 100}, {880, 100}, {880, 100}, {0, 0}},   // BEEP_RTL
         {{300, 200}, {0, 0}},                           // BEEP_BADKEY
-        {{1000, 50}, {0, 0}},                           // BEEP_KEY
+        {{1000, 15}, {0, 0}},                           // BEEP_KEY
         {{4000, 5}, {0, 0}},                            // BEEP_PACKET
         {{880, 100}, {831, 100}, {880, 100}, {0, 0}},   // BEEP_STARTUP
 };
