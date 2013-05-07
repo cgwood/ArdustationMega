@@ -353,8 +353,10 @@ PageParameters::_uploadLocal(void)
 
 	// Send the value that we edited
 	j = _Types[_state-201];
-	//params.set_param(j, _value_temp);
-    
+
+        // Upload the value
+        gcs3.param_set(j, _value_temp);
+        
 	// Reset _state
 	_state = 0;
 

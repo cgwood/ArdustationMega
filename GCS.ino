@@ -184,8 +184,10 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       // DEV: Display the parameters over serial
       Serial.print(packet.param_id);
       Serial.print(" = ");
-      Serial.println(packet.param_value);
-
+      Serial.print(packet.param_value);
+      Serial.print(", ");
+      Serial.println(packet.param_type);
+      
       for (uint8_t i=0;i<PARAM_COUNT;i++) {
         strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable[i])));
         if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
@@ -272,6 +274,30 @@ GCS_MAVLINK::params_request(void)
   uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
   _port->write(buf, len);
 }
+
+void
+GCS_MAVLINK::param_set(uint8_t param_id, float newVal)
+{
+  char str_param_id[15];
+  mavlink_message_t msg;
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+  uint8_t i;
+
+  // First initialise the string to be empty
+  for (i=0;i<15;i++)
+    str_param_id[i] = 0;
+
+  // Copy the relevant one into memory
+  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable[param_id])));
+
+  // Construct the packet
+  mavlink_msg_param_set_pack(0xFF, 0xFA, &msg, uav.sysid, apm_mav_component, (const char*)str_param_id, newVal, MAV_PARAM_TYPE_REAL32);
+
+  // Send it
+  uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+  _port->write(buf, len);
+}
+  
 
 void
 GCS_MAVLINK::data_stream_request(void)
