@@ -40,7 +40,7 @@ Pages::definePages()
 	if (uav.type==MAV_TYPE_FIXED_WING) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
-		_pageids[2] = P_PARAMETERS;
+		_pageids[2] = P_PARAMETERS; // APM parameters
 		_pageids[3] = P_HARDWARE;
 		_pageids[4] = P_UAVTEST;
 		_pageids[5] = P_GLCD;
@@ -50,11 +50,11 @@ Pages::definePages()
 	else if (uav.type==MAV_TYPE_QUADROTOR) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
-		_pageids[2] = P_HARDWARE;
-		_pageids[3] = P_UAVTEST;
-		_pageids[4] = P_GLCD;
-		_pageids[5] = P_SD;
-		_pageids[6] = P_PID;
+		_pageids[2] = P_PID;       // ACM PIDs (subset of)
+		_pageids[3] = P_HARDWARE;
+		_pageids[4] = P_UAVTEST;
+		_pageids[5] = P_GLCD;
+		_pageids[6] = P_SD;
 		_pagecount = 7;
 	}
 	else { // Default option - AP Unknown

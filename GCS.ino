@@ -201,14 +201,27 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       Serial.print(", ");
       Serial.println(packet.param_type);
       
-      for (uint8_t i=0;i<PARAM_COUNT;i++) {
-        strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable[i])));
-        if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
-          uav.param[i] = packet.param_value;
+      if (uav.type == MAV_TYPE_FIXED_WING) {
+		  for (uint8_t i=0;i<PARAM_COUNT_PLANE;i++) {
+			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane[i])));
+			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+			  uav.param[i] = packet.param_value;
 
-          // Update the parameter pages
-          Pages::forceUpdate(Pages::R_PARAM);
-        }
+			  // Update the parameter pages
+			  Pages::forceUpdate(Pages::R_PARAM);
+			}
+		  }
+      }
+      else if (uav.type == MAV_TYPE_QUADROTOR) {
+		  for (uint8_t i=0;i<PARAM_COUNT_COPTER;i++) {
+			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_copter[i])));
+			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+			  uav.param[i] = packet.param_value;
+
+			  // Update the parameter pages
+			  Pages::forceUpdate(Pages::R_PARAM);
+			}
+		  }
       }
 
       //    if (strcmp("RATE_RLL_P", (const char*)packet.param_id) == 0) {
@@ -301,7 +314,10 @@ GCS_MAVLINK::param_set(uint8_t param_id, float newVal)
     str_param_id[i] = 0;
 
   // Copy the relevant one into memory
-  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable[param_id])));
+  if (uav.type == MAV_TYPE_FIXED_WING)
+	  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_plane[param_id])));
+  else if(uav.type == MAV_TYPE_QUADROTOR)
+	  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_copter[param_id])));
 
   // Construct the packet
   mavlink_msg_param_set_pack(0xFF, 0xFA, &msg, uav.sysid, apm_mav_component, (const char*)str_param_id, newVal, MAV_PARAM_TYPE_REAL32);

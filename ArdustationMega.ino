@@ -41,6 +41,7 @@
 
 // Variables and definitions
 #include "hardware.h"           // Definitions for the ground station's hardware
+#include "uav_params.h"         // Class containing the UAV parameters
 #include "uav.h"                // Class containing the UAV variables
 #include "asm.h"                // Class containing the ardustation mega's variables
 #include "pages.h"	        // Contains the LCD pages

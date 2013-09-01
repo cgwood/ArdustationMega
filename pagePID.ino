@@ -428,7 +428,7 @@ PagePID::_uploadLocal(void)
 		str_param_id[i] = 0;
 
 	// Copy the relevant one into memory
-    strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable[j])));
+    strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_copter[j])));
     
     // Construct the packet
     mavlink_message_t msg;
