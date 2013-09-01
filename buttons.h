@@ -14,7 +14,7 @@
 #define BUTTON_DEBOUNCE_TIMER   10
 
 /// Button repeat period (milliseconds)
-#define BUTTON_REPEAT_TIMER 150
+#define BUTTON_REPEAT_TIMER 250
 
 
 class Buttons {

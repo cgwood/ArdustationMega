@@ -304,6 +304,7 @@ PageMain::_interact(uint8_t buttonid)
 {
   switch(buttonid) {
   case B_OK:
+    gcs_passthrough = !gcs_passthrough; // quick hack to enable / disable gcs passthrough
     break;
   case B_RIGHT:
     Pages::move(1);
@@ -325,7 +326,7 @@ PageHardware::_refresh_med()
   lcd.println(uav.roll);
   lcd.print("Encoder ");
   lcd.println(ASM.encoderval);
-  lcd.CursorTo(0, 5);
+  lcd.CursorTo(0, 6);
   lcd.print("HB count ");
   lcd.println(hbcount);
 }
@@ -340,6 +341,8 @@ PageHardware::_refresh_slow()
   lcd.println(gps.num_sats);
   lcd.print("3D fix ");
   lcd.println(gps.fix);
+  lcd.print("GPS Time ");
+  lcd.println(gps.time);
 }
 
 uint8_t
