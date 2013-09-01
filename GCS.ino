@@ -267,8 +267,8 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
   
       break;
   }
-  default:
-    Serial.println(msg->msgid);
+//  default:
+//    Serial.println(msg->msgid);
   }
 }
 

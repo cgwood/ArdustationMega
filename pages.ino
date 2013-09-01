@@ -139,7 +139,14 @@ PageMain::_enter()
         GLCD.Printf("PIX-%03i", uav.sysid);
         break;
       case MAV_AUTOPILOT_ARDUPILOTMEGA:
-        GLCD.Printf("APM-%03i", uav.sysid);
+    	  if (uav.type==MAV_TYPE_QUADROTOR)
+    		  GLCD.Printf("ACM-%03i", uav.sysid);
+    	  else if (uav.type==MAV_TYPE_FIXED_WING)
+    		  GLCD.Printf("APM-%03i", uav.sysid);
+    	  else if (uav.type==MAV_TYPE_GROUND_ROVER)
+    		  GLCD.Printf("ARM-%03i", uav.sysid);
+    	  else
+    		  GLCD.Printf("AxM-%03i", uav.sysid);
         break;
       case MAV_AUTOPILOT_UDB:
         GLCD.Printf("UDB-%03i", uav.sysid);
