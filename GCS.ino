@@ -46,6 +46,16 @@ GCS_MAVLINK::update(void)
       handleMessage(&msg);
       //      Serial.println("A message");
     }
+    
+    // Handle forwarding
+    if (gcs_passthrough && gcs3.initialised && gcs0.initialised) {
+      if (chan == MAVLINK_COMM_0) {
+        Serial3.write(c);
+      }
+      else {
+        Serial.write(c);
+      }
+    }
   }
 
   // Update packet drops counter
