@@ -45,23 +45,22 @@ byte byteSine[16] = {
 
 class Pages {
 public:
-  // ----- Declare page order here ----- //
-  enum PAGEIDS {
-    P_MAIN = 0,
-    P_COMMANDS,
-    P_PARAMETERS,
-    P_HARDWARE,
-    P_UAVTEST,
-    P_GLCD,
-    P_SD,
-    P_PID,
-    P_COUNT
-  };
+	  // ----- Declare pages here ----- //
+	  enum PAGEIDS {
+	    P_MAIN = 0,
+	    P_COMMANDS,
+	    P_PARAMETERS,
+	    P_HARDWARE,
+	    P_UAVTEST,
+	    P_GLCD,
+	    P_SD,
+	    P_PID,
+	    P_COUNT
+	  };
   
 public:
   /// Constructor
-  Pages() {
-  };
+  Pages();
 
   /// Move page
   static uint8_t move(int8_t dir);
@@ -80,6 +79,9 @@ public:
 
   /// refresh page - slow items (0.5 Hz)
   static uint8_t refresh_slow();
+
+  /// Define the pages -- call this whenever the uav type changes
+  static uint8_t definePages();
 
   /// Directions
   enum DIRECTIONS {

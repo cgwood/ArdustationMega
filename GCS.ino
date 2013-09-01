@@ -106,6 +106,9 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
         uav.type = packet.type;
         uav.autopilot = packet.autopilot;
         
+        // Update the page structure
+        Pages::definePages();
+
         Serial.print("UAV Type: ");
         switch (uav.type) {
           case MAV_TYPE_GENERIC:

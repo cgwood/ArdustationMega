@@ -14,11 +14,68 @@ PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 // Index of current page
 uint8_t pageindex=0;
 
+// Local pages - updated for different autopilot types
+uint8_t _pageids[20];
+uint8_t _pagecount;
+
+Pages::Pages()
+{
+	// Hack. Would prefer to just call definePages from here
+	//	definePages();
+
+	// Default option - AP Unknown
+	_pageids[0] = P_MAIN;
+	_pageids[1] = P_COMMANDS;
+	_pageids[2] = P_HARDWARE;
+	_pageids[3] = P_UAVTEST;
+	_pageids[4] = P_GLCD;
+	_pageids[5] = P_SD;
+	_pagecount = 6;
+
+}
+
+uint8_t
+Pages::definePages()
+{
+	if (uav.type==MAV_TYPE_FIXED_WING) {
+		_pageids[0] = P_MAIN;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_PARAMETERS;
+		_pageids[3] = P_HARDWARE;
+		_pageids[4] = P_UAVTEST;
+		_pageids[5] = P_GLCD;
+		_pageids[6] = P_SD;
+		_pagecount = 7;
+	}
+	else if (uav.type==MAV_TYPE_QUADROTOR) {
+		_pageids[0] = P_MAIN;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_HARDWARE;
+		_pageids[3] = P_UAVTEST;
+		_pageids[4] = P_GLCD;
+		_pageids[5] = P_SD;
+		_pageids[6] = P_PID;
+		_pagecount = 7;
+	}
+	else { // Default option - AP Unknown
+		_pageids[0] = P_MAIN;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_HARDWARE;
+		_pageids[3] = P_UAVTEST;
+		_pageids[4] = P_GLCD;
+		_pageids[5] = P_SD;
+		_pagecount = 6;
+	}
+	pageindex = 0;
+
+	return 0;
+}
+
 Pages*
 Pages::_currPage(uint8_t pageid)
 {
   // ----- Assign each page declared above to the page ordering enumerated in pages.h ----- //
-  switch(pageid) {
+  switch(_pageids[pageid]) {
   case P_MAIN:
     return(&mainPage);
     break;
@@ -58,7 +115,7 @@ Pages::move(int8_t dir)
   else
     return(0);
 
-  if (pageindex >= P_COUNT) {
+  if (pageindex >= _pagecount) {//P_COUNT) {
     pageindex --;
     return(0);
   }
