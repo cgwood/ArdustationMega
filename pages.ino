@@ -190,7 +190,10 @@ PageMain::_refresh_med()
 {
   
 //  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
-  GLCD.CursorToXY(GLCD.Right-17, GLCD.Bottom - 8);
+  if (gps.num_sats > 9)
+	  GLCD.CursorToXY(GLCD.Right-20, GLCD.Bottom - 8);
+  else
+	  GLCD.CursorToXY(GLCD.Right-18, GLCD.Bottom - 8);
   GLCD.SelectFont(System5x7);
   GLCD.print(gps.num_sats);
   

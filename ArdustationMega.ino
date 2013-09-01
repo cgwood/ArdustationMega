@@ -61,7 +61,7 @@ GCS_MAVLINK	gcs3(110);
 static uint8_t      apm_mav_component;
 
 // Flag for passing mavlink through usb, for pc gcs
-boolean gcs_passthrough = 1;
+boolean gcs_passthrough = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // System Timers
