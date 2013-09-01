@@ -54,7 +54,7 @@ Buttons::_scan(void)
   code = expanderRead();
   scanCode = 0;
   if (!(code & 4))
-    scanCode = B_UP;
+    scanCode = B_DOWN;
   if (!(code & 8))
     scanCode = B_LEFT;
   if (!(code & 16)) {
@@ -62,7 +62,7 @@ Buttons::_scan(void)
     //		expanderWrite(B11111101); // Turns the red LED off
   }
   if (!(code & 32))
-    scanCode = B_DOWN;
+    scanCode = B_UP;
   if (!(code & 64)) {
     scanCode = B_CANCEL;
     //		expanderWrite(B11111100); // Turns the red LED on
