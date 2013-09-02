@@ -31,10 +31,17 @@ PageParameters::PageParameters() //const prog_char *textHeader, const uint8_t *T
 {
   uint8_t i;
   
-  /// Copy the header and types to internal storage
-  _textHeader = ParamNames;
-  _scale = ParamScales;
-  _decPos = ParamDPs;
+//  /// Copy the header and types to internal storage
+//  if (uav.type == MAV_TYPE_GROUND_ROVER) {
+//	  _textHeader = ParamNamesRover;
+//	  _scale = ParamScalesRover;
+//	  _decPos = ParamDPsRover;
+//  }
+//  else {
+	  _textHeader = (prog_char *)ParamNamesRover;
+	  _scale = (uint8_t*)ParamScales;
+	  _decPos = (uint8_t*)ParamDPs;
+//  }
   
   // Set the parameter IDs - requires parameter IDs to be consecutive (later something more robust?)
   for (i=0;i<PARAMVALCOUNT;i++) {
@@ -69,6 +76,22 @@ PageParameters::_forceUpdate(uint8_t reason) {
   }
 
   return 0;
+}
+
+uint8_t
+PageParameters::_redefine(void)
+{
+	  /// Copy the header and types to internal storage
+	  if (uav.type == MAV_TYPE_GROUND_ROVER) {
+		  _textHeader = (prog_char *)ParamNamesRover;
+		  _scale = (uint8_t*)ParamScalesRover;
+		  _decPos = (uint8_t*)ParamDPsRover;
+	  }
+	  else {
+		  _textHeader = (prog_char *)ParamNamesRover;
+		  _scale = (uint8_t*)ParamScales;
+		  _decPos = (uint8_t*)ParamDPs;
+	  }
 }
 
 uint8_t

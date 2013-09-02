@@ -57,6 +57,16 @@ Pages::definePages()
 		_pageids[6] = P_SD;
 		_pagecount = 7;
 	}
+	else if (uav.type==MAV_TYPE_GROUND_ROVER) {
+		_pageids[0] = P_MAIN;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_PARAMETERS; // APM parameters
+		_pageids[3] = P_HARDWARE;
+		_pageids[4] = P_UAVTEST;
+		_pageids[5] = P_GLCD;
+		_pageids[6] = P_SD;
+		_pagecount = 7;
+	}
 	else { // Default option - AP Unknown
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
@@ -67,6 +77,9 @@ Pages::definePages()
 		_pagecount = 6;
 	}
 	pageindex = 0;
+
+	for (uint8_t p=0;p<_pagecount;p++)
+		_currPage(p)->_redefine();
 
 	return 0;
 }
@@ -201,7 +214,7 @@ PageMain::_enter()
     	  else if (uav.type==MAV_TYPE_FIXED_WING)
     		  GLCD.Printf("APM-%03i", uav.sysid);
     	  else if (uav.type==MAV_TYPE_GROUND_ROVER)
-    		  GLCD.Printf("ARM-%03i", uav.sysid);
+    		  GLCD.Printf("Rover-%03i", uav.sysid);
     	  else
     		  GLCD.Printf("AxM-%03i", uav.sysid);
         break;

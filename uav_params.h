@@ -28,6 +28,23 @@ enum PARAMS_PLANE {
   PARAM_COUNT_PLANE
 };
 
+// Enumerate the parameters
+enum PARAMS_ROVER {
+  // Parameter page parameters
+  THR_MIN,
+  THR_MAX,
+  CRUISE_THROTTLE,
+  THR_SLEWRATE,
+  SKID_STEER_OUT,
+  SKID_STEER_IN,
+  FS_ACTION,
+  FS_TIMEOUT,
+  FS_THR_ENABLE,
+  FS_THR_VALUE,
+  // Parameter count
+  PARAM_COUNT_ROVER
+};
+
 enum PARAMS_COPTER {
   // PID Parameters
   RATE_RLL_P,
@@ -64,6 +81,18 @@ prog_char param_plane_7[] PROGMEM = "KFF_PTCH2THR";
 prog_char param_plane_8[] PROGMEM = "KFF_THR2PTCH";
 prog_char param_plane_9[] PROGMEM = "LOG_BITMASK";
 
+// Parameter page - rover params
+prog_char param_rover_0[] PROGMEM = "THR_MIN";
+prog_char param_rover_1[] PROGMEM = "THR_MAX";
+prog_char param_rover_2[] PROGMEM = "CRUISE_THROTTLE";
+prog_char param_rover_3[] PROGMEM = "THR_SLEWRATE";
+prog_char param_rover_4[] PROGMEM = "SKID_STEER_OUT";
+prog_char param_rover_5[] PROGMEM = "SKID_STEER_IN";
+prog_char param_rover_6[] PROGMEM = "FS_ACTION";
+prog_char param_rover_7[] PROGMEM = "FS_TIMEOUT";
+prog_char param_rover_8[] PROGMEM = "FS_THR_ENABLE";
+prog_char param_rover_9[] PROGMEM = "FS_THR_VALUE";
+
 // PIDs for copters
 prog_char param_copter_0[]  PROGMEM = "RATE_RLL_P";
 prog_char param_copter_1[]  PROGMEM = "RATE_RLL_I";
@@ -84,6 +113,9 @@ prog_char param_copter_15[] PROGMEM = "THR_RATE_IMAX";
 
 PROGMEM const char *paramTable_plane[] = {
   param_plane_0, param_plane_1, param_plane_2, param_plane_3, param_plane_4, param_plane_5, param_plane_6, param_plane_7, param_plane_8, param_plane_9};
+
+PROGMEM const char *paramTable_rover[] = {
+  param_rover_0, param_rover_1, param_rover_2, param_rover_3, param_rover_4, param_rover_5, param_rover_6, param_rover_7, param_rover_8, param_rover_9};
 
 PROGMEM const char *paramTable_copter[] = {
   param_copter_0, param_copter_1, param_copter_2, param_copter_3, param_copter_4, param_copter_5, param_copter_6, param_copter_7, param_copter_8, param_copter_9,

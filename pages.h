@@ -24,6 +24,21 @@ PROGMEM const prog_char ParamNames[]  = "Loiter rad\n"
 const uint8_t ParamScales[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0}; // *10^(-x)
 const uint8_t ParamDPs[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    0}; // 99 in both denotes boolean
 
+//                                           "123456789012"
+PROGMEM const prog_char ParamNamesRover[]  = "Throttle min\n"
+											 "Throttle max\n"
+											 "Cruise Thr\n"
+											 "Thr Slewrate\n"
+											 "Skid str in\n"
+											 "Skid str out\n"
+											 "FS Action\n"
+											 "FS Timeout\n"
+											 "FS Thr en\n"
+			                				 "FS Thr value\n";
+
+const uint8_t ParamScalesRover[] = { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // *10^(-x)
+const uint8_t ParamDPsRover[] =    { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // 99 in both denotes boolean
+
 //const uint8_t ParamIDs[] = {0,1,2,3,4,5,6,7,8,9};
 //{
 //	WP_LOITER_RAD,
@@ -104,6 +119,9 @@ protected:
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason);
 
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
 
@@ -140,6 +158,9 @@ protected:
 
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason) {lcd.ClearArea();GLCD.ClearScreen();_enter();};
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
@@ -180,6 +201,9 @@ protected:
   virtual uint8_t _forceUpdate(uint8_t reason) {
   };
 
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
 
@@ -205,6 +229,9 @@ protected:
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason) {
   };
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
@@ -236,6 +263,9 @@ protected:
   virtual uint8_t _forceUpdate(uint8_t reason) {
   };
 
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
 
@@ -260,6 +290,9 @@ protected:
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason) {};
 
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
 
@@ -282,6 +315,9 @@ protected:
 
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason) {};
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
@@ -331,6 +367,9 @@ protected:
 
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
 
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
@@ -402,6 +441,9 @@ protected:
   /// Force update the page
   virtual uint8_t _forceUpdate(uint8_t reason);
 
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine();
+
   /// refresh page - medium items (10Hz)
   virtual uint8_t _refresh_med();
 
@@ -444,16 +486,16 @@ protected:
   unsigned long   _lastRedraw;
   
   /// text to be displayed for APM settings, up to xxx characters
-  const prog_char *_textHeader;
+  prog_char *_textHeader;
   
   /// Types to be displayed (in same order as _textHeader)
   uint8_t   _Types[PARAMVALCOUNT];
   
   /// Scaling for values, e.g. / 1000 is -3
-  const uint8_t   *_scale;
+  uint8_t   *_scale;
   
   /// How many decimal places the value is given
-  const uint8_t   *_decPos;
+  uint8_t   *_decPos;
 };
 
 

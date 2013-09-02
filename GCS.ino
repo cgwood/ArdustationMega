@@ -126,6 +126,9 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
           case MAV_TYPE_TRICOPTER:
             Serial.println("Tricopter (Nice one!)");
             break;
+          case MAV_TYPE_GROUND_ROVER:
+            Serial.println("Ground Rover");
+            break;
           default:
             Serial.println("Unknown");
         }
@@ -204,6 +207,17 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       if (uav.type == MAV_TYPE_FIXED_WING) {
 		  for (uint8_t i=0;i<PARAM_COUNT_PLANE;i++) {
 			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane[i])));
+			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+			  uav.param[i] = packet.param_value;
+
+			  // Update the parameter pages
+			  Pages::forceUpdate(Pages::R_PARAM);
+			}
+		  }
+      }
+      else if (uav.type == MAV_TYPE_GROUND_ROVER) {
+		  for (uint8_t i=0;i<PARAM_COUNT_ROVER;i++) {
+			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_rover[i])));
 			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
 			  uav.param[i] = packet.param_value;
 
