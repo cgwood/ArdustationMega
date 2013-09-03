@@ -38,18 +38,19 @@ PageParameters::PageParameters() //const prog_char *textHeader, const uint8_t *T
 //	  _decPos = ParamDPsRover;
 //  }
 //  else {
-	  _textHeader = (prog_char *)ParamNamesRover;
+//	  _textHeader = (prog_char *)ParamNamesRover;
 	  _scale = (uint8_t*)ParamScales;
 	  _decPos = (uint8_t*)ParamDPs;
+	  _paramCount = PARAM_COUNT_PLANE;
 //  }
   
   // Set the parameter IDs - requires parameter IDs to be consecutive (later something more robust?)
-  for (i=0;i<PARAMVALCOUNT;i++) {
+  for (i=0;i<_paramCount;i++) {
     _Types[i] = WP_LOITER_RAD + i;
   }
     
   /// Initially, no values are available
-  for (i=0;i<PARAMVALCOUNT;i++) {
+  for (i=0;i<_paramCount;i++) {
     _avail[i] = 1;
   }  
   
@@ -83,14 +84,16 @@ PageParameters::_redefine(void)
 {
 	  /// Copy the header and types to internal storage
 	  if (uav.type == MAV_TYPE_GROUND_ROVER) {
-		  _textHeader = (prog_char *)ParamNamesRover;
+//		  _textHeader = (prog_char *)ParamNamesRover;
 		  _scale = (uint8_t*)ParamScalesRover;
 		  _decPos = (uint8_t*)ParamDPsRover;
+		  _paramCount = PARAM_COUNT_ROVER;
 	  }
 	  else {
-		  _textHeader = (prog_char *)ParamNamesRover;
+//		  _textHeader = (prog_char *)ParamNamesRover;
 		  _scale = (uint8_t*)ParamScales;
 		  _decPos = (uint8_t*)ParamDPs;
+		  _paramCount = PARAM_COUNT_PLANE;
 	  }
 }
 
@@ -128,7 +131,14 @@ PageParameters::_drawLocal(void)
           k=0;
   
           for (;;) {
-            c = pgm_read_byte_near(_textHeader + i++);
+//              c = pgm_read_byte_near(_textHeader + i++);
+              if (uav.type == MAV_TYPE_FIXED_WING) {
+            	  c = pgm_read_byte_near(ParamNamesPlane + i++);
+              } else if (uav.type == MAV_TYPE_GROUND_ROVER) {
+            	  c = pgm_read_byte_near(ParamNamesRover + i++);
+              } else {
+            	  c = pgm_read_byte_near(ParamNamesPlane + i++);
+              }
             if (0 == c)
               break;
             if ('\n' == c)
@@ -145,7 +155,7 @@ PageParameters::_drawLocal(void)
           lcd.CursorTo(PARAMNAMEFIELDWIDTH+2, lineno);
             
           i=_stateFirstVal+lineno;
-          if (i >= PARAMVALCOUNT)
+          if (i >= _paramCount)
             break;
             
           if (_avail[i] == 1) {
@@ -420,12 +430,12 @@ PageParameters::_interact(uint8_t buttonid)
         case B_DOWN:
                 // Navigation
                 if (_state == 0) {
-                  if (_stateFirstVal < PARAMVALCOUNT-LINECOUNT) {
+                  if (_stateFirstVal < _paramCount-LINECOUNT) {
                     _stateFirstVal ++;
                     _drawLocal();
                   }
                 }
-                else if (_state > 0 && _state < PARAMVALCOUNT) {
+                else if (_state > 0 && _state < _paramCount) {
                   if (_state == (_stateFirstVal + LINECOUNT)) {
                     _stateFirstVal++;
                     _drawLocal();
