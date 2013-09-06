@@ -147,28 +147,6 @@ void loop()
   
   // Update the GPS as fast as possible
   gps.update();
-  
-//  if (gps.new_data) {
-//	  Serial.print("gps:");
-//	  Serial.print(" Lat:");
-//	  Serial.print((float)gps.latitude / T7, DEC);
-//	  Serial.print(" Lon:");
-//	  Serial.print((float)gps.longitude / T7, DEC);
-//	  Serial.print(" Alt:");
-//	  Serial.print((float)gps.altitude / 100.0, DEC);
-//	  Serial.print(" GSP:");
-//	  Serial.print(gps.ground_speed / 100.0);
-//	  Serial.print(" COG:");
-//	  Serial.print(gps.ground_course / 100.0, DEC);
-//	  Serial.print(" SAT:");
-//	  Serial.print(gps.num_sats, DEC);
-//	  Serial.print(" FIX:");
-//	  Serial.print(gps.fix, DEC);
-//	  Serial.print(" TIM:");
-//	  Serial.print(gps.time, DEC);
-//	  Serial.println();
-//	  gps.new_data = 0; // We have read the data
-//}
 
   // This loop is to execute at 50Hz
   // -------------------------------------------
