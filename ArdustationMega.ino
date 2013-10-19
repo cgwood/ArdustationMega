@@ -63,6 +63,10 @@ static uint8_t apm_mav_component;
 // Flag for passing mavlink through usb, for pc gcs
 boolean gcs_passthrough = 0;
 
+// Flag denoting that we're downloading the parameters
+boolean downloading = 0;
+unsigned long download_start_time;
+
 ////////////////////////////////////////////////////////////////////////////////
 // System Timers
 ////////////////////////////////////////////////////////////////////////////////
@@ -141,70 +145,78 @@ void loop() {
 		Serial.println("GCS not initialised");
 	}
 
-	// Update the GPS as fast as possible
-	gps.update();
+	// If we're downloading parameters, block all other ground station functionality
+	if (downloading) {
+		if (millis() - download_start_time >= 10000)
+			downloading = 0;
+	}
+	else
+	{
+		// Update the GPS as fast as possible
+		gps.update();
 
-	// This loop is to execute at 50Hz
-	// -------------------------------------------
-	loopwait = millis() - fast_loopTimer;
-	if (loopwait > 19) {
-		maxloopwait = max(loopwait, maxloopwait);
-
-		// Listen for button presses
-		buttonid = keypad.pressed();
-		switch (buttonid) {
-		// By default all keypad presses are sent to the pages
-		default:
-			Pages::interact(buttonid);
-			break;
-		}
-
-		// Listen for encoder updates, notify the pages
-		if (rotary.haschanged())
-			Pages::interact(B_ENCODER);
-
-		// update the currently-playing tune
-		beep.update();
-
-		// Update the antenna tracker
-		tracker.update();
-
-		// Update the fast loop timer
-		fast_loopTimer = millis();
-
-		// This loop is to execute at 10Hz
+		// This loop is to execute at 50Hz
 		// -------------------------------------------
-		if (millis() - med_loopTimer > 99) {
-			// Sample battery sensor
-			sample_batt();
+		loopwait = millis() - fast_loopTimer;
+		if (loopwait > 19) {
+			maxloopwait = max(loopwait, maxloopwait);
 
-			// Update the pages
-			Pages::refresh_med();
-			if (ASM.encoderval == 20) {
-				beep.play(BEEP_LAND);
-				ASM.encoderval = 0;
+			// Listen for button presses
+			buttonid = keypad.pressed();
+			switch (buttonid) {
+			// By default all keypad presses are sent to the pages
+			default:
+				Pages::interact(buttonid);
+				break;
 			}
 
-			// Update the medium loop timer
-			med_loopTimer = millis();
-		}
+			// Listen for encoder updates, notify the pages
+			if (rotary.haschanged())
+				Pages::interact(B_ENCODER);
 
-		//    // This loop is to execute at 5Hz
-		//    // -------------------------------------------
-		//    if (millis()-slow_loopTimer > 199) {
-		//      slow_loopTimer = millis();
-		//    }
+			// update the currently-playing tune
+			beep.update();
 
-		// This loop is to execute at 0.5Hz
-		// -------------------------------------------
-		if (millis() - vslow_loopTimer > 1999) {
-			Pages::refresh_slow();
-			maxloopwait = 0;
-//
-//			// Update the antenna tracker
-//			tracker.update();
+			// Update the antenna tracker
+			tracker.update();
 
-			vslow_loopTimer = millis();
+			// Update the fast loop timer
+			fast_loopTimer = millis();
+
+			// This loop is to execute at 10Hz
+			// -------------------------------------------
+			if (millis() - med_loopTimer > 99) {
+				// Sample battery sensor
+				sample_batt();
+
+				// Update the pages
+				Pages::refresh_med();
+				if (ASM.encoderval == 20) {
+					beep.play(BEEP_LAND);
+					ASM.encoderval = 0;
+				}
+
+				// Update the medium loop timer
+				med_loopTimer = millis();
+			}
+
+			//    // This loop is to execute at 5Hz
+			//    // -------------------------------------------
+			//    if (millis()-slow_loopTimer > 199) {
+			//      slow_loopTimer = millis();
+			//    }
+
+			// This loop is to execute at 0.5Hz
+			// -------------------------------------------
+			if (millis() - vslow_loopTimer > 1999) {
+				Pages::refresh_slow();
+				maxloopwait = 0;
+	//
+	//			// Update the antenna tracker
+	//			tracker.update();
+
+				vslow_loopTimer = millis();
+			}
 		}
 	}
 }

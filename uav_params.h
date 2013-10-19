@@ -115,12 +115,14 @@ PROGMEM const prog_char ParamNamesPlaneCTUN[] = "Roll P      \n"
 												"Yaw Roll    \n"
 												"Yaw Int     \n";
 
+const uint8_t ParamScalesCTUN[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsCTUN[] =    {2,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2,2,2}; // 99 in both denotes boolean
+
 PROGMEM const char *paramTable_plane_ctun[] = { param_plane_ctun_0, param_plane_ctun_1,
 		param_plane_ctun_2, param_plane_ctun_3, param_plane_ctun_4, param_plane_ctun_5,
 		param_plane_ctun_6, param_plane_ctun_7, param_plane_ctun_8, param_plane_ctun_9,
 		param_plane_ctun_10, param_plane_ctun_11, param_plane_ctun_12, param_plane_ctun_13,
 		param_plane_ctun_14, param_plane_ctun_15, param_plane_ctun_16, param_plane_ctun_17 };
-
 
 enum PARAMS_PLANE_NTUN {
 	// Parameter page parameters
@@ -131,6 +133,23 @@ enum PARAMS_PLANE_NTUN {
 	// Parameter count
 	PARAM_COUNT_PLANE_NTUN
 };
+
+prog_char param_plane_ntun_0[] PROGMEM = "NAVL1_PERIOD";
+prog_char param_plane_ntun_1[] PROGMEM = "NAVL1_DAMPING";
+prog_char param_plane_ntun_2[] PROGMEM = "WP_RADIUS";
+prog_char param_plane_ntun_3[] PROGMEM = "LIM_ROLL_CD";
+
+//                                              "123456789012"
+PROGMEM const prog_char ParamNamesPlaneNTUN[] = "L1 Period   \n"
+												"L1 Damping  \n"
+												"WP Radius   \n"
+												"Lim Roll CD \n";
+
+const uint8_t ParamScalesNTUN[] = {0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsNTUN[] =    {2,2,2,2}; // 99 in both denotes boolean
+
+PROGMEM const char *paramTable_plane_ntun[] = { param_plane_ntun_0, param_plane_ntun_1,
+		param_plane_ntun_2, param_plane_ntun_3 };
 
 enum PARAMS_PLANE_TECS {
 	// Parameter page parameters
@@ -166,6 +185,9 @@ enum PARAMS_ROVER {
 	// Parameter count
 	PARAM_COUNT_ROVER
 };
+
+const uint8_t ParamScalesRover[] = { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // *10^(-x)
+const uint8_t ParamDPsRover[] =    { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // 99 in both denotes boolean
 
 // Parameter page - rover params
 prog_char param_rover_0[] PROGMEM = "THR_MIN";

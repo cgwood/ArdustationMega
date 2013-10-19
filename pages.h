@@ -9,9 +9,6 @@
 #define PARAMNAMEFIELDWIDTH 12
 #define MAXPARAMVALCOUNT 10
 
-const uint8_t ParamScalesRover[] = { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // *10^(-x)
-const uint8_t ParamDPsRover[] =    { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // 99 in both denotes boolean
-
 //const uint8_t ParamIDs[] = {0,1,2,3,4,5,6,7,8,9};
 //{
 //	WP_LOITER_RAD,
@@ -38,6 +35,7 @@ public:
 	    P_MAIN = 0,
 	    P_COMMANDS,
 	    P_PARAMETERS,
+	    P_PARAMETERS_CTUN,
 	    P_HARDWARE,
 	    P_UAVTEST,
 	    P_GLCD,

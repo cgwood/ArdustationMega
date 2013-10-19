@@ -35,6 +35,8 @@ GCS_MAVLINK::update(void)
   mavlink_status_t status;
   status.packet_rx_drop_count = 0;
 
+  int debug_msg=0;
+
   // process received bytes
   while (_port->available())
   {
@@ -56,7 +58,11 @@ GCS_MAVLINK::update(void)
         Serial.write(c);
       }
     }
+
+    debug_msg = 1;
   }
+//  if (debug_msg == 1)
+//	Serial.println("End update");
 
   // Update packet drops counter
   packet_drops += status.packet_rx_drop_count;
@@ -198,12 +204,12 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       char txt_id[15];
       
       // DEV: Display the parameters over serial
-//      Serial.print(packet.param_id);
+//      Serial.println(packet.param_id);
 //      Serial.print(" = ");
 //      Serial.print(packet.param_value);
 //      Serial.print(", ");
 //      Serial.println(packet.param_type);
-      
+
       if (uav.type == MAV_TYPE_FIXED_WING) {
 		  for (uint8_t i=0;i<PARAM_COUNT_PLANE;i++) {
 			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane[i])));
@@ -214,6 +220,41 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 			  Pages::forceUpdate(Pages::R_PARAM);
 			}
 		  }
+		  for (uint8_t i=0;i<PARAM_COUNT_PLANE_CTUN;i++) {
+			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane_ctun[i])));
+			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+			  uav.param_plane_ctun[i] = packet.param_value;
+
+			  // Update the parameter pages
+			  Pages::forceUpdate(Pages::R_PARAM);
+
+//			    Serial.println(i);
+//			    Serial.print(": ");
+//				Serial.print(packet.param_id);
+//				Serial.print(" = ");
+//				Serial.print(packet.param_value);
+//				Serial.print(", ");
+//				Serial.println(packet.param_type);
+			}
+		  }
+//		  for (uint8_t i=0;i<PARAM_COUNT_PLANE_NTUN;i++) {
+//			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane_ntun[i])));
+//			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+//			  uav.param_plane_ntun[i] = packet.param_value;
+//
+//			  // Update the parameter pages
+//			  Pages::forceUpdate(Pages::R_PARAM);
+//			}
+//		  }
+//		  for (uint8_t i=0;i<PARAM_COUNT_PLANE_TECS;i++) {
+//			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane_tecs[i])));
+//			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
+//			  uav.param_plane_tecs[i] = packet.param_value;
+//
+//			  // Update the parameter pages
+//			  Pages::forceUpdate(Pages::R_PARAM);
+//			}
+//		  }
       }
       else if (uav.type == MAV_TYPE_GROUND_ROVER) {
 		  for (uint8_t i=0;i<PARAM_COUNT_ROVER;i++) {
@@ -313,25 +354,19 @@ GCS_MAVLINK::params_request(void)
   mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, uav.sysid, apm_mav_component);
   uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
   _port->write(buf, len);
+
+  // Update the system downloading flag
+  downloading = 1;
+  download_start_time = millis();
 }
 
 void
-GCS_MAVLINK::param_set(uint8_t param_id, float newVal)
+GCS_MAVLINK::param_set(uint8_t param_id, float newVal, char *str_param_id)
 {
-  char str_param_id[15];
   mavlink_message_t msg;
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
   uint8_t i;
 
-  // First initialise the string to be empty
-  for (i=0;i<15;i++)
-    str_param_id[i] = 0;
-
-  // Copy the relevant one into memory
-  if (uav.type == MAV_TYPE_FIXED_WING)
-	  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_plane[param_id])));
-  else if(uav.type == MAV_TYPE_QUADROTOR)
-	  strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_copter[param_id])));
 
   // Construct the packet
   mavlink_msg_param_set_pack(0xFF, 0xFA, &msg, uav.sysid, apm_mav_component, (const char*)str_param_id, newVal, MAV_PARAM_TYPE_REAL32);

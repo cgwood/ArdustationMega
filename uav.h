@@ -91,6 +91,9 @@ struct vehicle {
   float dist; // Distance from gcs
   float roll2srvP;
   float param_plane[PARAM_COUNT_PLANE];
+  float param_plane_ctun[PARAM_COUNT_PLANE_CTUN];
+  float param_plane_ntun[PARAM_COUNT_PLANE_NTUN];
+  float param_plane_tecs[PARAM_COUNT_PLANE_TECS];
   float param_copter[PARAM_COUNT_COPTER];
   float param_rover[PARAM_COUNT_ROVER];
 };

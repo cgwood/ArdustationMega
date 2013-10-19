@@ -9,6 +9,7 @@ PageGLCDtest  GLCDPage;
 PageSDtest  SDPage;
 PagePID  PIDPage;
 PagePlaneParameters  PlaneParametersPage;
+PagePlaneParametersCTUN  PlaneParametersPageCTUN;
 PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -41,11 +42,12 @@ Pages::definePages()
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
 		_pageids[2] = P_PARAMETERS; // APM parameters
-		_pageids[3] = P_HARDWARE;
-		_pageids[4] = P_UAVTEST;
-		_pageids[5] = P_GLCD;
-		_pageids[6] = P_SD;
-		_pagecount = 7;
+		_pageids[3] = P_PARAMETERS_CTUN; // APM Control tuning parameters
+		_pageids[4] = P_HARDWARE;
+		_pageids[5] = P_UAVTEST;
+		_pageids[6] = P_GLCD;
+		_pageids[7] = P_SD;
+		_pagecount = 8;
 	}
 	else if (uav.type==MAV_TYPE_QUADROTOR) {
 		_pageids[0] = P_MAIN;
@@ -60,11 +62,10 @@ Pages::definePages()
 	else if (uav.type==MAV_TYPE_GROUND_ROVER) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
-		_pageids[2] = P_PARAMETERS; // APM parameters
-		_pageids[3] = P_HARDWARE;
-		_pageids[4] = P_UAVTEST;
-		_pageids[5] = P_GLCD;
-		_pageids[6] = P_SD;
+		_pageids[2] = P_HARDWARE;
+		_pageids[3] = P_UAVTEST;
+		_pageids[4] = P_GLCD;
+		_pageids[5] = P_SD;
 		_pagecount = 7;
 	}
 	else { // Default option - AP Unknown
@@ -112,6 +113,9 @@ Pages::_currPage(uint8_t pageid)
     break;
   case P_PARAMETERS:
     return(&PlaneParametersPage);
+    break;
+  case P_PARAMETERS_CTUN:
+    return(&PlaneParametersPageCTUN);
     break;
   }
 }

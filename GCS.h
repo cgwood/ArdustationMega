@@ -151,7 +151,7 @@ public:
   void    data_stream_send(uint16_t freqMin, uint16_t freqMax);
   void    data_stream_request(void);
   void    params_request(void);
-  void    param_set(uint8_t param_id, float newVal);
+  void    param_set(uint8_t param_id, float newVal, char *str_param_id);
   void    queued_param_send();
   void    queued_waypoint_send();
 
