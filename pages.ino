@@ -483,9 +483,9 @@ PageUAVtest::_refresh_slow()
   lcd.print("UAV alt ");
   lcd.println(uav.alt, 2);
   lcd.print("Dist ");
-  lcd.println(dist);
+  lcd.println(tracker.get_dist());
   lcd.print("Bearing ");
-  lcd.println(bear);
+  lcd.println(tracker.get_bearing());
   lcd.print("GCS Lat ");
   lcd.println((float)gps.latitude / T7, 5);
   lcd.print("GCS Lon ");

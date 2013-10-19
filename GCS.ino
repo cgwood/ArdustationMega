@@ -198,11 +198,11 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
       char txt_id[15];
       
       // DEV: Display the parameters over serial
-      Serial.print(packet.param_id);
-      Serial.print(" = ");
-      Serial.print(packet.param_value);
-      Serial.print(", ");
-      Serial.println(packet.param_type);
+//      Serial.print(packet.param_id);
+//      Serial.print(" = ");
+//      Serial.print(packet.param_value);
+//      Serial.print(", ");
+//      Serial.println(packet.param_type);
       
       if (uav.type == MAV_TYPE_FIXED_WING) {
 		  for (uint8_t i=0;i<PARAM_COUNT_PLANE;i++) {

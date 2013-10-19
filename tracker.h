@@ -29,10 +29,12 @@ public:
   /// Update the position of the servos for the antenna
   ///
   void			update(void);
+  float         get_bearing(void);
+  float         get_dist(void);
 
 private:
-  int   _pan;		///< Pan  servo position
-  int   _tilt;	///< Tilt servo position
+  float   _pan;		///< Pan  servo position
+  float   _tilt;	///< Tilt servo position
   float _uavDist; ///< Distance to UAV
   float _uavBear; ///< Bearing to UAV
   float _uavElev; ///< Elevation to UAV
@@ -45,13 +47,9 @@ private:
   ///
   void			_update(void);
 
-  /// Calculate the bearing to the aircraft
+  /// Calculate the distance and bearing to the aircraft
   ///
-  float			_bearing(float lat1, float lat2, float lon1, float lon2);
-
-  /// Calculate the distance to the aircraft
-  ///
-  float			_distance(float lat1, float lat2, float lon1, float lon2);
+  void			_calcs(float lat1, float lat2, float lon1, float lon2);
 };
 
 

@@ -38,14 +38,12 @@
 #include "Tracker.h"            // Controls the antenna tracker
 #include "Buttons.h"            // Routines for button presses
 #include "Beep.h"               // Sounds the piezo buzzer
-
 // Variables and definitions
 #include "hardware.h"           // Definitions for the ground station's hardware
 #include "uav_params.h"         // Class containing the UAV parameters
 #include "uav.h"                // Class containing the UAV variables
 #include "asm.h"                // Class containing the ardustation mega's variables
 #include "pages.h"	        // Contains the LCD pages
-
 // GPS declarations
 #define T3 1000
 #define T6 1000000
@@ -56,10 +54,10 @@ AP_GPS_MTK19 gps(&Serial1);
 // GCS selection
 ////////////////////////////////////////////////////////////////////////////////
 //
-GCS_MAVLINK	gcs0(110);
-GCS_MAVLINK	gcs3(110);
+GCS_MAVLINK gcs0(110);
+GCS_MAVLINK gcs3(110);
 //static uint8_t      apm_mav_system; 
-static uint8_t      apm_mav_component;
+static uint8_t apm_mav_component;
 
 // Flag for passing mavlink through usb, for pc gcs
 boolean gcs_passthrough = 0;
@@ -68,147 +66,145 @@ boolean gcs_passthrough = 0;
 // System Timers
 ////////////////////////////////////////////////////////////////////////////////
 // Time in miliseconds of start of main control loop.  Milliseconds
-static unsigned long 	fast_loopTimer;
-static unsigned long 	med_loopTimer;
-static unsigned long 	slow_loopTimer;
-static unsigned long 	vslow_loopTimer;
+static unsigned long fast_loopTimer;
+static unsigned long med_loopTimer;
+static unsigned long slow_loopTimer;
+static unsigned long vslow_loopTimer;
 unsigned long loopwait;
-unsigned long maxloopwait=0;
+unsigned long maxloopwait = 0;
 
 // Heartbeat counter
-unsigned long hbcount=0;
+unsigned long hbcount = 0;
 
-void setup()
-{
-  // Initialise the display driver object
-  GLCD.Init(NON_INVERTED);
+void setup() {
+	// Initialise the display driver object
+	GLCD.Init(NON_INVERTED);
 
-  // Print the welcome message
-  //lcd.print("Starting up");
+	// Print the welcome message
+	//lcd.print("Starting up");
 
-  // Initialize the keypad
-  Wire.begin();
+	// Initialize the keypad
+	Wire.begin();
 
-  // SD Card
-  pinMode(chipSelect, OUTPUT);
-  init_sdcard();
+	// SD Card
+	pinMode(chipSelect, OUTPUT);
+	init_sdcard();
 
-  // Attach the rotary encoder
-  attachInterrupt(0, doEncoder, CHANGE);
-  attachInterrupt(1, doEncoder, CHANGE);
-  rotary.configure(&ASM.encoderval, 500, 0, -4);
+	// Attach the rotary encoder
+	attachInterrupt(0, doEncoder, CHANGE);
+	attachInterrupt(1, doEncoder, CHANGE);
+	rotary.configure(&ASM.encoderval, 500, 0, -4);
 
-  // Initialize stuff that needs to go in a class
-  init_batt();
-  uav.sysid = 0;
+	// Initialize stuff that needs to go in a class
+	init_batt();
+	uav.sysid = 0;
 
-  // Initialise the serial ports
-  Serial.begin(57600);   // USB comm port
-  Serial1.begin(38400);  // GPS
-  Serial3.begin(57600);  // Telemetry
+	// Initialise the serial ports
+	Serial.begin(57600);   // USB comm port
+	Serial1.begin(38400);  // GPS
+	Serial3.begin(57600);  // Telemetry
 
-  // Initialise the GCS
-  gcs0.init(&Serial);
-  gcs3.init(&Serial3);
-  
-  // Initialise the GPS  
-  stderr = stdout;
-  gps.print_errors = true;
+	// Initialise the GCS
+	gcs0.init(&Serial);
+	gcs3.init(&Serial3);
+
+	// Initialise the GPS
+	stderr = stdout;
+	gps.print_errors = true;
 
 //  Serial.println("GPS UBLOX library test");
 //  gps.init(GPS::GPS_ENGINE_AIRBORNE_2G);       // GPS Initialization
 
-  Serial.println("GPS MTK library test");
-  stderr = stdout;
-  gps.print_errors = true;
-  gps.init();       // GPS Initialization
+	Serial.println("GPS MTK library test");
+	stderr = stdout;
+	gps.print_errors = true;
+	gps.init();       // GPS Initialization
 
-  // Write centre positions to servos
-  Pan.attach(6,800,2200);// Ultimately make the end points as variables on some input screen
-  Tilt.attach(7,800,2200);
-  //  Pan.write(90);
-  //  Tilt.write(90);
-  
-  // Start the first page
-  Pages::enter();
+	// Write centre positions to servos
+	Pan.attach(6, 800, 2200); // Ultimately make the end points as variables on some input screen
+	Tilt.attach(7, 800, 2200);
+	//  Pan.write(90);
+	//  Tilt.write(90);
+
+	// Start the first page
+	Pages::enter();
 }
 
-void loop()
-{
-  uint8_t buttonid;
+void loop() {
+	uint8_t buttonid;
 
-  // Update comms as fast as possible
-  if (gcs3.initialised) {
-    gcs3.update();
-  }
-  else {
-    Serial.println("GCS not initialised");
-  }
-  
-  // Update the GPS as fast as possible
-  gps.update();
+	// Update comms as fast as possible
+	if (gcs3.initialised) {
+		gcs3.update();
+	} else {
+		Serial.println("GCS not initialised");
+	}
 
-  // This loop is to execute at 50Hz
-  // -------------------------------------------
-  loopwait = millis()-fast_loopTimer;
-  if (loopwait  > 19) {
-    maxloopwait = max(loopwait,maxloopwait);
+	// Update the GPS as fast as possible
+	gps.update();
 
-    // Listen for button presses
-    buttonid = keypad.pressed();
-    switch(buttonid) {
-      // By default all keypad presses are sent to the pages
-    default:
-      Pages::interact(buttonid);
-      break;
-    }
+	// This loop is to execute at 50Hz
+	// -------------------------------------------
+	loopwait = millis() - fast_loopTimer;
+	if (loopwait > 19) {
+		maxloopwait = max(loopwait, maxloopwait);
 
-    // Listen for encoder updates, notify the pages
-    if (rotary.haschanged())
-      Pages::interact(B_ENCODER);
+		// Listen for button presses
+		buttonid = keypad.pressed();
+		switch (buttonid) {
+		// By default all keypad presses are sent to the pages
+		default:
+			Pages::interact(buttonid);
+			break;
+		}
 
-    // update the currently-playing tune
-    beep.update();
-    
-    // Update the antenna tracker
-    tracker.update();
+		// Listen for encoder updates, notify the pages
+		if (rotary.haschanged())
+			Pages::interact(B_ENCODER);
 
-    // Update the fast loop timer
-    fast_loopTimer = millis();
+		// update the currently-playing tune
+		beep.update();
 
+		// Update the antenna tracker
+		tracker.update();
 
-    // This loop is to execute at 10Hz
-    // -------------------------------------------
-    if (millis()-med_loopTimer > 99) {
-      // Sample battery sensor
-      sample_batt();
+		// Update the fast loop timer
+		fast_loopTimer = millis();
 
-      // Update the pages
-      Pages::refresh_med();
-      if (ASM.encoderval == 20) {
-        beep.play(BEEP_LAND);
-        ASM.encoderval = 0;
-      }
+		// This loop is to execute at 10Hz
+		// -------------------------------------------
+		if (millis() - med_loopTimer > 99) {
+			// Sample battery sensor
+			sample_batt();
 
-      // Update the medium loop timer
-      med_loopTimer = millis();
-    }
+			// Update the pages
+			Pages::refresh_med();
+			if (ASM.encoderval == 20) {
+				beep.play(BEEP_LAND);
+				ASM.encoderval = 0;
+			}
 
-    //    // This loop is to execute at 5Hz
-    //    // -------------------------------------------
-    //    if (millis()-slow_loopTimer > 199) {
-    //      slow_loopTimer = millis();
-    //    }
+			// Update the medium loop timer
+			med_loopTimer = millis();
+		}
 
+		//    // This loop is to execute at 5Hz
+		//    // -------------------------------------------
+		//    if (millis()-slow_loopTimer > 199) {
+		//      slow_loopTimer = millis();
+		//    }
 
-    // This loop is to execute at 0.5Hz
-    // -------------------------------------------
-    if (millis()-vslow_loopTimer > 1999) {
-      Pages::refresh_slow();
-      maxloopwait = 0;
+		// This loop is to execute at 0.5Hz
+		// -------------------------------------------
+		if (millis() - vslow_loopTimer > 1999) {
+			Pages::refresh_slow();
+			maxloopwait = 0;
+//
+//			// Update the antenna tracker
+//			tracker.update();
 
-      vslow_loopTimer = millis();
-    }
-  }
+			vslow_loopTimer = millis();
+		}
+	}
 }
 

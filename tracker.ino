@@ -33,67 +33,56 @@ Tracker::update()
   //  }
 }
 
-void
-Tracker::_update()
+float
+Tracker::get_dist(void)
 {
-  // Find out how far away the UAV is
-  _uavDist = _distance(uav.lat, uav.lon, ASM.lat, ASM.lon);
-
-  // Calculate the bearing to the UAV
-  _uavBear = _bearing(uav.lat, uav.lon, ASM.lat, ASM.lon);
-  _uavBear = 180-(_uavBear/2.0) + _offset;
-
-  if (_uavBear > 180.0)
-    _uavBear -= 180.0;
-  else if (_uavBear < 0.0)
-    _uavBear += 180.0;
-
-  // Point the antenna bearing servo
-  _uavBear = constrain(_uavBear,0,180);
-  Pan.write(_uavBear);
-
-  // Calculate the elevation to the UAV
-  _uavElev=toDeg(atan((uav.alt-ASM.alt)/_uavDist));
-  _uavElev = constrain(_uavElev,0,90);
-  _uavElev = 90-_uavElev;
-
-  int tilt_position;
-  tilt_position = _uavElev + 50;
-
-  //	if (tilt_position > tilt_pos_upper_limit) tilt_position = tilt_pos_upper_limit;
-  //
-  //	if (tilt_position < tilt_pos_lower_limit) tilt_position = tilt_pos_lower_limit;
-  tilt_position = constrain(tilt_position,tilt_pos_lower_limit,tilt_pos_upper_limit);
-
-//  Tilt.write(tilt_position);
-  Tilt.write((uav.roll+3.14159)*90.0/3.14159);
-  //        Pan.write(90);
-  //        Tilt.write(90);
+	return _uavDist;
 }
 
 float
-Tracker::_bearing(float lat1, float lat2, float lon1, float lon2)
+Tracker::get_bearing(void)
+{
+	return _uavBear;
+}
+
+void
+Tracker::_update()
+{
+	// Calculate the distance and bearing to the UAV
+  _calcs(ASM.lat, uav.lat, ASM.lon, uav.lon);
+
+  // Turn bearing into a servo pan command
+  _pan = _uavBear;
+  while (_pan <= 0){
+	  _pan += 360;
+  }
+  _pan = constrain(_pan,0,360);
+  _pan = map(_pan,0,360,0,180);
+
+  Pan.write(_pan);
+
+  // Calculate the elevation to the UAV
+  _uavElev = toDeg(atan((uav.alt-ASM.alt)/_uavDist));
+
+  // Turn elevation into servo tilt command
+  _tilt = constrain(_tilt,0,90);
+  _tilt = 90-_tilt;
+  _tilt = _tilt + 50;
+  _tilt = constrain(_tilt,tilt_pos_lower_limit,tilt_pos_upper_limit);
+
+  Tilt.write(_tilt);
+//  Tilt.write((uav.roll+3.14159)*90.0/3.14159);
+}
+
+void
+Tracker::_calcs(float lat1, float lat2, float lon1, float lon2)
 {
   float bearing;
 
   float x = 69.1 * (lat2 - lat1);
   float y = 69.1 * (lon2 - lon1) * cos(lat1/57.3);
 
-  bearing = toDeg(atan2(y,x));
-
-  if(bearing <= 0){
-    bearing += 360;
-  }
-
-  return bearing;
-}
-
-float
-Tracker::_distance(float lat1, float lat2, float lon1, float lon2)
-{
-  float x = 69.1 * (lat2 - lat1);
-  float y = 69.1 * (lon2 - lon1) * cos(lat1/57.3);
-
-  return (float)sqrt((float)(x*x) + (float)(y*y))*1609.344;
+  _uavBear = toDeg(atan2(y,x));
+  _uavDist = (float)sqrt((float)(x*x) + (float)(y*y))*1609.344;
 }
 
