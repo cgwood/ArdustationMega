@@ -233,10 +233,10 @@ PageMain::_enter()
   // Remote Battery bar on right side of screen
   GLCD.DrawRect(GLCD.Right-8, 2, 6, GLCD.Bottom-12);
 
-  // Bearing to UAV, circle  
+  // Bearing to UAV, circle
   if (uav.sysid != 0) {
     GLCD.DrawCircle(GLCD.Right-27, 16, 12);
-    GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
+    //GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
   }
   
   // Local Battery bar on left side of screen
@@ -353,30 +353,82 @@ PageMain::_refresh_slow()
   GLCD.print("m/s");
   
   
-  // Find difference in latitude and longitude between GCS and UAV
-  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
-  float lat2 = uav.lat * 3.14159/180.0;
-  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
-  float lon2 = uav.lon * 3.14159/180.0;
-  float dlat = lat2 - lat1;
-  float dlong = lon2 - lon1;
-  
-  // Calculate distance from Home
-  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
-  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
-  
-  // Calculate bearing from Home
-  float y = sin(dlong)*cos(lat2);
-  float x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dlong);
-  float bear = atan2(y,x) * 180.0 / 3.14159;
+//  // Find difference in latitude and longitude between GCS and UAV
+//  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
+//  float lat2 = uav.lat * 3.14159/180.0;
+//  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
+//  float lon2 = uav.lon * 3.14159/180.0;
+//  float dlat = lat2 - lat1;
+//  float dlong = lon2 - lon1;
+//
+//  // Calculate distance from Home
+//  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+//  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
+//
+//  // Calculate bearing from Home
+//  float y = sin(dlong)*cos(lat2);
+//  float x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(dlong);
+//  float bear = atan2(y,x) * 180.0 / 3.14159;
   
   // Print UAV Distance from Home 
   if (uav.sysid != 0) {
     GLCD.SelectFont(System5x7);
     GLCD.CursorToXY(GLCD.Right-40, 30);
-    GLCD.print((int)constrain(dist,-999,9999));
+    GLCD.print((int)constrain(tracker.get_dist(),-999,9999));
     GLCD.print('m');
   }
+
+  // Draw line showing bearing to UAV
+  if (uav.sysid != 0) {
+	x0 = GLCD.Right-27;
+	y0 = 16;
+
+	GLCD.DrawLine( x0, y0, x1, y1, WHITE ) ;
+	this->calcangle( &x1, &y1 ) ;
+	GLCD.DrawLine( x0, y0, x1, y1, BLACK ) ;
+  }
+}
+
+// Displaying roll angle of uav using demo from glcd clock example
+void PageMain::calcangle( byte *x, byte *y )
+/* angle is location of hand on dial (0-60)          */
+/* radius is length of hand                           */
+/* *x   return x-coordinate of hand on dial face */
+/* *y   return y-coordinate of hand on dial face */
+{
+  byte angle = tracker.get_bearing()*9.5492965855137201461330258023509;
+  byte radius = 10;
+  short quadrant, x_flip, y_flip ;
+
+  /* calculate which quadrant the hand lies in */
+  quadrant = angle/15 ;
+
+  /* setup for reflection or rotation */
+  switch ( quadrant ) {
+  case 0 :
+    x_flip = 1 ;
+    y_flip = -1 ;
+    break ;
+  case 1 :
+    angle = abs(angle-30) ;
+    x_flip = y_flip = 1 ;
+    break ;
+  case 2 :
+    angle = angle-30 ;
+    x_flip = -1 ;
+    y_flip = 1 ;
+    break ;
+  case 3 :
+    angle = abs(angle-60) ;
+    x_flip = y_flip = -1 ;
+    break ;
+  default:
+    x_flip = y_flip =1; // this should not happen
+  }
+  *x = x0 ;
+  *y = y0 ;
+  *x += ( x_flip*(( byteSine[angle]*radius ) >> 8 )) ;
+  *y += ( y_flip*(( byteSine[15-angle]*radius ) >> 8 )) ;
 }
 
 uint8_t

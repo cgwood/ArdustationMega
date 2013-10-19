@@ -152,6 +152,10 @@ public:
     _speed_icon=icn_speed;
   };
 
+private:
+  byte x0,y0,x1,y1;
+  void calcangle(byte *x, byte *y);
+
 protected:
   /// One off function, executes on page enter
   virtual uint8_t _enter();
