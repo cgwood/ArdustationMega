@@ -75,6 +75,10 @@ GPS::update(void)
 				_velocity_down  = 0;
             }
         }
+
+        // Update the ASM location
+    	ASM.lat = (float)gps.latitude / T7;
+    	ASM.lon = (float)gps.longitude / T7;
     }
 }
 
