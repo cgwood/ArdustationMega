@@ -44,6 +44,7 @@
 #include "uav.h"                // Class containing the UAV variables
 #include "asm.h"                // Class containing the ardustation mega's variables
 #include "pages.h"	        // Contains the LCD pages
+#include "pagesPlane.h"	        // Contains the LCD pages
 // GPS declarations
 #define T3 1000
 #define T6 1000000

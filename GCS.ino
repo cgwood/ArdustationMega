@@ -208,7 +208,7 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 		  for (uint8_t i=0;i<PARAM_COUNT_PLANE;i++) {
 			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_plane[i])));
 			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
-			  uav.param[i] = packet.param_value;
+			  uav.param_plane[i] = packet.param_value;
 
 			  // Update the parameter pages
 			  Pages::forceUpdate(Pages::R_PARAM);
@@ -219,7 +219,7 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 		  for (uint8_t i=0;i<PARAM_COUNT_ROVER;i++) {
 			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_rover[i])));
 			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
-			  uav.param[i] = packet.param_value;
+			  uav.param_rover[i] = packet.param_value;
 
 			  // Update the parameter pages
 			  Pages::forceUpdate(Pages::R_PARAM);
@@ -230,7 +230,7 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
 		  for (uint8_t i=0;i<PARAM_COUNT_COPTER;i++) {
 			strcpy_P(txt_id, (char*)pgm_read_word(&(paramTable_copter[i])));
 			if (strcmp(txt_id,(const char*)packet.param_id) == 0) {
-			  uav.param[i] = packet.param_value;
+			  uav.param_copter[i] = packet.param_value;
 
 			  // Update the parameter pages
 			  Pages::forceUpdate(Pages::R_PARAM);

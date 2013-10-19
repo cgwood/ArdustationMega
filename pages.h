@@ -9,33 +9,6 @@
 #define PARAMNAMEFIELDWIDTH 12
 #define MAXPARAMVALCOUNT 10
 
-//                                          "123456789012"
-PROGMEM const prog_char ParamNamesPlane[] = "Loiter rad  \n"
-											"Waypoint rad\n"
-											"xtrack gain \n"
-											"xtrack angle\n"
-											"Cruise speed\n"
-											"ASP FBW min \n"
-											"ASP FBW max \n"
-											"Pitch2Thrtl \n"
-											"Thrtl2Pitch \n"
-			                				"Log bitmask \n";
-
-const uint8_t ParamScales[] = { 0,    0,    2,    2,    2,    0,    0,    0,    0,    0}; // *10^(-x)
-const uint8_t ParamDPs[] =    { 0,    0,    2,    1,    1,    0,    0,    2,    2,    0}; // 99 in both denotes boolean
-
-//                                           "123456789012"
-PROGMEM const prog_char ParamNamesRover[]  = "Throttle min\n"
-											 "Throttle max\n"
-											 "Cruise Thr  \n"
-											 "Thr Slewrate\n"
-											 "Skid str in \n"
-											 "Skid str out\n"
-											 "FS Action   \n"
-											 "FS Timeout  \n"
-											 "FS Thr en   \n"
-			                				 "FS Thr value\n";
-
 const uint8_t ParamScalesRover[] = { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // *10^(-x)
 const uint8_t ParamDPsRover[] =    { 0,    0,    0,    0,    0,    0,    0,    0,    0,    0}; // 99 in both denotes boolean
 
@@ -432,78 +405,6 @@ protected:
   uint8_t   _pid_d[3];
 };
 
-// Parameters Page
-class PageParameters : 
-public Pages {
-public:
-  PageParameters();
-
-protected:
-  /// One off function, executes on page enter
-  virtual uint8_t _enter();
-
-  /// Force update the page
-  virtual uint8_t _forceUpdate(uint8_t reason);
-
-  /// One off function, executes on uav type change
-  virtual uint8_t _redefine();
-
-  /// refresh page - medium items (10Hz)
-  virtual uint8_t _refresh_med();
-
-  /// refresh page - slow items (0.5 Hz)
-  virtual uint8_t _refresh_slow();
-
-  /// Interact with the page
-  virtual uint8_t _interact(uint8_t buttonid);
-
-protected:
-  void            _clearMarker(void);
-  void            _paintMarker(void);
-  void            _drawLocal();
-  void            _alterLocal(float alterMag);
-  void            _redrawLocal();
-  void            _voidLocal(void);
-  void            _uploadConfirm(void);
-  void            _uploadLocal(void);
-private:
-  /// current state of the internal navigation state machine
-  uint8_t                 _state;
-
-  /// Local editing temp value
-  ///
-  float _value_temp;
-  int   _value_encoder;
-
-  /// Availability of paramter values
-  bool            _avail[MAXPARAMVALCOUNT];
-        
-  /// Position on the screen when scrolling
-  /// Refers to first value out of four being displayed
-  uint8_t	_stateFirstVal;
-
-protected:
-  /// flag indicating that the data the page should be redrawn
-  bool            _updated;
-  
-  /// timestamp of the last page redraw, used to rate-limit redraw operations
-  unsigned long   _lastRedraw;
-  
-//  /// text to be displayed for APM settings, up to xxx characters
-//  prog_char *_textHeader;
-  
-  /// Types to be displayed (in same order as _textHeader)
-  uint8_t   _Types[MAXPARAMVALCOUNT];
-  
-  /// Scaling for values, e.g. / 1000 is -3
-  uint8_t   *_scale;
-  
-  /// How many decimal places the value is given
-  uint8_t   *_decPos;
-
-  /// How many parameters there are
-  uint8_t	_paramCount;
-};
 
 
 #endif /* PAGES_H_ */

@@ -8,7 +8,7 @@ PageUAVtest  UAVtestPage;
 PageGLCDtest  GLCDPage;
 PageSDtest  SDPage;
 PagePID  PIDPage;
-PageParameters  ParametersPage;
+PagePlaneParameters  PlaneParametersPage;
 PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -111,7 +111,7 @@ Pages::_currPage(uint8_t pageid)
     return(&PIDPage);
     break;
   case P_PARAMETERS:
-    return(&ParametersPage);
+    return(&PlaneParametersPage);
     break;
   }
 }

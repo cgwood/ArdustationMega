@@ -90,7 +90,9 @@ struct vehicle {
   int sat_count;
   float dist; // Distance from gcs
   float roll2srvP;
-  float param[MAX_PARAM_COUNT];
+  float param_plane[PARAM_COUNT_PLANE];
+  float param_copter[PARAM_COUNT_COPTER];
+  float param_rover[PARAM_COUNT_ROVER];
 };
 
 // Create a vehicle instance called uav
