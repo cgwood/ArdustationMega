@@ -129,7 +129,8 @@ void PagePlaneParameters::_drawLocal(void) {
 		if (i >= _paramCount)
 			break;
 
-		if (_avail[i] == 1) {
+//		if (_avail[i] == 1) {
+		if (uav.param_plane_avail[i] == 1) {
 			// Load the value, either editing or live val
 			if (i == (_state - 101))
 				value = _value_temp;
@@ -645,7 +646,8 @@ void PagePlaneParametersCTUN::_drawLocal(void) {
 		if (i >= _paramCount)
 			break;
 
-		if (_avail[i] == 1) {
+//		if (_avail[i] == 1) {
+		if (uav.param_plane_ctun_avail[i] == 1) {
 			// Load the value, either editing or live val
 			if (i == (_state - 101))
 				value = _value_temp;

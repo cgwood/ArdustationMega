@@ -90,11 +90,18 @@ struct vehicle {
   int sat_count;
   float dist; // Distance from gcs
   float roll2srvP;
+  // Plane parameters
   float param_plane[PARAM_COUNT_PLANE];
   float param_plane_ctun[PARAM_COUNT_PLANE_CTUN];
   float param_plane_ntun[PARAM_COUNT_PLANE_NTUN];
   float param_plane_tecs[PARAM_COUNT_PLANE_TECS];
+  bool param_plane_avail[PARAM_COUNT_PLANE];
+  bool param_plane_ctun_avail[PARAM_COUNT_PLANE_CTUN];
+  bool param_plane_ntun_avail[PARAM_COUNT_PLANE_NTUN];
+  bool param_plane_tecs_avail[PARAM_COUNT_PLANE_TECS];
+  // Copter parameters
   float param_copter[PARAM_COUNT_COPTER];
+  // Rover parameters
   float param_rover[PARAM_COUNT_ROVER];
   int16_t onboard_param_count;
 };

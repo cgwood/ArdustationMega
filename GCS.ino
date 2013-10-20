@@ -221,6 +221,7 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 				strcpy_P(txt_id, (char*) pgm_read_word(&(paramTable_plane[i])));
 				if (strcmp(txt_id, (const char*) packet.param_id) == 0) {
 					uav.param_plane[i] = packet.param_value;
+					uav.param_plane_avail[i] = 1;
 
 					// Update the parameter pages
 					Pages::forceUpdate(Pages::R_PARAM);
@@ -231,6 +232,7 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 						(char*) pgm_read_word(&(paramTable_plane_ctun[i])));
 				if (strcmp(txt_id, (const char*) packet.param_id) == 0) {
 					uav.param_plane_ctun[i] = packet.param_value;
+					uav.param_plane_ctun_avail[i] = 1;
 
 					// Update the parameter pages
 					Pages::forceUpdate(Pages::R_PARAM);

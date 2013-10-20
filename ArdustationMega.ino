@@ -104,6 +104,19 @@ void setup() {
 	// Initialize stuff that needs to go in a class
 	init_batt();
 	uav.sysid = 0;
+	uint8_t i;
+	for (i=0;i<PARAM_COUNT_PLANE;i++) {
+		uav.param_plane_avail[i] = 0;
+	}
+	for (i=0;i<PARAM_COUNT_PLANE_CTUN;i++) {
+		uav.param_plane_ctun_avail[i] = 0;
+	}
+	for (i=0;i<PARAM_COUNT_PLANE_NTUN;i++) {
+		uav.param_plane_ntun_avail[i] = 0;
+	}
+	for (i=0;i<PARAM_COUNT_PLANE_TECS;i++) {
+		uav.param_plane_tecs_avail[i] = 0;
+	}
 
 	// Initialise the serial ports
 	Serial.begin(57600);   // USB comm port
