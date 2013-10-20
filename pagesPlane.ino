@@ -357,7 +357,7 @@ void PagePlaneParameters::_uploadConfirm(void) {
 
 void PagePlaneParameters::_uploadLocal(void) {
 	uint8_t i,j;
-	char str_param_id[15];
+	char str_param_id[16];
 
 	// Send the value that we edited
 	j = _Types[_state - 201];
@@ -874,7 +874,7 @@ void PagePlaneParametersCTUN::_uploadConfirm(void) {
 
 void PagePlaneParametersCTUN::_uploadLocal(void) {
 	uint8_t i,j;
-	char str_param_id[15];
+	char str_param_id[16];
 
 	// Send the value that we edited
 	j = _Types[_state - 201];

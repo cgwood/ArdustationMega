@@ -382,8 +382,7 @@ void GCS_MAVLINK::param_request(int16_t param_index) {
 	download_start_time = millis();
 }
 
-void GCS_MAVLINK::param_set(uint8_t param_id, float newVal,
-		char *str_param_id) {
+void GCS_MAVLINK::param_set(uint8_t param_id, float newVal,	char *str_param_id) {
 	mavlink_message_t msg;
 	uint8_t buf[MAVLINK_MAX_PACKET_LEN];
 	uint8_t i;
