@@ -208,9 +208,18 @@ PROGMEM const char *paramTable_plane_tecs[] = { param_plane_tecs_0, param_plane_
 enum PARAMS_ROVER {
 	// Parameter page parameters
 	ROVER_THR_MIN,
-	ROVER_THR_MAX,
 	ROVER_CRUISE_THROTTLE,
+	ROVER_THR_MAX,
 	ROVER_THR_SLEWRATE,
+	STEER2SRV_P,
+	STEER2SRV_I,
+	STEER2SRV_D,
+	STEER2SRV_IMAX,
+	STEER2SRV_TCONST,
+	TURN_MAX_G,
+	ROVER_NAVL1_PERIOD,
+	SPEED_TURN_GAIN,
+	SPEED_TURN_DIST,
 	SKID_STEER_OUT,
 	SKID_STEER_IN,
 	FS_ACTION,
@@ -221,36 +230,56 @@ enum PARAMS_ROVER {
 	PARAM_COUNT_ROVER
 };
 
-const uint8_t ParamScalesRover[] = { 0,    0,    0,    0,    0,    0,    0,    0,   99,    0}; // *10^(-x)
-const uint8_t ParamDPsRover[] =    { 0,    0,    0,    0,    0,    0,    0,    0,   99,    0}; // 99 in both denotes boolean
+const uint8_t ParamScalesRover[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,99,99,0,0,99,0}; // *10^(-x)
+const uint8_t ParamDPsRover[] =    {0,0,0,0,0,0,0,0,2,2,2,0,2,99,99,0,0,99,0}; // 99 in both denotes boolean
 
 // Parameter page - rover params
 prog_char param_rover_0[] PROGMEM = "THR_MIN";
-prog_char param_rover_1[] PROGMEM = "THR_MAX";
-prog_char param_rover_2[] PROGMEM = "CRUISE_THROTTLE";
+prog_char param_rover_1[] PROGMEM = "CRUISE_THROTTLE";
+prog_char param_rover_2[] PROGMEM = "THR_MAX";
 prog_char param_rover_3[] PROGMEM = "THR_SLEWRATE";
-prog_char param_rover_4[] PROGMEM = "SKID_STEER_OUT";
-prog_char param_rover_5[] PROGMEM = "SKID_STEER_IN";
-prog_char param_rover_6[] PROGMEM = "FS_ACTION";
-prog_char param_rover_7[] PROGMEM = "FS_TIMEOUT";
-prog_char param_rover_8[] PROGMEM = "FS_THR_ENABLE";
-prog_char param_rover_9[] PROGMEM = "FS_THR_VALUE";
+prog_char param_rover_4[] PROGMEM = "STEER2SRV_P";
+prog_char param_rover_5[] PROGMEM = "STEER2SRV_I";
+prog_char param_rover_6[] PROGMEM = "STEER2SRV_D";
+prog_char param_rover_7[] PROGMEM = "STEER2SRV_IMAX";
+prog_char param_rover_8[] PROGMEM = "STEER2SRV_TCONST";
+prog_char param_rover_9[] PROGMEM = "TURN_MAX_G";
+prog_char param_rover_10[] PROGMEM = "NAVL1_PERIOD";
+prog_char param_rover_11[] PROGMEM = "SPEED_TURN_GAIN";
+prog_char param_rover_12[] PROGMEM = "SPEED_TURN_DIST";
+prog_char param_rover_13[] PROGMEM = "SKID_STEER_OUT";
+prog_char param_rover_14[] PROGMEM = "SKID_STEER_IN";
+prog_char param_rover_15[] PROGMEM = "FS_ACTION";
+prog_char param_rover_16[] PROGMEM = "FS_TIMEOUT";
+prog_char param_rover_17[] PROGMEM = "FS_THR_ENABLE";
+prog_char param_rover_18[] PROGMEM = "FS_THR_VALUE";
 
 //                                           "123456789012"
 PROGMEM const prog_char ParamNamesRover[]  = "Throttle min\n"
-											 "Throttle max\n"
-											 "Cruise Thr  \n"
-											 "Thr Slewrate\n"
-											 "Skid str in \n"
-											 "Skid str out\n"
-											 "FS Action   \n"
-											 "FS Timeout  \n"
-											 "FS Thr en   \n"
-			                				 "FS Thr value\n";
+		 "Cruise Thr  \n"
+		 "Throttle max\n"
+		 "Thr Slewrate\n"
+		 "Steering P  \n"
+		 "Steering I  \n"
+		 "Steering D  \n"
+		 "SteeringImax\n"
+		 "SteeringTcon\n"
+		 "Turn Max G  \n"
+		 "Nav L1Period\n"
+		 "Spd TurnGain\n"
+		 "Spd TurnDist\n"
+		 "Skid str in \n"
+		 "Skid str out\n"
+		 "FS Action   \n"
+		 "FS Timeout  \n"
+		 "FS Thr en   \n"
+		 "FS Thr value\n";
 
 PROGMEM const char *paramTable_rover[] = { param_rover_0, param_rover_1,
 		param_rover_2, param_rover_3, param_rover_4, param_rover_5,
-		param_rover_6, param_rover_7, param_rover_8, param_rover_9 };
+		param_rover_6, param_rover_7, param_rover_8, param_rover_9,
+		param_rover_10, param_rover_11, param_rover_12, param_rover_13,
+		param_rover_14, param_rover_15, param_rover_16, param_rover_17, param_rover_18 };
 
 // ------------------------------ ROTARY WING ------------------------------ //
 enum PARAMS_COPTER {
