@@ -145,7 +145,7 @@ PROGMEM const prog_char ParamNamesPlaneNTUN[] = "L1 Period   \n"
 												"WP Radius   \n"
 												"Lim Roll CD \n";
 
-const uint8_t ParamScalesNTUN[] = {0,0,0,0}; // *10^(-x)
+const uint8_t ParamScalesNTUN[] = {0,0,0,2}; // *10^(-x)
 const uint8_t ParamDPsNTUN[] =    {2,2,2,2}; // 99 in both denotes boolean
 
 PROGMEM const char *paramTable_plane_ntun[] = { param_plane_ntun_0, param_plane_ntun_1,
@@ -168,6 +168,41 @@ enum PARAMS_PLANE_TECS {
 	// Parameter count
 	PARAM_COUNT_PLANE_TECS
 };
+
+prog_char param_plane_tecs_0[] PROGMEM = "ARSPD_FBW_MIN";
+prog_char param_plane_tecs_1[] PROGMEM = "ARSPD_FBW_MAX";
+prog_char param_plane_tecs_2[] PROGMEM = "THR_MIN";
+prog_char param_plane_tecs_3[] PROGMEM = "TRIM_THROTTLE";
+prog_char param_plane_tecs_4[] PROGMEM = "THR_MAX";
+prog_char param_plane_tecs_5[] PROGMEM = "LIM_PITCH_MIN";
+prog_char param_plane_tecs_6[] PROGMEM = "LIM_PITCH_MAX";
+prog_char param_plane_tecs_7[] PROGMEM = "TECS_SINK_MIN";
+prog_char param_plane_tecs_8[] PROGMEM = "TECS_SINK_MAX";
+prog_char param_plane_tecs_9[] PROGMEM = "TECS_CLMB_MAX";
+prog_char param_plane_tecs_10[] PROGMEM = "TECS_TIME_CONST";
+prog_char param_plane_tecs_11[] PROGMEM = "TECS_PTCH_DAMP";
+
+//                                              "123456789012"
+PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
+												"Airspeed Max\n"
+												"Throttle Min\n"
+												"Thrtl Cruise\n"
+												"Throttle Max\n"
+												"Pitch Min   \n"
+												"Pitch Max   \n"
+												"TECS SinkMin\n"
+												"TECS SinkMax\n"
+												"TECS ClmbMax\n"
+												"TECS T Const\n"
+												"Tecs PchDamp\n";
+
+const uint8_t ParamScalesTECS[] = {0,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsTECS[] =    {0,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
+
+PROGMEM const char *paramTable_plane_tecs[] = { param_plane_tecs_0, param_plane_tecs_1,
+		param_plane_tecs_2, param_plane_tecs_3, param_plane_tecs_4, param_plane_tecs_5,
+		param_plane_tecs_6, param_plane_tecs_7, param_plane_tecs_8, param_plane_tecs_9,
+		param_plane_tecs_10, param_plane_tecs_11};
 
 // ------------------------------ ROVERS ------------------------------ //
 enum PARAMS_ROVER {

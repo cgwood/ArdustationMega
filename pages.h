@@ -36,6 +36,8 @@ public:
 	    P_COMMANDS,
 	    P_PARAMETERS,
 	    P_PARAMETERS_CTUN,
+	    P_PARAMETERS_NTUN,
+	    P_PARAMETERS_TECS,
 	    P_HARDWARE,
 	    P_UAVTEST,
 	    P_GLCD,

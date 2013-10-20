@@ -10,6 +10,8 @@ PageSDtest  SDPage;
 PagePID  PIDPage;
 PagePlaneParameters  PlaneParametersPage;
 PagePlaneParametersCTUN  PlaneParametersPageCTUN;
+PagePlaneParametersNTUN  PlaneParametersPageNTUN;
+PagePlaneParametersTECS  PlaneParametersPageTECS;
 PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -43,11 +45,13 @@ Pages::definePages()
 		_pageids[1] = P_COMMANDS;
 		_pageids[2] = P_PARAMETERS; // APM parameters
 		_pageids[3] = P_PARAMETERS_CTUN; // APM Control tuning parameters
-		_pageids[4] = P_HARDWARE;
-		_pageids[5] = P_UAVTEST;
-		_pageids[6] = P_GLCD;
-		_pageids[7] = P_SD;
-		_pagecount = 8;
+		_pageids[4] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
+		_pageids[5] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[6] = P_HARDWARE;
+		_pageids[7] = P_UAVTEST;
+		_pageids[8] = P_GLCD;
+		_pageids[9] = P_SD;
+		_pagecount = 10;
 	}
 	else if (uav.type==MAV_TYPE_QUADROTOR) {
 		_pageids[0] = P_MAIN;
@@ -116,6 +120,12 @@ Pages::_currPage(uint8_t pageid)
     break;
   case P_PARAMETERS_CTUN:
     return(&PlaneParametersPageCTUN);
+    break;
+  case P_PARAMETERS_NTUN:
+    return(&PlaneParametersPageNTUN);
+    break;
+  case P_PARAMETERS_TECS:
+    return(&PlaneParametersPageTECS);
     break;
   }
 }
