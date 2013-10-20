@@ -60,14 +60,14 @@ enum PARAMS_PLANE_CTUN {
 	RLL2SRV_IMAX,
 	RLL2SRV_RMAX,
 	RLL2SRV_T_CONST,
-	PITCH2SRV_P,
-	PITCH2SRV_I,
-	PITCH2SRV_D,
-	PITCH2SRV_IMAX,
-	PITCH2SRV_RMAX_UP,
-	PITCH2SRV_RMAX_DN,
-	PITCH2SRV_T_CONST,
-	PITCH2SRV_RLL,
+	PTCH2SRV_P,
+	PTCH2SRV_I,
+	PTCH2SRV_D,
+	PTCH2SRV_IMAX,
+	PTCH2SRV_RMAX_UP,
+	PTCH2SRV_RMAX_DN,
+	PTCH2SRV_T_CONST,
+	PTCH2SRV_RLL,
 	YAW2SRV_SLIP,
 	YAW2SRV_DAMP,
 	YAW2SRV_RLL,
@@ -82,14 +82,14 @@ prog_char param_plane_ctun_2[] PROGMEM = "RLL2SRV_D";
 prog_char param_plane_ctun_3[] PROGMEM = "RLL2SRV_IMAX";
 prog_char param_plane_ctun_4[] PROGMEM = "RLL2SRV_RMAX";
 prog_char param_plane_ctun_5[] PROGMEM = "RLL2SRV_T_CONST";
-prog_char param_plane_ctun_6[] PROGMEM = "PITCH2SRV_P";
-prog_char param_plane_ctun_7[] PROGMEM = "PITCH2SRV_I";
-prog_char param_plane_ctun_8[] PROGMEM = "PITCH2SRV_D";
-prog_char param_plane_ctun_9[] PROGMEM = "PITCH2SRV_IMAX";
-prog_char param_plane_ctun_10[] PROGMEM = "PITCH2SRV_RMAX_UP";
-prog_char param_plane_ctun_11[] PROGMEM = "PITCH2SRV_RMAX_DN";
-prog_char param_plane_ctun_12[] PROGMEM = "PITCH2SRV_T_CONST";
-prog_char param_plane_ctun_13[] PROGMEM = "PITCH2SRV_RLL";
+prog_char param_plane_ctun_6[] PROGMEM = "PTCH2SRV_P";
+prog_char param_plane_ctun_7[] PROGMEM = "PTCH2SRV_I";
+prog_char param_plane_ctun_8[] PROGMEM = "PTCH2SRV_D";
+prog_char param_plane_ctun_9[] PROGMEM = "PTCH2SRV_IMAX";
+prog_char param_plane_ctun_10[] PROGMEM = "PTCH2SRV_RMAX_UP";
+prog_char param_plane_ctun_11[] PROGMEM = "PTCH2SRV_RMAX_DN";
+prog_char param_plane_ctun_12[] PROGMEM = "PTCH2SRV_T_CONST";
+prog_char param_plane_ctun_13[] PROGMEM = "PTCH2SRV_RLL";
 prog_char param_plane_ctun_14[] PROGMEM = "YAW2SRV_SLIP";
 prog_char param_plane_ctun_15[] PROGMEM = "YAW2SRV_DAMP";
 prog_char param_plane_ctun_16[] PROGMEM = "YAW2SRV_RLL";
