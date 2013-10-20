@@ -118,6 +118,7 @@ public:
 
   void            data_stream_request(void);
   void    params_request();
+  void    param_request(int16_t param_index);
 
   // set to true if this GCS link is active
   bool initialised;
@@ -151,6 +152,7 @@ public:
   void    data_stream_send(uint16_t freqMin, uint16_t freqMax);
   void    data_stream_request(void);
   void    params_request(void);
+  void    param_request(int16_t param_index);
   void    param_set(uint8_t param_id, float newVal, char *str_param_id);
   void    queued_param_send();
   void    queued_waypoint_send();

@@ -239,7 +239,7 @@ PageCommands::_commandSend(void)
 //		comm.send(&msg);
 		break;
 	case 1: // Request parameters
-          gcs3.params_request();
+          gcs3.param_request(0);
 //		mavlink_msg_param_request_list_pack(0xFF, 0xFA, &msg, 1, 1);
 
 //		mavlink_msg_param_request_list_send(MAVLINK_COMM_0, 1, 1);

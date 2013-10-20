@@ -66,6 +66,7 @@ boolean gcs_passthrough = 0;
 // Flag denoting that we're downloading the parameters
 boolean downloading = 0;
 unsigned long download_start_time;
+int16_t download_index=0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // System Timers
@@ -147,8 +148,10 @@ void loop() {
 
 	// If we're downloading parameters, block all other ground station functionality
 	if (downloading) {
-		if (millis() - download_start_time >= 10000)
+		if (millis() - download_start_time >= 1000) {
 			downloading = 0;
+			Serial.println("Download timed out");
+		}
 	}
 	else
 	{

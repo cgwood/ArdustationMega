@@ -96,6 +96,7 @@ struct vehicle {
   float param_plane_tecs[PARAM_COUNT_PLANE_TECS];
   float param_copter[PARAM_COUNT_COPTER];
   float param_rover[PARAM_COUNT_ROVER];
+  int16_t onboard_param_count;
 };
 
 // Create a vehicle instance called uav
