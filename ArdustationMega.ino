@@ -17,6 +17,7 @@
 #include <Servo.h>
 #include <Wire.h>
 #include <SD.h>
+#include <EEPROM.h>
 
 // GPS Includes
 #include "AP_GPS_UBLOX.h"
@@ -38,19 +39,24 @@
 #include "Tracker.h"            // Controls the antenna tracker
 #include "Buttons.h"            // Routines for button presses
 #include "Beep.h"               // Sounds the piezo buzzer
+#include "nvram.h"              // For saving to EEPROM
 // Variables and definitions
 #include "hardware.h"           // Definitions for the ground station's hardware
 #include "uav_params.h"         // Class containing the UAV parameters
 #include "uav.h"                // Class containing the UAV variables
 #include "asm.h"                // Class containing the ardustation mega's variables
-#include "pages.h"	        // Contains the LCD pages
-#include "pagesPlane.h"	        // Contains the LCD pages
-#include "pagesRover.h"	        // Contains the LCD pages
+#include "pages.h"	            // Contains the LCD pages
+#include "pageSettings.h"	    // Contains the Settings LCD pages
+#include "pagesPlane.h"	        // Contains the Plane LCD pages
+#include "pagesRover.h"	        // Contains the Rover LCD pages
 // GPS declarations
 #define T3 1000
 #define T6 1000000
 #define T7 10000000
 AP_GPS_MTK19 gps(&Serial1);
+
+// EEPROM Declaration
+NVRAM           nvram;                          ///< NVRAM driver
 
 ////////////////////////////////////////////////////////////////////////////////
 // GCS selection
@@ -86,6 +92,9 @@ unsigned long hbcount = 0;
 void setup() {
 	// Initialise the display driver object
 	GLCD.Init(NON_INVERTED);
+
+    // load the NVRAM
+    nvram.load();
 
 	// Print the welcome message
 	//lcd.print("Starting up");

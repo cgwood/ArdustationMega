@@ -3,6 +3,7 @@
 
 // ------ Declare each page ------ //
 PageMain mainPage;
+PageSettings settingsPage;
 PageHardware hardwarePage;
 PageUAVtest  UAVtestPage;
 PageGLCDtest  GLCDPage;
@@ -34,7 +35,8 @@ Pages::Pages()
 	_pageids[3] = P_UAVTEST;
 	_pageids[4] = P_GLCD;
 	_pageids[5] = P_SD;
-	_pagecount = 6;
+	_pageids[6] = P_SETTINGS;
+	_pagecount = 7;
 
 }
 
@@ -52,7 +54,8 @@ Pages::definePages()
 		_pageids[7] = P_UAVTEST;
 		_pageids[8] = P_GLCD;
 		_pageids[9] = P_SD;
-		_pagecount = 10;
+		_pageids[10] = P_SETTINGS;
+		_pagecount = 11;
 	}
 	else if (uav.type==MAV_TYPE_QUADROTOR) {
 		_pageids[0] = P_MAIN;
@@ -72,7 +75,8 @@ Pages::definePages()
 		_pageids[4] = P_UAVTEST;
 		_pageids[5] = P_GLCD;
 		_pageids[6] = P_SD;
-		_pagecount = 7;
+		_pageids[7] = P_SETTINGS;
+		_pagecount = 8;
 	}
 	else { // Default option - AP Unknown
 		_pageids[0] = P_MAIN;
@@ -81,7 +85,8 @@ Pages::definePages()
 		_pageids[3] = P_UAVTEST;
 		_pageids[4] = P_GLCD;
 		_pageids[5] = P_SD;
-		_pagecount = 6;
+		_pageids[6] = P_SETTINGS;
+		_pagecount = 7;
 	}
 	pageindex = 0;
 
@@ -98,6 +103,9 @@ Pages::_currPage(uint8_t pageid)
   switch(_pageids[pageid]) {
   case P_MAIN:
     return(&mainPage);
+    break;
+  case P_SETTINGS:
+    return(&settingsPage);
     break;
   case P_HARDWARE:
     return(&hardwarePage);

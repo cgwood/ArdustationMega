@@ -33,6 +33,7 @@ public:
 	  // ----- Declare pages here ----- //
 	  enum PAGEIDS {
 	    P_MAIN = 0,
+		P_SETTINGS,
 	    P_COMMANDS,
 	    P_PARAMETERS,
 	    P_PARAMETERS_CTUN,
