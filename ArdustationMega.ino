@@ -45,6 +45,7 @@
 #include "asm.h"                // Class containing the ardustation mega's variables
 #include "pages.h"	        // Contains the LCD pages
 #include "pagesPlane.h"	        // Contains the LCD pages
+#include "pagesRover.h"	        // Contains the LCD pages
 // GPS declarations
 #define T3 1000
 #define T6 1000000
@@ -116,6 +117,12 @@ void setup() {
 	}
 	for (i=0;i<PARAM_COUNT_PLANE_TECS;i++) {
 		uav.param_plane_tecs_avail[i] = 0;
+	}
+	for (i=0;i<PARAM_COUNT_ROVER;i++) {
+		uav.param_rover_avail[i] = 0;
+	}
+	for (i=0;i<PARAM_COUNT_COPTER;i++) {
+		uav.param_copter_avail[i] = 0;
 	}
 
 	// Initialise the serial ports

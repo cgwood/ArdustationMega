@@ -101,8 +101,11 @@ struct vehicle {
   bool param_plane_tecs_avail[PARAM_COUNT_PLANE_TECS];
   // Copter parameters
   float param_copter[PARAM_COUNT_COPTER];
+  float param_copter_avail[PARAM_COUNT_COPTER];
   // Rover parameters
   float param_rover[PARAM_COUNT_ROVER];
+  float param_rover_avail[PARAM_COUNT_ROVER];
+  // How many parameters are stored on the UAV
   int16_t onboard_param_count;
 };
 

@@ -12,6 +12,7 @@ PagePlaneParameters  PlaneParametersPage;
 PagePlaneParametersCTUN  PlaneParametersPageCTUN;
 PagePlaneParametersNTUN  PlaneParametersPageNTUN;
 PagePlaneParametersTECS  PlaneParametersPageTECS;
+PageRoverParameters  RoverParametersPage;
 PageCommands    CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -66,10 +67,11 @@ Pages::definePages()
 	else if (uav.type==MAV_TYPE_GROUND_ROVER) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_COMMANDS;
-		_pageids[2] = P_HARDWARE;
-		_pageids[3] = P_UAVTEST;
-		_pageids[4] = P_GLCD;
-		_pageids[5] = P_SD;
+		_pageids[2] = P_ROVER_PARAMETERS; // Rover parameters
+		_pageids[3] = P_HARDWARE;
+		_pageids[4] = P_UAVTEST;
+		_pageids[5] = P_GLCD;
+		_pageids[6] = P_SD;
 		_pagecount = 7;
 	}
 	else { // Default option - AP Unknown
@@ -126,6 +128,9 @@ Pages::_currPage(uint8_t pageid)
     break;
   case P_PARAMETERS_TECS:
     return(&PlaneParametersPageTECS);
+    break;
+  case P_ROVER_PARAMETERS:
+    return(&RoverParametersPage);
     break;
   }
 }
