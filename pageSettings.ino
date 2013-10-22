@@ -87,69 +87,19 @@ void PageSettings::_drawLocal(void) {
 		if (i >= _settingsCount)
 			break;
 
-//		if (_avail[i] == 1) {
-		if (1) {
-			// Load the value, either editing or live val
-			if (i == (_state - 101))
-				value = _value_temp;
-			else {
-				nvram.load_setting(&i,&value_local);
-				value = (uint32_t) floor(value_local + 0.5);
-			}
-			//value = _value_live[i].value;
-
-			// Is it an On / Off value?
-			if (99 == _decPos[i] && 99 == _scale[i]) {
-				if (value > 0) {
-					decBuf[0] = 'N';
-					decBuf[1] = 'O';
-					j = 2;
-				} else {
-					decBuf[0] = 'F';
-					decBuf[1] = 'F';
-					decBuf[2] = 'O';
-					j = 3;
-				}
-
-				// Display the data
-				//lcd.write(' ');
-				while (j-- > 0)
-					lcd.write(decBuf[j]);
-				lcd.write(' ');
-			} else {
-				GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
-				GLCD.print(value_local * pow(10, -_scale[i]), _decPos[i]);
-				GLCD.print("  ");
-//              // Scale the value and fix for the number of decimal places
-//              value *= pow(10,_decPos[i] - _scale[i]);
-//              decBuf[0] = '0' + (value % 10);
-//              value /= 10;
-//              for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
-//                if (j == _decPos[i]) {
-//                  decBuf[j] = '.';
-//                } else if ((0 == value) && (j > (_decPos[i] + 1))) {
-//                  decBuf[j] = ' ';
-//                } else {
-//                  decBuf[j] = '0' + (value % 10);
-//                  value /= 10;
-//                }
-//              }
-			}
-		} else {
-			// Data unavailable, display dashes
-			for (j = 0; j < 16 - PARAMNAMEFIELDWIDTH; j++)
-				decBuf[j] = '-';
-
-			// Display the data
-			lcd.write(' ');
-			while (j-- > 0)
-				lcd.write(decBuf[j]);
-			lcd.write(' ');
+		// Load the value, either editing or live val
+		if (i == (_state - 101))
+			value = _value_temp;
+		else {
+			nvram.load_setting(&i,&value_local);
+			value = (uint32_t) floor(value_local + 0.5);
 		}
-	}
 
-	// redraw the "choosing" marker
-//        _paintMarker();
+		char text_value[7];
+		nvram.load_setting_text(&i, -1, text_value);
+		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
+		GLCD.print(text_value);
+	}
 }
 
 /// Draw the "choosing" marker
@@ -175,32 +125,11 @@ void PageSettings::_clearMarker(void) {
 }
 
 void PageSettings::_alterLocal(float alterMag) {
-	// Is it an on off?
-//  if (99 == _scale[_state-101] && 99 == _decPos[_state-101]) {
-//	Serial.println(alterMag, DEC);
-//    if (alterMag > 0) {
-//      switch (_value_temp) {
-//        case 0x50: _value_temp = LOGBIT_ATTITUDE_FAST; break;
-//        case 0x51: _value_temp = LOGBIT_ATTITUDE_MED;  break;
-//        case 0x52: _value_temp = LOGBIT_GPS;           break;
-//        case 0x53: _value_temp = LOGBIT_PM;            break;
-//        case 0x54: _value_temp = LOGBIT_CTUN;          break;
-//        case 0x55: _value_temp = LOGBIT_NTUN;          break;
-//        case 0x56: _value_temp = LOGBIT_MODE;          break;
-//        case 0x57: _value_temp = LOGBIT_RAW;           break;
-//        case 0x58: _value_temp = LOGBIT_CMD;           break;
-//      }
-//    }
-//    else
-//      _value_temp = 0;
-//  }
-//  else {
 	// We don't do negative values here
 	if (_value_temp + alterMag < 0)
 		_value_temp = 0;
 	else
 		_value_temp += alterMag;
-//  }
 
 	// Keep the encoder value updated
 	if (_scale[_state - 101] == 99 && 99 == _decPos[_state - 101]) {
@@ -209,8 +138,6 @@ void PageSettings::_alterLocal(float alterMag) {
 		_value_encoder = (int) (_value_temp
 				/ (pow(10, _scale[_state - 101] - _decPos[_state - 101]))); // * 100;
 	}
-
-//	Serial.println(_value_temp);
 
 	// kick the update function
 	_updated = true;
@@ -235,42 +162,26 @@ void PageSettings::_redrawLocal(void) {
 			i = _state - 1;
 		}
 
+		// Find the text version of the value
+		char text_value[7];
+		nvram.load_setting_text(&i, value_local, text_value);
+
 		// Write the value
 		lineno = i - _stateFirstVal;
 		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
+		GLCD.print(text_value);
 
-		// Is it an On / Off value?
-		if (99 == _decPos[i] && 99 == _scale[i]) {
-			if (value_local > 0) {
-				GLCD.print("ON ");
-			} else {
-				GLCD.print("OFF");
-			}
-		} else {
-			GLCD.print(value_local * pow(10, -_scale[i]), _decPos[i]);
-			GLCD.print("  ");
-		}
-
-//    value = (uint32_t)(floor(value_local+0.5));
-//    value *= pow(10,_decPos[i] - _scale[i]);
-//    Serial.println(value);
-//    decBuf[0] = '0' + (value % 10);
-//    value /= 10;
-//    for (j=1;j<(16-PARAMNAMEFIELDWIDTH);j++) {
-//      if (j == _decPos[i]) {
-//        decBuf[j] = '.';
-//      } else if ((0 == value) && (j > (_decPos[i] + 1))) {
-//        decBuf[j] = ' ';
-//      } else {
-//        decBuf[j] = '0' + (value % 10);
-//        value /= 10;
-//      }
-//    }
-//
-//    // Display the data
-//    while (j-- > 0)
-//      lcd.write(decBuf[j]);
-
+//		// Is it an On / Off value?
+//		if (99 == _decPos[i] && 99 == _scale[i]) {
+//			if (value_local > 0) {
+//				GLCD.print("ON ");
+//			} else {
+//				GLCD.print("OFF");
+//			}
+//		} else {
+//			GLCD.print(value_local * pow(10, -_scale[i]), _decPos[i]);
+//			GLCD.print("  ");
+//		}
 	}
 }
 

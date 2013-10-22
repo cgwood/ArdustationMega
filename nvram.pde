@@ -29,18 +29,18 @@
 
 /// Default NVRAM contents
 struct NVRAM::nv_data NVRAM_default PROGMEM = {
-	576,    // serialSpeed
+	3, // serialSpeed
 	65,// lowVoltage
-	0,// useCompass
-	4,// streamRate
-	0,// Buttons muted
-	1,// Alarm Sounds
-	1,// mav number
-	1,// GPS type
-	0,// SD Card logging
-	1,// TX Heartbeats
-	5,// Keypad repeat rate
-	5// Keypad repeat delay
+	0, // useCompass
+	4, // streamRate
+	0, // Buttons muted
+	1, // Alarm Sounds
+	1, // mav number
+	1, // GPS type
+	0, // SD Card logging
+	1, // TX Heartbeats
+	5, // Keypad repeat rate
+	5  // Keypad repeat delay
 };
 
 void NVRAM::load(void) {
@@ -68,7 +68,67 @@ void NVRAM::load_param(uint8_t *param_id, float *param_value) {
 //        _loadx(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);
 }
 
+void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]) {
+	// Convert numeric values to text values
+	// setting_value = -1 for loading stored value
+
+	// Find out the numerical value
+	uint16_t value;
+	if (setting_value == -1)
+		load_setting(setting_id,&value);
+	else
+		value = setting_value;
+
+	// Convert the numerical value into text
+	switch (*setting_id) {
+	case SERIAL_SPEED: {
+		switch(value) {
+		case SERIAL_9600:
+			strcpy_P(text_value, PSTR("9600  "));
+			break;
+		case SERIAL_19200:
+			strcpy_P(text_value, PSTR("19200 "));
+			break;
+		case SERIAL_38400:
+			strcpy_P(text_value, PSTR("38400 "));
+			break;
+		case SERIAL_57600:
+			strcpy_P(text_value, PSTR("57600 "));
+			break;
+		case SERIAL_115200:
+			strcpy_P(text_value, PSTR("115200"));
+			break;
+		default:
+			strcpy_P(text_value, PSTR("57600 "));
+			break;
+		}
+		break;
+	}
+	case LOW_VOLTAGE: {
+		sprintf(text_value,"%fV",((float)value)/10);
+		break;
+	}
+	default:
+		uint8_t strlen;
+		strlen = sprintf(text_value,"%d",value);
+
+		// Fill the string with trailing blank spaces
+		for (uint8_t i=strlen;i<6;i++)
+			text_value[i] = 32;
+
+		// End of string termination character
+		text_value[6] = 0;
+		break;
+	}
+}
+
 void NVRAM::load_setting(uint8_t *setting_id, float *param_value) {
+	uint16_t param_value_int;
+	load_setting(setting_id, &param_value_int);
+	*param_value = (float)param_value_int;
+}
+
+void NVRAM::load_setting(uint8_t *setting_id, uint16_t *param_value) {
 	// load from NVRAM
 	switch (*setting_id) {
 	case SERIAL_SPEED:
@@ -77,11 +137,17 @@ void NVRAM::load_setting(uint8_t *setting_id, float *param_value) {
 	case LOW_VOLTAGE:
 		*param_value = nv.lowVoltage;
 		break;
+	case USE_COMPASS:
+		*param_value = nv.useCompass;
+		break;
 	case STREAM_RATE:
 		*param_value = nv.streamRate;
 		break;
 	case MUTE_BUTTONS:
 		*param_value = nv.buttonMute;
+		break;
+	case ALARM_SOUNDS:
+		*param_value = nv.alarmSounds;
 		break;
 	case MAV_NUMBER:
 		*param_value = nv.mavNumber;
@@ -100,6 +166,9 @@ void NVRAM::load_setting(uint8_t *setting_id, float *param_value) {
 		break;
 	case REPEAT_DELAY:
 		*param_value = nv.keypadRepeatDelay;
+		break;
+	case KEYPAD_ORIENTATION:
+		*param_value = nv.keypadRotation;
 		break;
 	default:
 		*param_value = 0;

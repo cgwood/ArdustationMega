@@ -39,11 +39,12 @@ PROGMEM const prog_char SettingNames[]  = "Serial Speed\n"
 		 "SD Logging  \n"
 		 "TX Heartbeat\n"
 		 "Repeat Rate \n"
-		 "Repeat Delay\n";
+		 "Repeat Delay\n"
+		 "Key Rotation\n";
 
 enum SETTINGS_ORDER {
 	// Settings page ordering
-	SERIAL_SPEED,
+	SERIAL_SPEED=0,
 	LOW_VOLTAGE,
 	USE_COMPASS,
 	STREAM_RATE,
@@ -55,8 +56,18 @@ enum SETTINGS_ORDER {
 	TX_HEARTBEAT,
 	REPEAT_RATE,
 	REPEAT_DELAY,
+	KEYPAD_ORIENTATION,
 	// Parameter count
 	ASM_SETTINGS_COUNT
+};
+
+enum SERIAL_SPEEDS {
+	// Available serial speeds
+	SERIAL_9600=0,
+	SERIAL_19200,
+	SERIAL_38400,
+	SERIAL_57600,
+	SERIAL_115200
 };
 
 const uint8_t SettingScales[] = {0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
@@ -79,6 +90,11 @@ public:
         /// Load setting from NVRAM
         ///
         void    load_setting(uint8_t *setting_id, float *setting_value);
+        void    load_setting(uint8_t *setting_id, uint16_t *setting_value);
+
+        /// Load text format of setting from NVRAM
+        ///
+        void    load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]);
 
         /// Save all variables to NVRAM
         ///
@@ -91,7 +107,7 @@ public:
         /// Definition of the load/save area
         ///
         struct nv_data {
-                uint16_t        serialSpeed;
+        	    uint8_t         serialSpeed;
                 uint16_t        lowVoltage;
                 uint8_t         useCompass;
                 uint8_t         streamRate;
@@ -103,6 +119,7 @@ public:
                 uint8_t         txHeartbeats;
                 uint8_t         keypadRepeatRate;
                 uint8_t         keypadRepeatDelay;
+                uint8_t         keypadRotation;
         };
 
         struct nv_data  nv;             ///< saved variables
