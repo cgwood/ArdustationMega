@@ -69,6 +69,19 @@ void NVRAM::load_param(uint8_t *param_id, float *param_value) {
 //        _loadx(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);
 }
 
+void NVRAM::get_setting_bounds(uint8_t *setting_id, uint8_t &lower_val, uint8_t &upper_val) {
+	lower_val = 0;
+
+	switch (*setting_id) {
+	case SERIAL_SPEED:
+		upper_val = SERIAL_SPEED_COUNT;
+		break;
+	default:
+		upper_val = sizeof(uint8_t)-1;
+		break;
+	}
+}
+
 void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]) {
 	// Convert numeric values to text values
 	// setting_value = -1 for loading stored value

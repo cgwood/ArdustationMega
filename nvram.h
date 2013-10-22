@@ -67,7 +67,8 @@ enum SERIAL_SPEEDS {
 	SERIAL_19200,
 	SERIAL_38400,
 	SERIAL_57600,
-	SERIAL_115200
+	SERIAL_115200,
+	SERIAL_SPEED_COUNT
 };
 
 const uint8_t SettingScales[] = {0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
@@ -95,6 +96,10 @@ public:
         /// Load text format of setting from NVRAM
         ///
         void    load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]);
+
+        /// Get limits for a setting's value
+        ///
+        void    get_setting_bounds(uint8_t *setting_id, uint8_t &lower_val, uint8_t &upper_val);
 
         /// Save all variables to NVRAM
         ///
