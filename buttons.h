@@ -10,6 +10,14 @@
 #define B_CANCEL        6
 #define B_ENCODER       7
 
+enum KEYPAD_ORIENTATIONS {
+	// Define which side the connector is on (jDrones v1.2 button board)
+	KP_CONN_RIGHT=0,
+	KP_CONN_DOWN,
+	KP_CONN_LEFT,
+	KP_CONN_UP
+};
+
 /// Debounce timer (milliseconds)
 #define BUTTON_DEBOUNCE_TIMER   10
 

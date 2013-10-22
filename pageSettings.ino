@@ -170,18 +170,6 @@ void PageSettings::_redrawLocal(void) {
 		lineno = i - _stateFirstVal;
 		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
 		GLCD.print(text_value);
-
-//		// Is it an On / Off value?
-//		if (99 == _decPos[i] && 99 == _scale[i]) {
-//			if (value_local > 0) {
-//				GLCD.print("ON ");
-//			} else {
-//				GLCD.print("OFF");
-//			}
-//		} else {
-//			GLCD.print(value_local * pow(10, -_scale[i]), _decPos[i]);
-//			GLCD.print("  ");
-//		}
 	}
 }
 

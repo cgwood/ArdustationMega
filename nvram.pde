@@ -40,7 +40,8 @@ struct NVRAM::nv_data NVRAM_default PROGMEM = {
 	0, // SD Card logging
 	1, // TX Heartbeats
 	5, // Keypad repeat rate
-	5  // Keypad repeat delay
+	5,  // Keypad repeat delay
+	0  // Keypad repeat delay
 };
 
 void NVRAM::load(void) {
@@ -99,15 +100,45 @@ void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char 
 			strcpy_P(text_value, PSTR("115200"));
 			break;
 		default:
-			strcpy_P(text_value, PSTR("57600 "));
+			strcpy_P(text_value, PSTR("ERROR "));
 			break;
 		}
 		break;
 	}
 	case LOW_VOLTAGE: {
-		sprintf(text_value,"%fV",((float)value)/10);
+		sprintf(text_value,"%.1fV",((float)value)/10);
 		break;
 	}
+	case USE_COMPASS:
+	case ALARM_SOUNDS:
+	case TX_HEARTBEAT:
+	case MUTE_BUTTONS:
+		if (value == 0)
+			strcpy_P(text_value, PSTR("OFF   "));
+		else if (value == 1)
+			strcpy_P(text_value, PSTR("ON    "));
+		else
+			strcpy_P(text_value, PSTR("ERROR "));
+		break;
+	case KEYPAD_ORIENTATION:
+		switch (value) {
+		case KP_CONN_RIGHT:
+			strcpy_P(text_value, PSTR("RIGHT "));
+			break;
+		case KP_CONN_DOWN:
+			strcpy_P(text_value, PSTR("DOWN  "));
+			break;
+		case KP_CONN_LEFT:
+			strcpy_P(text_value, PSTR("LEFT  "));
+			break;
+		case KP_CONN_UP:
+			strcpy_P(text_value, PSTR("UP    "));
+			break;
+		default:
+			strcpy_P(text_value, PSTR("ERROR "));
+			break;
+		}
+		break;
 	default:
 		uint8_t strlen;
 		strlen = sprintf(text_value,"%d",value);
