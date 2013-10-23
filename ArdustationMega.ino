@@ -154,6 +154,7 @@ void setup() {
 	init_batt();
 	uav.sysid = 0;
 	uav.onboard_param_count = 0;
+	uav.bln_requested_params = 0;
 	ASM.num_sats = 0;
 	uint8_t i;
 	for (i=0;i<PARAM_COUNT_PLANE;i++) {
@@ -279,6 +280,15 @@ void loop() {
 				if (millis() - download_start_time >= 1000) {
 					downloading = 0;
 					Serial.println("Download timed out");
+				}
+			}
+
+			// Automatically download parameters if we haven't already
+			if (uav.connected && !uav.bln_requested_params) {
+				// Don't do it straight away
+				if (millis() - uav.connTime > 1000) {
+					uav.bln_requested_params = 1;
+					gcs3.param_request(0);
 				}
 			}
 

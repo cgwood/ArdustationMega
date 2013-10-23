@@ -100,6 +100,11 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 
 		if (uav.sysid != msg->sysid) {
 			Serial.println("Connected to a new UAV");
+
+			// Update the connection time
+			uav.connTime = millis();
+			uav.connected = 1;
+
 			// Update system id, type and autopilot
 			uav.sysid = msg->sysid;
 			uav.type = packet.type;

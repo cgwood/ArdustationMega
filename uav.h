@@ -107,6 +107,12 @@ struct vehicle {
   float param_rover_avail[PARAM_COUNT_ROVER];
   // How many parameters are stored on the UAV
   int16_t onboard_param_count;
+  // Have we ever connected
+  boolean connected;
+  // When did we connect
+  unsigned long connTime;
+  // have we ever requested the parameters
+  boolean bln_requested_params;
 };
 
 // Create a vehicle instance called uav
