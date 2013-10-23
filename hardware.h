@@ -1,6 +1,19 @@
 // ASM hardware definitions
 // Created 2012 By Colin G http://www.diydrones.com/profile/ColinG
 
+// GPS type codes - use the names, not the numbers
+#define GPS_PROTOCOL_NONE       -1
+#define GPS_PROTOCOL_NMEA       0
+#define GPS_PROTOCOL_SIRF       1
+#define GPS_PROTOCOL_UBLOX      2
+#define GPS_PROTOCOL_IMU        3
+#define GPS_PROTOCOL_MTK        4
+#define GPS_PROTOCOL_HIL        5
+#define GPS_PROTOCOL_MTK19      6
+#define GPS_PROTOCOL_AUTO       7
+
+#define GPS_PROTOCOL GPS_PROTOCOL_UBLOX
+
 // Button definitions
 #define expander B0100000  // Address with three address pins grounded.
 

@@ -76,9 +76,12 @@ GPS::update(void)
             }
         }
 
-        // Update the ASM location
+        // Update the ASM GPS data
     	ASM.lat = (float)g_gps->latitude / T7;
     	ASM.lon = (float)g_gps->longitude / T7;
+    	ASM.num_sats = g_gps->num_sats;
+    	ASM.altitude = g_gps->altitude;
+    	ASM.gps_status = _status;
     }
 }
 

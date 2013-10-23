@@ -57,11 +57,42 @@
 #define T3 1000
 #define T6 1000000
 #define T7 10000000
-//AP_GPS_MTK19 gps(&Serial1);
+//AP_GPS_UBLOX g_gps(&Serial1);
 
 // All GPS access should be through this pointer.
 static GPS         *g_gps;
+
+// GPS Selection
+#if   GPS_PROTOCOL == GPS_PROTOCOL_AUTO
 AP_GPS_Auto     g_gps_driver(&Serial1, &g_gps);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_NMEA
+AP_GPS_NMEA     g_gps_driver(&Serial1);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_SIRF
+AP_GPS_SIRF     g_gps_driver(&Serial1);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_UBLOX
+AP_GPS_UBLOX    g_gps_driver(&Serial1);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_MTK
+AP_GPS_MTK      g_gps_driver(&Serial1);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_MTK19
+AP_GPS_MTK19    g_gps_driver(&Serial1);
+
+ #elif GPS_PROTOCOL == GPS_PROTOCOL_NONE
+AP_GPS_None     g_gps_driver(NULL);
+
+ #else
+  #error Unrecognised GPS_PROTOCOL setting.
+ #endif // GPS PROTOCOL
+
+
+//AP_GPS_UBLOX g_gps(&Serial1);
+//static GPS         *g_gps;
+//AP_GPS_Auto     g_gps_driver(&Serial1, &g_gps);
+
 
 // EEPROM Declaration
 NVRAM           nvram;                          ///< NVRAM driver
@@ -122,6 +153,7 @@ void setup() {
 	// Initialize stuff that needs to go in a class
 	init_batt();
 	uav.sysid = 0;
+	ASM.num_sats = 0;
 	uint8_t i;
 	for (i=0;i<PARAM_COUNT_PLANE;i++) {
 		uav.param_plane_avail[i] = 0;
@@ -159,7 +191,7 @@ void setup() {
     // Do GPS init
     g_gps = &g_gps_driver;
     // GPS Initialization
-    g_gps->init(GPS::GPS_ENGINE_STATIONARY);;
+    g_gps->init(GPS::GPS_ENGINE_STATIONARY);
 
 	// Write centre positions to servos
 	Pan.attach(6, 800, 2200); // Ultimately make the end points as variables on some input screen

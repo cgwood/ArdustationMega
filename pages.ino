@@ -292,12 +292,12 @@ PageMain::_refresh_med()
 {
   
 //  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
-  if (g_gps->num_sats > 9)
+  if (ASM.num_sats > 9)
 	  GLCD.CursorToXY(GLCD.Right-20, GLCD.Bottom - 8);
   else
 	  GLCD.CursorToXY(GLCD.Right-18, GLCD.Bottom - 8);
   GLCD.SelectFont(System5x7);
-  GLCD.print(g_gps->num_sats);
+  GLCD.print(ASM.num_sats);
   
   // UAV Mode
   if (uav.sysid != 0 && _last_base_mode != uav.base_mode) {
@@ -360,12 +360,12 @@ PageMain::_refresh_slow()
   GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(23,GLCD.Bottom-8);
 //  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
-  if (g_gps->altitude > 10000)
-    GLCD.print(constrain((int)(g_gps->altitude/100.0),0,9999));
-  else if (g_gps->altitude > 0)
-    GLCD.print(constrain(g_gps->altitude/100.0,0,99.9),1);
+  if (ASM.altitude > 10000)
+    GLCD.print(constrain((int)(ASM.altitude/100.0),0,9999));
+  else if (ASM.altitude > 0)
+    GLCD.print(constrain(ASM.altitude/100.0,0,99.9),1);
   else
-    GLCD.print(constrain(g_gps->altitude/100.0,-99,0),1);
+    GLCD.print(constrain(ASM.altitude/100.0,-99,0),1);
   GLCD.print('m');
   
   // Print Velocity
@@ -379,15 +379,15 @@ PageMain::_refresh_slow()
   
   
 //  // Find difference in latitude and longitude between GCS and UAV
-//  float lat1 = ((float)g_gps->latitude / T7 * 3.14159/180.0);
+//  float lat1 = (ASM.lat * 3.14159/180.0);
 //  float lat2 = uav.lat * 3.14159/180.0;
-//  float lon1 = ((float)g_gps->longitude / T7 * 3.14159/180.0);
+//  float lon1 = (ASM.lon * 3.14159/180.0);
 //  float lon2 = uav.lon * 3.14159/180.0;
 //  float dlat = lat2 - lat1;
 //  float dlong = lon2 - lon1;
 //
 //  // Calculate distance from Home
-//  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)g_gps->latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+//  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos(ASM.lat * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
 //  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
 //
 //  // Calculate bearing from Home
@@ -495,11 +495,11 @@ PageHardware::_refresh_slow()
   lcd.print("LiPo ");
   lcd.println(get_batt());
   lcd.print("Sat count ");
-  lcd.println(g_gps->num_sats);
-  lcd.print("3D fix ");
-  lcd.println(g_gps->fix);
+  lcd.println(ASM.num_sats);
+  lcd.print("GPS Status");
+  lcd.println(ASM.gps_status);
   lcd.print("GPS Time ");
-  lcd.println(g_gps->time);
+  lcd.println(ASM.time);
 }
 
 uint8_t
@@ -536,15 +536,15 @@ uint8_t
 PageUAVtest::_refresh_slow()
 {
   // Find difference
-  float lat1 = ((float)g_gps->latitude / T7 * 3.14159/180.0);
+  float lat1 = (ASM.lat * 3.14159/180.0);
   float lat2 = uav.lat * 3.14159/180.0;
-  float lon1 = ((float)g_gps->longitude / T7 * 3.14159/180.0);
+  float lon1 = (ASM.lon * 3.14159/180.0);
   float lon2 = uav.lon * 3.14159/180.0;
   float dlat = lat2 - lat1;
   float dlong = lon2 - lon1;
   
   // Calculate distance
-  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)g_gps->latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos(ASM.lat * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
   float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
   
   // Calculate bearing
@@ -564,11 +564,11 @@ PageUAVtest::_refresh_slow()
   lcd.print("Bearing ");
   lcd.println(tracker.get_bearing());
   lcd.print("GCS Lat ");
-  lcd.println((float)g_gps->latitude / T7, 5);
+  lcd.println(ASM.lat, 5);
   lcd.print("GCS Lon ");
-  lcd.println((float)g_gps->longitude / T7, 5);
+  lcd.println(ASM.lon, 5);
   lcd.print("GCS Alt ");
-  lcd.println((float)g_gps->altitude / 100.0, 2);
+  lcd.println((float)ASM.altitude / 100.0, 2);
 }
 
 

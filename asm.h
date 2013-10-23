@@ -6,6 +6,13 @@ static float 			load;
 #define BATTSAMPLES 30 // Too high and the averaging code has to change
 
 struct ArduStation {
+  // Properties
+  uint32_t time;                      ///< GPS time (milliseconds from epoch)
+  uint32_t date;                      ///< GPS date (FORMAT TBD)
+  int32_t altitude;                   ///< altitude in cm
+  int16_t hdop;                       ///< horizontal dilution of precision in cm
+  uint8_t num_sats;                   ///< Number of visible satelites
+  uint8_t gps_status;                 ///< GPS fix status
   float lat;
   float lon;
   float alt;
