@@ -159,7 +159,7 @@ void setup() {
     // Do GPS init
     g_gps = &g_gps_driver;
     // GPS Initialization
-    g_gps->init(GPS::GPS_ENGINE_AIRBORNE_1G);;
+    g_gps->init(GPS::GPS_ENGINE_STATIONARY);;
 
 	// Write centre positions to servos
 	Pan.attach(6, 800, 2200); // Ultimately make the end points as variables on some input screen
