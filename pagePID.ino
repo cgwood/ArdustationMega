@@ -179,7 +179,7 @@ PagePID::_drawLocal()
           else {
             j = _pid_p[i];
             //						nvram.load_param(&j,&value_local);
-            value_local = uav.param_copter[j];
+            value_local = uav.rate_pid_copter[j];
           }
         }
         if (lineno==2)   {
@@ -189,7 +189,7 @@ PagePID::_drawLocal()
           else {
             j = _pid_i[i];
             //						nvram.load_param(&j,&value_local);
-            value_local = uav.param_copter[j];
+            value_local = uav.rate_pid_copter[j];
           }
         }
         if (lineno==3) {
@@ -199,7 +199,7 @@ PagePID::_drawLocal()
           else {
             j = _pid_d[i];
             //						nvram.load_param(&j,&value_local);
-            value_local = uav.param_copter[j];
+            value_local = uav.rate_pid_copter[j];
           }
         }
 
@@ -362,7 +362,7 @@ PagePID::_voidLocal(void)
   default:
     return;
   }
-  _value_temp = uav.param_copter[j];
+  _value_temp = uav.rate_pid_copter[j];
   _redrawLocal();
 
   // Reset _state
@@ -428,7 +428,7 @@ PagePID::_uploadLocal(void)
 		str_param_id[i] = 0;
 
 	// Copy the relevant one into memory
-    strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_copter[j])));
+    strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_rate_pid_copter[j])));
     
     // Construct the packet
     mavlink_message_t msg;
@@ -516,7 +516,7 @@ PagePID::_interact(uint8_t buttonid)
         }
 
         //                	  nvram.load_param(&j,&_value_temp);
-        _value_temp = uav.param_copter[j];
+        _value_temp = uav.rate_pid_copter[j];
         _value_encoder = _value_temp * 100;
         rotary.configure(&_value_encoder, 300, 0, -4);
         //rotary.configure(&encoderval, &_value_temp, 0, 10, -4);

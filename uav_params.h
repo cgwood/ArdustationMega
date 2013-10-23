@@ -9,24 +9,10 @@
 #ifndef UAV_PARAMS_H_
 #define UAV_PARAMS_H_
 
-//  // Parameter page parameters
-//  WP_LOITER_RAD,
-//  WP_RADIUS,
-//  XTRK_GAIN_SC,
-//  XTRK_ANGLE_CD,
-//  TRIM_ARSPD_CM,
-//  ARSPD_FBW_MIN,
-//  ARSPD_FBW_MAX,
-//  KFF_PTCH2THR,
-//  KFF_THR2PTCH,
-//  LOG_BITMASK,
-//  // Parameter count
-//  PARAM_COUNT_PLANE
-
 // ------------------------------ FIXED WING ------------------------------ //
 enum PARAMS_PLANE {
 	// Parameter page parameters
-	TRIM_AUTO,
+	TRIM_AUTO=0,
 	ARSPD_RATIO,
 	SCALING_SPEED,
 	LOG_BITMASK,
@@ -54,7 +40,7 @@ PROGMEM const char *paramTable_plane[] = { param_plane_0, param_plane_1, param_p
 
 enum PARAMS_PLANE_CTUN {
 	// Parameter page parameters
-	RLL2SRV_P,
+	RLL2SRV_P=0,
 	RLL2SRV_I,
 	RLL2SRV_D,
 	RLL2SRV_IMAX,
@@ -126,7 +112,7 @@ PROGMEM const char *paramTable_plane_ctun[] = { param_plane_ctun_0, param_plane_
 
 enum PARAMS_PLANE_NTUN {
 	// Parameter page parameters
-	NAVL1_PERIOD,
+	NAVL1_PERIOD=0,
 	NAVL1_DAMPING,
 	WP_RADIUS,
 	LIM_ROLL_CD,
@@ -153,7 +139,7 @@ PROGMEM const char *paramTable_plane_ntun[] = { param_plane_ntun_0, param_plane_
 
 enum PARAMS_PLANE_TECS {
 	// Parameter page parameters
-	ARSPD_FBW_MIN,
+	ARSPD_FBW_MIN=0,
 	ARSPD_FBW_MAX,
 	THR_MIN,
 	TRIM_THROTTLE,
@@ -207,7 +193,7 @@ PROGMEM const char *paramTable_plane_tecs[] = { param_plane_tecs_0, param_plane_
 // ------------------------------ ROVERS ------------------------------ //
 enum PARAMS_ROVER {
 	// Parameter page parameters
-	ROVER_THR_MIN,
+	ROVER_THR_MIN=0,
 	ROVER_CRUISE_THROTTLE,
 	ROVER_THR_MAX,
 	ROVER_THR_SLEWRATE,
@@ -283,8 +269,63 @@ PROGMEM const char *paramTable_rover[] = { param_rover_0, param_rover_1,
 
 // ------------------------------ ROTARY WING ------------------------------ //
 enum PARAMS_COPTER {
+	// Parameters
+	THR_MID=0,
+	SONAR_ENABLE,
+	SONAR_TYPE,
+	SONAR_GAIN,
+	BATT_CAPACITY,
+	FS_BATT_ENABLE,
+	FS_GPS_ENABLE,
+	FS_GCS_ENABLE,
+	MAG_ENABLE,
+	LAND_SPEED,
+	COPTER_THR_MIN,
+	COPTER_THR_MAX,
+	// Parameter count
+	PARAM_COUNT_COPTER
+};
+
+const uint8_t ParamScalesCopter[] = {0,99,0,0,0,99,99,99,99,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsCopter[] =    {0,99,0,0,0,99,99,99,99,0,0,0}; // 99 in both denotes boolean
+
+// Parameters for copters
+prog_char param_copter_0[] PROGMEM = "THR_MID";
+prog_char param_copter_1[] PROGMEM = "SONAR_ENABLE";
+prog_char param_copter_2[] PROGMEM = "SONAR_TYPE";
+prog_char param_copter_3[] PROGMEM = "SONAR_GAIN";
+prog_char param_copter_4[] PROGMEM = "BATT_CAPACITY";
+prog_char param_copter_5[] PROGMEM = "FS_BATT_ENABLE";
+prog_char param_copter_6[] PROGMEM = "FS_GPS_ENABLE";
+prog_char param_copter_7[] PROGMEM = "FS_GCS_ENABLE";
+prog_char param_copter_8[] PROGMEM = "MAG_ENABLE";
+prog_char param_copter_9[] PROGMEM = "LAND_SPEED";
+prog_char param_copter_10[] PROGMEM = "THR_MIN";
+prog_char param_copter_11[] PROGMEM = "THR_MAX";
+
+//                                           "123456789012"
+PROGMEM const prog_char ParamNamesCopter[] = "Throttle Hov\n"
+		 "Sonar Enable\n"
+		 "Sonar Type  \n"
+		 "Sonar Gain  \n"
+		 "Battery Cap \n"
+		 "FS Batt En. \n"
+		 "FS GPS En.  \n"
+		 "FS GCS En.  \n"
+		 "Mag Enable  \n"
+		 "Land Speed  \n"
+		 "Throttle Min\n"
+		 "Throttle Max\n";
+
+PROGMEM const char *paramTable_copter[] = { param_copter_0, param_copter_1,
+		param_copter_2, param_copter_3, param_copter_4, param_copter_5,
+		param_copter_6, param_copter_7, param_copter_8, param_copter_9,
+		param_copter_10, param_copter_11 };
+
+// PIDs
+enum RATE_PIDS_COPTER {
 	// PID Parameters
-	RATE_RLL_P,
+	RATE_RLL_P=0,
 	RATE_RLL_I,
 	RATE_RLL_D,
 	RATE_RLL_IMAX,
@@ -301,31 +342,32 @@ enum PARAMS_COPTER {
 	THR_RATE_D,
 	THR_RATE_IMAX,
 	// Parameter count
-	PARAM_COUNT_COPTER
+	RATE_PID_COUNT_COPTER
 };
 
 // PIDs for copters
-prog_char param_copter_0[] PROGMEM = "RATE_RLL_P";
-prog_char param_copter_1[] PROGMEM = "RATE_RLL_I";
-prog_char param_copter_2[] PROGMEM = "RATE_RLL_D";
-prog_char param_copter_3[] PROGMEM = "RATE_RLL_IMAX";
-prog_char param_copter_4[] PROGMEM = "RATE_PIT_P";
-prog_char param_copter_5[] PROGMEM = "RATE_PIT_I";
-prog_char param_copter_6[] PROGMEM = "RATE_PIT_D";
-prog_char param_copter_7[] PROGMEM = "RATE_PIT_IMAX";
-prog_char param_copter_8[] PROGMEM = "RATE_YAW_P";
-prog_char param_copter_9[] PROGMEM = "RATE_YAW_I";
-prog_char param_copter_10[] PROGMEM = "RATE_YAW_D";
-prog_char param_copter_11[] PROGMEM = "RATE_YAW_IMAX";
-prog_char param_copter_12[] PROGMEM = "THR_RATE_P";
-prog_char param_copter_13[] PROGMEM = "THR_RATE_I";
-prog_char param_copter_14[] PROGMEM = "THR_RATE_D";
-prog_char param_copter_15[] PROGMEM = "THR_RATE_IMAX";
+prog_char rate_pid_copter_0[] PROGMEM = "RATE_RLL_P";
+prog_char rate_pid_copter_1[] PROGMEM = "RATE_RLL_I";
+prog_char rate_pid_copter_2[] PROGMEM = "RATE_RLL_D";
+prog_char rate_pid_copter_3[] PROGMEM = "RATE_RLL_IMAX";
+prog_char rate_pid_copter_4[] PROGMEM = "RATE_PIT_P";
+prog_char rate_pid_copter_5[] PROGMEM = "RATE_PIT_I";
+prog_char rate_pid_copter_6[] PROGMEM = "RATE_PIT_D";
+prog_char rate_pid_copter_7[] PROGMEM = "RATE_PIT_IMAX";
+prog_char rate_pid_copter_8[] PROGMEM = "RATE_YAW_P";
+prog_char rate_pid_copter_9[] PROGMEM = "RATE_YAW_I";
+prog_char rate_pid_copter_10[] PROGMEM = "RATE_YAW_D";
+prog_char rate_pid_copter_11[] PROGMEM = "RATE_YAW_IMAX";
+prog_char rate_pid_copter_12[] PROGMEM = "THR_RATE_P";
+prog_char rate_pid_copter_13[] PROGMEM = "THR_RATE_I";
+prog_char rate_pid_copter_14[] PROGMEM = "THR_RATE_D";
+prog_char rate_pid_copter_15[] PROGMEM = "THR_RATE_IMAX";
 
-PROGMEM const char *paramTable_copter[] = { param_copter_0, param_copter_1,
-		param_copter_2, param_copter_3, param_copter_4, param_copter_5,
-		param_copter_6, param_copter_7, param_copter_8, param_copter_9,
-		param_copter_10, param_copter_11, param_copter_12, param_copter_13,
-		param_copter_14, param_copter_15 };
+PROGMEM const char *paramTable_rate_pid_copter[] = { rate_pid_copter_0, rate_pid_copter_1,
+		rate_pid_copter_2, rate_pid_copter_3, rate_pid_copter_4, rate_pid_copter_5,
+		rate_pid_copter_6, rate_pid_copter_7, rate_pid_copter_8, rate_pid_copter_9,
+		rate_pid_copter_10, rate_pid_copter_11, rate_pid_copter_12, rate_pid_copter_13,
+		rate_pid_copter_14, rate_pid_copter_15 };
+
 
 #endif /* UAV_PARAMS_H_ */

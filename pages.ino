@@ -15,6 +15,7 @@ PagePlaneParametersCTUN PlaneParametersPageCTUN;
 PagePlaneParametersNTUN PlaneParametersPageNTUN;
 PagePlaneParametersTECS PlaneParametersPageTECS;
 PageRoverParameters RoverParametersPage;
+PageCopterParameters CopterParametersPage;
 PageCommands CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
@@ -53,16 +54,21 @@ uint8_t Pages::definePages() {
 		_pageids[10] = P_SD;
 		_pageids[11] = P_SETTINGS;
 		_pagecount = 12;
-	} else if (uav.type == MAV_TYPE_QUADROTOR) {
+	} else if (uav.type == MAV_TYPE_HELICOPTER
+			|| uav.type == MAV_TYPE_TRICOPTER
+			|| uav.type == MAV_TYPE_QUADROTOR
+			|| uav.type == MAV_TYPE_HEXAROTOR
+			|| uav.type == MAV_TYPE_OCTOROTOR) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
 		_pageids[2] = P_COMMANDS;
-		_pageids[3] = P_PID;       // ACM PIDs (subset of)
-		_pageids[4] = P_HARDWARE;
-		_pageids[5] = P_UAVTEST;
-		_pageids[6] = P_GLCD;
-		_pageids[7] = P_SD;
-		_pagecount = 8;
+		_pageids[3] = P_PID;               // ACM Rate PIDs
+		_pageids[4] = P_COPTER_PARAMETERS; // Copter parameters
+		_pageids[5] = P_HARDWARE;
+		_pageids[6] = P_UAVTEST;
+		_pageids[7] = P_GLCD;
+		_pageids[8] = P_SD;
+		_pagecount = 9;
 	} else if (uav.type == MAV_TYPE_GROUND_ROVER) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
@@ -138,6 +144,9 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_ROVER_PARAMETERS:
 		return (&RoverParametersPage);
+		break;
+	case P_COPTER_PARAMETERS:
+		return (&CopterParametersPage);
 		break;
 	}
 }

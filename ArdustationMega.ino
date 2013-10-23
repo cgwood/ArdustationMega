@@ -51,6 +51,7 @@
 #include "pageSettings.h"	    // Contains the Settings LCD pages
 #include "pagesPlane.h"	        // Contains the Plane LCD pages
 #include "pagesRover.h"	        // Contains the Rover LCD pages
+#include "pagesCopter.h"	    // Contains the Copter LCD pages
 
 
 // GPS declarations
@@ -288,6 +289,18 @@ void loop() {
 				// Don't do it straight away
 				if (millis() - uav.connTime > 1000) {
 					uav.bln_requested_params = 1;
+
+					// Quick hack to start data streaming for copters
+					if (uav.type == MAV_TYPE_HELICOPTER
+							|| uav.type == MAV_TYPE_TRICOPTER
+							|| uav.type == MAV_TYPE_QUADROTOR
+							|| uav.type == MAV_TYPE_HEXAROTOR
+							|| uav.type == MAV_TYPE_OCTOROTOR) {
+						gcs3.data_stream_request();
+						delay(50);
+					}
+
+					// Request the parameters
 					gcs3.param_request(0);
 				}
 			}

@@ -273,13 +273,29 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 					Pages::forceUpdate(Pages::R_PARAM);
 				}
 			}
-		} else if (uav.type == MAV_TYPE_QUADROTOR) {
+		} else if (uav.type == MAV_TYPE_HELICOPTER
+				|| uav.type == MAV_TYPE_TRICOPTER
+				|| uav.type == MAV_TYPE_QUADROTOR
+				|| uav.type == MAV_TYPE_HEXAROTOR
+				|| uav.type == MAV_TYPE_OCTOROTOR) {
 			for (uint8_t i = 0; i < PARAM_COUNT_COPTER; i++) {
 				strcpy_P(txt_id,
 						(char*) pgm_read_word(&(paramTable_copter[i])));
 				if (strncmp(txt_id, (const char*) packet.param_id, 16) == 0) {
 					uav.param_copter[i] = packet.param_value;
 					uav.param_copter_avail[i] = 1;
+
+					// Update the parameter pages
+					Pages::forceUpdate(Pages::R_PARAM);
+				}
+			}
+
+			for (uint8_t i = 0; i < RATE_PID_COUNT_COPTER; i++) {
+				strcpy_P(txt_id,
+						(char*) pgm_read_word(&(paramTable_rate_pid_copter[i])));
+				if (strncmp(txt_id, (const char*) packet.param_id, 16) == 0) {
+					uav.rate_pid_copter[i] = packet.param_value;
+					uav.rate_pid_copter_avail[i] = 1;
 
 					// Update the parameter pages
 					Pages::forceUpdate(Pages::R_PARAM);

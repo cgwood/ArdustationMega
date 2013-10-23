@@ -102,6 +102,8 @@ struct vehicle {
   // Copter parameters
   float param_copter[PARAM_COUNT_COPTER];
   float param_copter_avail[PARAM_COUNT_COPTER];
+  float rate_pid_copter[RATE_PID_COUNT_COPTER];
+  float rate_pid_copter_avail[RATE_PID_COUNT_COPTER];
   // Rover parameters
   float param_rover[PARAM_COUNT_ROVER];
   float param_rover_avail[PARAM_COUNT_ROVER];
