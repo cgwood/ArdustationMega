@@ -199,52 +199,6 @@ void PageSettings::_writeChanges(void) {
 	_state = 0;
 }
 
-void PageSettings::_uploadConfirm(void) {
-	uint8_t c;
-	uint8_t row;
-	const prog_char *str;
-	str = confirmMessage;
-
-	lcd.ClearArea();
-	row = 0;
-
-	for (;;) {
-		c = pgm_read_byte_near(str++);
-		if (0 == c)
-			break;
-		if ('\n' == c) {
-			lcd.CursorTo(0, ++row);
-			continue;
-		}
-		// emit
-		lcd.write(c);
-	}
-}
-
-void PageSettings::_uploadLocal(void) {
-//	uint8_t i,j;
-//	char str_param_id[16];
-//
-//	// Send the value that we edited
-//	j = _Types[_state - 201];
-//
-//	// First initialise the string to be empty
-//	for (i=0;i<15;i++)
-//		str_param_id[i] = 0;
-//
-//	// Copy the relevant one into memory
-//	strcpy_P(str_param_id, (char*)pgm_read_word(&(paramTable_rover[j])));
-//
-//	// Upload the value
-//	gcs3.param_set(j, _value_temp, str_param_id);
-//
-//	// Reset _state
-//	_state = 0;
-//
-//	// kick the update function
-//	_updated = true;
-}
-
 uint8_t PageSettings::_interact(uint8_t buttonid) {
 	_clearMarker();
 

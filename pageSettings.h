@@ -41,8 +41,6 @@ protected:
   void            _redrawLocal();
   void            _voidLocal(void);
   void            _writeChanges(void);
-  void            _uploadConfirm(void);
-  void            _uploadLocal(void);
 private:
   /// current state of the internal navigation state machine
   uint8_t                 _state;

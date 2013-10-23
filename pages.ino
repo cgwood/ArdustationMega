@@ -33,10 +33,8 @@ Pages::Pages()
 	_pageids[1] = P_SETTINGS;
 	_pageids[2] = P_HARDWARE;
 	_pageids[3] = P_UAVTEST;
-	_pageids[4] = P_GLCD;
-	_pageids[5] = P_SD;
-	_pageids[6] = P_COMMANDS;
-	_pagecount = 7;
+	_pageids[4] = P_SD;
+	_pagecount = 5;
 
 }
 
