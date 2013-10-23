@@ -188,6 +188,17 @@ void PageSettings::_voidLocal(void) {
 	_updated = true;
 }
 
+void PageSettings::_writeChanges(void) {
+	uint8_t j;
+
+	// Make the changes
+	j = _state - 101;
+	nvram.write_setting(&j,&_value_temp);
+
+	// Reset _state
+	_state = 0;
+}
+
 void PageSettings::_uploadConfirm(void) {
 	uint8_t c;
 	uint8_t row;
@@ -329,13 +340,13 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 		} else if (_state > 100 && _state < 200) {
 			// Save the value
 			//_leave(OK);
-			_state += 100;
-			_uploadConfirm();
+			_writeChanges();
+//			_state += 100;
 			return 0; // Leave before we draw the marker again
-		} else if (_state > 200) {
+		} else if (_state > 200) { // Should never happen...
 			// Save the value
 			//_leave(OK);
-			_uploadLocal();
+			_writeChanges();
 			return 0; // Leave before we draw the marker again
 		}
 		break;

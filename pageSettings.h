@@ -40,6 +40,7 @@ protected:
   void            _alterLocal(float alterMag);
   void            _redrawLocal();
   void            _voidLocal(void);
+  void            _writeChanges(void);
   void            _uploadConfirm(void);
   void            _uploadLocal(void);
 private:

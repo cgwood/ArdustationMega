@@ -220,6 +220,65 @@ void NVRAM::load_setting(uint8_t *setting_id, uint16_t *param_value) {
 	}
 }
 
+void NVRAM::write_setting(uint8_t *setting_id, float *param_value) {
+	uint16_t param_value_int;
+	param_value_int = (float)*param_value;
+	write_setting(setting_id, &param_value_int);
+}
+
+void NVRAM::write_setting(uint8_t *setting_id, uint16_t *param_value) {
+	uint8_t updated = 1;
+
+	// Update the value
+	switch (*setting_id) {
+	case SERIAL_SPEED:
+		nv.serialSpeed = *param_value;
+		break;
+	case LOW_VOLTAGE:
+		nv.lowVoltage = *param_value;
+		break;
+	case USE_COMPASS:
+		nv.useCompass = *param_value;
+		break;
+	case STREAM_RATE:
+		nv.streamRate = *param_value;
+		break;
+	case MUTE_BUTTONS:
+		nv.buttonMute = *param_value;
+		break;
+	case ALARM_SOUNDS:
+		nv.alarmSounds = *param_value;
+		break;
+	case MAV_NUMBER:
+		nv.mavNumber = *param_value;
+		break;
+	case GPS_TYPE:
+		nv.gpsType = *param_value;
+		break;
+	case SD_LOGGING:
+		nv.sdLogging = *param_value;
+		break;
+	case TX_HEARTBEAT:
+		nv.txHeartbeats = *param_value;
+		break;
+	case REPEAT_RATE:
+		nv.keypadRepeatRate = *param_value;
+		break;
+	case REPEAT_DELAY:
+		nv.keypadRepeatDelay = *param_value;
+		break;
+	case KEYPAD_ORIENTATION:
+		nv.keypadRotation = *param_value;
+		break;
+	default:
+		updated = 0;
+		break;
+	}
+
+	if (updated)
+		save();
+}
+
 void NVRAM::save_param(uint8_t *param_id, float *param_value) {
 	// save to NVRAM
 //        _savex(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);

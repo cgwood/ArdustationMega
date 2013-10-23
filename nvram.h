@@ -93,6 +93,11 @@ public:
         void    load_setting(uint8_t *setting_id, float *setting_value);
         void    load_setting(uint8_t *setting_id, uint16_t *setting_value);
 
+        /// Write setting to NVRAM
+        ///
+        void    write_setting(uint8_t *setting_id, float *setting_value);
+        void    write_setting(uint8_t *setting_id, uint16_t *setting_value);
+
         /// Load text format of setting from NVRAM
         ///
         void    load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]);
