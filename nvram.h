@@ -71,8 +71,8 @@ enum SERIAL_SPEEDS {
 	SERIAL_SPEED_COUNT
 };
 
-const uint8_t SettingScales[] = {0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
-const uint8_t SettingDPs[] =    {0,0,0,0,0,0,0,0,0,0,0,0}; // 99 in both denotes boolean
+const uint8_t SettingScales[] = {0,0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
+const uint8_t SettingDPs[] =    {0,0,0,0,0,0,0,0,0,0,0,0,0}; // 99 in both denotes boolean
 
 /// Simple non-volatile memory support.
 ///
