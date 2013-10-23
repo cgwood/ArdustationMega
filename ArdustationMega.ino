@@ -20,9 +20,11 @@
 #include <EEPROM.h>
 
 // GPS Includes
-#include "AP_GPS_UBLOX.h"
-#include "AP_GPS_MTK.h"
-#include "AP_GPS_MTK19.h"
+#include "AP_GPS.h"
+//#include "AP_GPS_UBLOX.h"
+//#include "AP_GPS_MTK.h"
+//#include "AP_GPS_MTK19.h"
+//#include "AP_GPS_Auto.h"
 
 // LCD Includes
 #include "glcd.h"
@@ -49,11 +51,17 @@
 #include "pageSettings.h"	    // Contains the Settings LCD pages
 #include "pagesPlane.h"	        // Contains the Plane LCD pages
 #include "pagesRover.h"	        // Contains the Rover LCD pages
+
+
 // GPS declarations
 #define T3 1000
 #define T6 1000000
 #define T7 10000000
-AP_GPS_MTK19 gps(&Serial1);
+//AP_GPS_MTK19 gps(&Serial1);
+
+// All GPS access should be through this pointer.
+static GPS         *g_gps;
+AP_GPS_Auto     g_gps_driver(&Serial1, &g_gps);
 
 // EEPROM Declaration
 NVRAM           nvram;                          ///< NVRAM driver
@@ -144,16 +152,14 @@ void setup() {
 	gcs3.init(&Serial3);
 
 	// Initialise the GPS
-	stderr = stdout;
-	gps.print_errors = true;
+//	stderr = stdout;
+//	g_gps.print_errors = true;
+//	g_gps.init()
 
-//  Serial.println("GPS UBLOX library test");
-//  gps.init(GPS::GPS_ENGINE_AIRBORNE_2G);       // GPS Initialization
-
-	Serial.println("GPS MTK library test");
-	stderr = stdout;
-	gps.print_errors = true;
-	gps.init();       // GPS Initialization
+    // Do GPS init
+    g_gps = &g_gps_driver;
+    // GPS Initialization
+    g_gps->init(GPS::GPS_ENGINE_AIRBORNE_1G);;
 
 	// Write centre positions to servos
 	Pan.attach(6, 800, 2200); // Ultimately make the end points as variables on some input screen
@@ -185,7 +191,7 @@ void loop() {
 	else
 	{
 		// Update the GPS as fast as possible
-		gps.update();
+		g_gps->update();
 
 		// This loop is to execute at 50Hz
 		// -------------------------------------------

@@ -14,11 +14,11 @@
 // #include <AP_Common.h>
 // #include <AP_Math.h>
 #include "GPS.h"
-#if defined(ARDUINO) && ARDUINO >= 100
- #include "Arduino.h"
-#else
- #include "WProgram.h"
-#endif
+//#if defined(ARDUINO) && ARDUINO >= 100
+// #include "Arduino.h"
+//#else
+// #include "WProgram.h"
+//#endif
 
 void
 GPS::update(void)
@@ -77,8 +77,8 @@ GPS::update(void)
         }
 
         // Update the ASM location
-    	ASM.lat = (float)gps.latitude / T7;
-    	ASM.lon = (float)gps.longitude / T7;
+    	ASM.lat = (float)g_gps->latitude / T7;
+    	ASM.lon = (float)g_gps->longitude / T7;
     }
 }
 

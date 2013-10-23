@@ -292,12 +292,12 @@ PageMain::_refresh_med()
 {
   
 //  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
-  if (gps.num_sats > 9)
+  if (g_gps->num_sats > 9)
 	  GLCD.CursorToXY(GLCD.Right-20, GLCD.Bottom - 8);
   else
 	  GLCD.CursorToXY(GLCD.Right-18, GLCD.Bottom - 8);
   GLCD.SelectFont(System5x7);
-  GLCD.print(gps.num_sats);
+  GLCD.print(g_gps->num_sats);
   
   // UAV Mode
   if (uav.sysid != 0 && _last_base_mode != uav.base_mode) {
@@ -360,34 +360,34 @@ PageMain::_refresh_slow()
   GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(23,GLCD.Bottom-8);
 //  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
-  if (gps.altitude > 10000)
-    GLCD.print(constrain((int)(gps.altitude/100.0),0,9999));
-  else if (gps.altitude > 0)
-    GLCD.print(constrain(gps.altitude/100.0,0,99.9),1);
+  if (g_gps->altitude > 10000)
+    GLCD.print(constrain((int)(g_gps->altitude/100.0),0,9999));
+  else if (g_gps->altitude > 0)
+    GLCD.print(constrain(g_gps->altitude/100.0,0,99.9),1);
   else
-    GLCD.print(constrain(gps.altitude/100.0,-99,0),1);
+    GLCD.print(constrain(g_gps->altitude/100.0,-99,0),1);
   GLCD.print('m');
   
   // Print Velocity
   GLCD.SelectFont(System5x7);
   GLCD.CursorToXY(59,GLCD.Bottom-8);
-  if (gps.speed_3d > 10000)
-    GLCD.print(constrain((int)(gps.speed_3d/100.0),0,999));
+  if (g_gps->speed_3d > 10000)
+    GLCD.print(constrain((int)(g_gps->speed_3d/100.0),0,999));
   else
-    GLCD.print(constrain(gps.speed_3d/100.0,-9.9,99.9),1);
+    GLCD.print(constrain(g_gps->speed_3d/100.0,-9.9,99.9),1);
   GLCD.print("m/s");
   
   
 //  // Find difference in latitude and longitude between GCS and UAV
-//  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
+//  float lat1 = ((float)g_gps->latitude / T7 * 3.14159/180.0);
 //  float lat2 = uav.lat * 3.14159/180.0;
-//  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
+//  float lon1 = ((float)g_gps->longitude / T7 * 3.14159/180.0);
 //  float lon2 = uav.lon * 3.14159/180.0;
 //  float dlat = lat2 - lat1;
 //  float dlong = lon2 - lon1;
 //
 //  // Calculate distance from Home
-//  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+//  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)g_gps->latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
 //  float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
 //
 //  // Calculate bearing from Home
@@ -495,11 +495,11 @@ PageHardware::_refresh_slow()
   lcd.print("LiPo ");
   lcd.println(get_batt());
   lcd.print("Sat count ");
-  lcd.println(gps.num_sats);
+  lcd.println(g_gps->num_sats);
   lcd.print("3D fix ");
-  lcd.println(gps.fix);
+  lcd.println(g_gps->fix);
   lcd.print("GPS Time ");
-  lcd.println(gps.time);
+  lcd.println(g_gps->time);
 }
 
 uint8_t
@@ -536,15 +536,15 @@ uint8_t
 PageUAVtest::_refresh_slow()
 {
   // Find difference
-  float lat1 = ((float)gps.latitude / T7 * 3.14159/180.0);
+  float lat1 = ((float)g_gps->latitude / T7 * 3.14159/180.0);
   float lat2 = uav.lat * 3.14159/180.0;
-  float lon1 = ((float)gps.longitude / T7 * 3.14159/180.0);
+  float lon1 = ((float)g_gps->longitude / T7 * 3.14159/180.0);
   float lon2 = uav.lon * 3.14159/180.0;
   float dlat = lat2 - lat1;
   float dlong = lon2 - lon1;
   
   // Calculate distance
-  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)gps.latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
+  float a = sin(dlat / 2.0) * sin(dlat / 2.0) + cos((float)g_gps->latitude / T7 * 3.14159/180.0) * cos(uav.lat * 3.14159/180.0) * sin(dlong / 2.0) * sin(dlong / 2.0);
   float dist = 6371000.0 * 2.0 * atan2(sqrt(a), sqrt(1 - a));
   
   // Calculate bearing
@@ -564,11 +564,11 @@ PageUAVtest::_refresh_slow()
   lcd.print("Bearing ");
   lcd.println(tracker.get_bearing());
   lcd.print("GCS Lat ");
-  lcd.println((float)gps.latitude / T7, 5);
+  lcd.println((float)g_gps->latitude / T7, 5);
   lcd.print("GCS Lon ");
-  lcd.println((float)gps.longitude / T7, 5);
+  lcd.println((float)g_gps->longitude / T7, 5);
   lcd.print("GCS Alt ");
-  lcd.println((float)gps.altitude / 100.0, 2);
+  lcd.println((float)g_gps->altitude / 100.0, 2);
 }
 
 
