@@ -33,6 +33,7 @@ public:
 	  // ----- Declare pages here ----- //
 	  enum PAGEIDS {
 	    P_MAIN = 0,
+	    P_STATUS,
 		P_SETTINGS,
 	    P_COMMANDS,
 	    P_PARAMETERS,
@@ -160,6 +161,36 @@ private:
   
 private:
   uint8_t _last_base_mode;
+};
+
+
+// Status page - for want of a better name
+class PageStatus :
+public Pages {
+public:
+	PageStatus() {};
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+
+private:
+  gText _textArea;
 };
 
 // Hardware display page

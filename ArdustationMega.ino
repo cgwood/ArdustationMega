@@ -153,6 +153,7 @@ void setup() {
 	// Initialize stuff that needs to go in a class
 	init_batt();
 	uav.sysid = 0;
+	uav.onboard_param_count = 0;
 	ASM.num_sats = 0;
 	uint8_t i;
 	for (i=0;i<PARAM_COUNT_PLANE;i++) {
