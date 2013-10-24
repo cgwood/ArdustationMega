@@ -217,7 +217,7 @@ enum PARAMS_ROVER {
 };
 
 const uint8_t ParamScalesRover[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,99,99,0,0,99,0}; // *10^(-x)
-const uint8_t ParamDPsRover[] =    {0,0,0,0,0,0,0,0,2,2,2,0,2,99,99,0,0,99,0}; // 99 in both denotes boolean
+const uint8_t ParamDPsRover[] =    {0,0,0,0,2,2,2,0,2,2,2,0,2,99,99,0,0,99,0}; // 99 in both denotes boolean
 
 // Parameter page - rover params
 prog_char param_rover_0[] PROGMEM = "THR_MIN";
