@@ -416,8 +416,9 @@ uint8_t PageMain::_refresh_slow() {
 	if (uav.sysid != 0) {
 		GLCD.SelectFont(System5x7);
 		GLCD.CursorToXY(GLCD.Right - 40, 30);
-		GLCD.print((int) constrain(tracker.get_dist(), -999, 9999));
-		GLCD.print('m');
+		GLCD.Printf("%4dm",(int) constrain(tracker.get_dist(), -999, 9999));
+//		GLCD.print((int) constrain(tracker.get_dist(), -999, 9999));
+//		GLCD.print('m');
 	}
 
 	// Draw line showing bearing to UAV
