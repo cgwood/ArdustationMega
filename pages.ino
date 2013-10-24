@@ -229,14 +229,40 @@ uint8_t PageMain::_enter() {
 			GLCD.Printf("PIX-%03i", uav.sysid);
 			break;
 		case MAV_AUTOPILOT_ARDUPILOTMEGA:
-			if (uav.type == MAV_TYPE_QUADROTOR)
-				GLCD.Printf("ACM-%03i", uav.sysid);
-			else if (uav.type == MAV_TYPE_FIXED_WING)
-				GLCD.Printf("APM-%03i", uav.sysid);
-			else if (uav.type == MAV_TYPE_GROUND_ROVER)
+			switch (uav.type) {
+			case MAV_TYPE_HELICOPTER:
+				GLCD.Printf("Heli-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_TRICOPTER:
+				GLCD.Printf("Tri-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_QUADROTOR:
+				GLCD.Printf("Quad-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_HEXAROTOR:
+				GLCD.Printf("Hex-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_OCTOROTOR:
+				GLCD.Printf("Oct-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_FIXED_WING:
+				GLCD.Printf("Plane-%03i", uav.sysid);
+				break;
+			case MAV_TYPE_GROUND_ROVER:
 				GLCD.Printf("Rover-%03i", uav.sysid);
-			else
-				GLCD.Printf("AxM-%03i", uav.sysid);
+				break;
+			default:
+				GLCD.Printf("APM-%03i", uav.sysid);
+				break;
+			}
+//			if (uav.type == MAV_TYPE_QUADROTOR)
+//				GLCD.Printf("Quad-%03i", uav.sysid);
+//			else if (uav.type == MAV_TYPE_FIXED_WING)
+//				GLCD.Printf("APM-%03i", uav.sysid);
+//			else if (uav.type == MAV_TYPE_GROUND_ROVER)
+//				GLCD.Printf("Rover-%03i", uav.sysid);
+//			else
+//				GLCD.Printf("AxM-%03i", uav.sysid);
 			break;
 		case MAV_AUTOPILOT_UDB:
 			GLCD.Printf("UDB-%03i", uav.sysid);
