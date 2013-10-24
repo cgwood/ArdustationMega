@@ -399,7 +399,7 @@ uint8_t PageMain::_refresh_slow() {
 		uint8_t minutes = (ASM.time/1000)/60 % 60;
 		uint8_t hours = (ASM.time/1000)/60/60 % 24;
 
-		GLCD.CursorToXY(20, 30);
+		GLCD.CursorToXY(20, GLCD.Bottom - 16);
 		GLCD.Printf("%02d:%02d", hours, minutes);
 	}
 
