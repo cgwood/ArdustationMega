@@ -509,8 +509,13 @@ uint8_t PageHardware::_refresh_slow() {
 	lcd.println(ASM.num_sats);
 	lcd.print("GPS Status");
 	lcd.println(ASM.gps_status);
+
+	uint8_t seconds = (ASM.time/1000) % 60;
+	uint8_t minutes = (ASM.time/1000)/60 % 60;
+	uint8_t hours = (ASM.time/1000)/60/60 % 24;
+
 	lcd.print("GPS Time ");
-	lcd.println(ASM.time);
+	lcd.Printf("%02d:%02d", hours, minutes);
 }
 
 uint8_t PageHardware::_interact(uint8_t buttonid) {
