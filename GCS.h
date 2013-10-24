@@ -151,6 +151,7 @@ public:
   //	void	send_text(gcs_severity severity, const prog_char_t *str);
   void    data_stream_send(uint16_t freqMin, uint16_t freqMax);
   void    data_stream_request(void);
+  void    data_stream_stop(void);
   void    params_request(void);
   void    param_request(int16_t param_index);
   void    param_set(uint8_t param_id, float newVal, char *str_param_id);

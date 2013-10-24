@@ -288,17 +288,13 @@ void loop() {
 			if (uav.connected && !uav.bln_requested_params) {
 				// Don't do it straight away
 				if (millis() - uav.connTime > 1000) {
+					// Set the flag to say we've requested parameters
 					uav.bln_requested_params = 1;
 
-					// Quick hack to start data streaming for copters
-					if (uav.type == MAV_TYPE_HELICOPTER
-							|| uav.type == MAV_TYPE_TRICOPTER
-							|| uav.type == MAV_TYPE_QUADROTOR
-							|| uav.type == MAV_TYPE_HEXAROTOR
-							|| uav.type == MAV_TYPE_OCTOROTOR) {
-						gcs3.data_stream_request();
-						delay(50);
-					}
+					// First tell the MAV to stop streaming data
+					// So we can maximise available bandwidth
+					gcs3.data_stream_stop();
+					delay(50);
 
 					// Request the parameters
 					gcs3.param_request(0);

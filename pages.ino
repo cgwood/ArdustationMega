@@ -453,10 +453,14 @@ uint8_t PageStatus::_enter() {
 }
 
 uint8_t PageStatus::_refresh_med() {
+	GLCD.CursorTo(0, 0);
+	GLCD.Printf("Parameters: %d/%d", download_index, uav.onboard_param_count);
 	return 0;
 }
 
 uint8_t PageStatus::_refresh_slow() {
+//	GLCD.CursorTo(0, 0);
+//	GLCD.Printf("Parameters: %d/%d", download_index, uav.onboard_param_count);
 	return 0;
 }
 
@@ -478,10 +482,10 @@ uint8_t PageStatus::_interact(uint8_t buttonid) {
 }
 
 uint8_t PageStatus::_forceUpdate(uint8_t reason) {
-	if (reason == R_PARAM) {
-		GLCD.CursorTo(0, 0);
-		GLCD.Printf("Parameters: %d/%d", download_index, uav.onboard_param_count);
-	}
+//	if (reason == R_PARAM) {
+//		GLCD.CursorTo(0, 12);
+//		GLCD.Printf("%d/%d", download_index, uav.onboard_param_count); //Parameters:
+//	}
 	return 0;
 }
 

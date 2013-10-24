@@ -218,6 +218,9 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 			else {
 				downloading = 0;
 				Serial.println("Finished downloading parameters");
+
+				// Now request data stream
+				data_stream_request();
 			}
 		}
 
@@ -437,7 +440,7 @@ void GCS_MAVLINK::data_stream_request(void) {
 	const uint8_t MAVStreams[maxStreams] = { MAV_DATA_STREAM_EXTRA1,
 			MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION,
 			MAV_DATA_STREAM_RAW_SENSORS };
-	const uint16_t MAVRates[maxStreams] = { 0x20, 0x01, 0x01, 0x01 };
+	const uint16_t MAVRates[maxStreams] = { 0x10, 0x01, 0x01, 0x01 };
 
 	for (int i = 0; i < maxStreams; i++) {
 		//        mavlink_msg_request_data_stream_send(chan,
@@ -458,5 +461,13 @@ void GCS_MAVLINK::data_stream_request(void) {
 	Serial.print(", ");
 	Serial.print(apm_mav_component);
 	Serial.println();
+}
+
+void GCS_MAVLINK::data_stream_stop(void) {
+	mavlink_message_t msg;
+	uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+	mavlink_msg_request_data_stream_pack(20, MAV_COMP_ID_IMU, &msg, 1, 1, MAV_DATA_STREAM_ALL, 0, 0);
+	uint16_t len = mavlink_msg_to_send_buffer(buf, &msg);
+	_port->write(buf, len);
 }
 
