@@ -68,7 +68,8 @@ uint8_t Pages::definePages() {
 		_pageids[6] = P_UAVTEST;
 		_pageids[7] = P_GLCD;
 		_pageids[8] = P_SD;
-		_pagecount = 9;
+		_pageids[9] = P_SETTINGS;
+		_pagecount = 10;
 	} else if (uav.type == MAV_TYPE_GROUND_ROVER) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
