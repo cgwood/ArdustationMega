@@ -296,7 +296,8 @@ uint8_t PageMain::_enter() {
 	GLCD.DrawRect(10, 20, 6, GLCD.Bottom - 30);
 
 	// Altitude bitmap
-	GLCD.DrawBitmap(_alt_icon, 27, GLCD.Bottom - 26);
+	if (uav.type != MAV_TYPE_GROUND_ROVER)
+		GLCD.DrawBitmap(_alt_icon, 27, GLCD.Bottom - 26);
 
 	// Speed bitmap
 	GLCD.DrawBitmap(_speed_icon, 63, GLCD.Bottom - 26);
@@ -381,16 +382,26 @@ uint8_t PageMain::_refresh_slow() {
 	GLCD.FillRect(23, GLCD.Bottom - 8, GLCD.Right - 43, 7, WHITE);
 
 	// Print Altitude
-	GLCD.SelectFont(System5x7);
-	GLCD.CursorToXY(23, GLCD.Bottom - 8);
-//  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
-	if (uav.alt > 100)
-		GLCD.print(constrain((int) (uav.alt), 0, 9999));
-	else if (uav.alt > 0)
-		GLCD.print(constrain(uav.alt, 0, 99.9), 1);
-	else
-		GLCD.print(constrain(uav.alt, -99, 0), 1);
-	GLCD.print('m');
+	if (uav.type != MAV_TYPE_GROUND_ROVER) {
+		GLCD.SelectFont(System5x7);
+		GLCD.CursorToXY(23, GLCD.Bottom - 8);
+	//  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
+		if (uav.alt > 100)
+			GLCD.print(constrain((int) (uav.alt), 0, 9999));
+		else if (uav.alt > 0)
+			GLCD.print(constrain(uav.alt, 0, 99.9), 1);
+		else
+			GLCD.print(constrain(uav.alt, -99, 0), 1);
+		GLCD.print('m');
+	}
+	else {
+		uint8_t seconds = (ASM.time/1000) % 60;
+		uint8_t minutes = (ASM.time/1000)/60 % 60;
+		uint8_t hours = (ASM.time/1000)/60/60 % 24;
+
+		GLCD.CursorToXY(20, 30);
+		GLCD.Printf("%02d:%02d", hours, minutes);
+	}
 
 	// Print Velocity
 	GLCD.SelectFont(System5x7);

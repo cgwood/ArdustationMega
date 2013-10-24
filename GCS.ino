@@ -183,6 +183,17 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		uav.vel = sqrt(uav.vx*uav.vx + uav.vy*uav.vy + uav.vz*uav.vz);
 		break;
 	}
+	case MAVLINK_MSG_ID_GPS_RAW_INT : {
+		// decode
+		mavlink_gps_raw_int_t packet;
+		mavlink_msg_gps_raw_int_decode(msg, &packet);
+
+		uav.sat_count = packet.satellites_visible;
+		break;
+	}
+	case MAVLINK_MSG_ID_GPS_STATUS : {
+		break;
+	}
 
 	case MAVLINK_MSG_ID_ATTITUDE: {
 		// decode
