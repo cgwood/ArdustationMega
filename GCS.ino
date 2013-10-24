@@ -1,4 +1,5 @@
 #include "GCS.h"
+#include "math.h"
 
 GCS_MAVLINK::GCS_MAVLINK(uint8_t key) :
 		packet_drops(0),
@@ -165,8 +166,8 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		uav.sysid = msg->sysid;
 		apm_mav_component = msg->compid;
 		hbcount++;
-	}
 		break;
+	}
 	case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: {
 		// decode
 		mavlink_global_position_int_t packet;
@@ -176,6 +177,11 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		uav.lat = packet.lat / 10000000.0;
 		uav.lon = packet.lon / 10000000.0;
 		uav.alt = packet.alt / 1000.0;
+		uav.vx = packet.vx;
+		uav.vy = packet.vy;
+		uav.vz = packet.vz;
+		uav.vel = sqrt(uav.vx*uav.vx + uav.vy*uav.vy + uav.vz*uav.vz);
+		break;
 	}
 
 	case MAVLINK_MSG_ID_ATTITUDE: {
@@ -436,11 +442,10 @@ void GCS_MAVLINK::data_stream_request(void) {
 	//        MAV_DATA_STREAM_EXTRA2};
 	//    const uint16_t MAVRates[maxStreams] = {0x02, 0x02, 0x05, 0x02, 0x05, 0x02};
 
-	const int maxStreams = 4;
+	const int maxStreams = 3;
 	const uint8_t MAVStreams[maxStreams] = { MAV_DATA_STREAM_EXTRA1,
-			MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION,
-			MAV_DATA_STREAM_RAW_SENSORS };
-	const uint16_t MAVRates[maxStreams] = { 0x10, 0x01, 0x01, 0x01 };
+			MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION };
+	const uint16_t MAVRates[maxStreams] = { 0x10, 0x01, 0x01 };
 
 	for (int i = 0; i < maxStreams; i++) {
 		//        mavlink_msg_request_data_stream_send(chan,

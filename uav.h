@@ -87,6 +87,7 @@ struct vehicle {
   float lat;
   float lon;
   float alt;
+  float vx,vy,vz,vel;
   int sat_count;
   float dist; // Distance from gcs
   float roll2srvP;

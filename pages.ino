@@ -281,6 +281,10 @@ uint8_t PageMain::_enter() {
 
 	// Bearing to UAV, circle
 	if (uav.sysid != 0) {
+		x0 = GLCD.Right - 27;
+		y0 = 16;
+		x1 = x0;
+		y1 = y0;
 		GLCD.DrawCircle(GLCD.Right - 27, 16, 12);
 		//GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
 	}
@@ -310,13 +314,15 @@ uint8_t PageMain::_enter() {
 
 uint8_t PageMain::_refresh_med() {
 
-//  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
-	if (ASM.num_sats > 9)
-		GLCD.CursorToXY(GLCD.Right - 20, GLCD.Bottom - 8);
-	else
-		GLCD.CursorToXY(GLCD.Right - 18, GLCD.Bottom - 8);
 	GLCD.SelectFont(System5x7);
-	GLCD.print(ASM.num_sats);
+//  GLCD.FillRect(GLCD.Right-7, 3, 4, GLCD.Bottom-6, WHITE);
+//	if (uav.sat_count > 9)
+//		GLCD.CursorToXY(GLCD.Right - 20, GLCD.Bottom - 8);
+//	else
+//		GLCD.CursorToXY(GLCD.Right - 18, GLCD.Bottom - 8);
+
+	GLCD.CursorToXY(GLCD.Right - 24, GLCD.Bottom - 8);
+	GLCD.Printf("%2d",uav.sat_count);
 
 	// UAV Mode
 	if (uav.sysid != 0 && _last_base_mode != uav.base_mode) {
@@ -378,21 +384,21 @@ uint8_t PageMain::_refresh_slow() {
 	GLCD.SelectFont(System5x7);
 	GLCD.CursorToXY(23, GLCD.Bottom - 8);
 //  GLCD.print(constrain(uav.alt,-99.9,999.9),1);
-	if (ASM.altitude > 10000)
-		GLCD.print(constrain((int) (ASM.altitude / 100.0), 0, 9999));
-	else if (ASM.altitude > 0)
-		GLCD.print(constrain(ASM.altitude / 100.0, 0, 99.9), 1);
+	if (uav.alt > 100)
+		GLCD.print(constrain((int) (uav.alt), 0, 9999));
+	else if (uav.alt > 0)
+		GLCD.print(constrain(uav.alt, 0, 99.9), 1);
 	else
-		GLCD.print(constrain(ASM.altitude / 100.0, -99, 0), 1);
+		GLCD.print(constrain(uav.alt, -99, 0), 1);
 	GLCD.print('m');
 
 	// Print Velocity
 	GLCD.SelectFont(System5x7);
 	GLCD.CursorToXY(59, GLCD.Bottom - 8);
-	if (g_gps->speed_3d > 10000)
-		GLCD.print(constrain((int) (g_gps->speed_3d / 100.0), 0, 999));
+	if (uav.vel > 10000)
+		GLCD.print(constrain((int) (uav.vel / 100.0), 0, 999));
 	else
-		GLCD.print(constrain(g_gps->speed_3d / 100.0, -9.9, 99.9), 1);
+		GLCD.print(constrain(uav.vel / 100.0, -9.9, 99.9), 1);
 	GLCD.print("m/s");
 
 	// Print UAV Distance from Home
@@ -405,9 +411,6 @@ uint8_t PageMain::_refresh_slow() {
 
 	// Draw line showing bearing to UAV
 	if (uav.sysid != 0) {
-		x0 = GLCD.Right - 27;
-		y0 = 16;
-
 		GLCD.DrawLine(x0, y0, x1, y1, WHITE);
 		this->calcangle(&x1, &y1);
 		GLCD.DrawLine(x0, y0, x1, y1, BLACK);
@@ -518,29 +521,40 @@ uint8_t PageStatus::_forceUpdate(uint8_t reason) {
 
 uint8_t PageHardware::_refresh_med() {
 	lcd.CursorTo(0, 0);
-	lcd.print("Roll ");
+	lcd.print("Roll: ");
 	lcd.println(uav.roll);
-	lcd.print("Encoder ");
+	lcd.print("Encoder: ");
 	lcd.println(ASM.encoderval);
 	lcd.CursorTo(0, 6);
-	lcd.print("HB count ");
+	lcd.print("HB count: ");
 	lcd.println(hbcount);
 }
 
 uint8_t PageHardware::_refresh_slow() {
 	lcd.CursorTo(0, 2);
-	lcd.print("LiPo ");
+	lcd.print("LiPo: ");
 	lcd.println(get_batt());
-	lcd.print("Sat count ");
+	lcd.print("Sat count: ");
 	lcd.println(ASM.num_sats);
-	lcd.print("GPS Status");
-	lcd.println(ASM.gps_status);
+	lcd.print("GPS Status: ");
+	switch (ASM.gps_status) {
+	default:
+	case 0:
+		lcd.println("No GPS");
+		break;
+	case 1:
+		lcd.println("No Fix");
+		break;
+	case 2:
+		lcd.println("Fix");
+		break;
+	}
 
 	uint8_t seconds = (ASM.time/1000) % 60;
 	uint8_t minutes = (ASM.time/1000)/60 % 60;
 	uint8_t hours = (ASM.time/1000)/60/60 % 24;
 
-	lcd.print("GPS Time ");
+	lcd.print("GPS Time: ");
 	lcd.Printf("%02d:%02d", hours, minutes);
 }
 
