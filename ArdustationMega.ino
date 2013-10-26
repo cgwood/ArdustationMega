@@ -144,7 +144,7 @@ void setup() {
 
 	// SD Card
 	pinMode(chipSelect, OUTPUT);
-	init_sdcard();
+	ASM.SDok = init_sdcard();
 
 	// Attach the rotary encoder
 	attachInterrupt(0, doEncoder, CHANGE);
@@ -157,6 +157,8 @@ void setup() {
 	uav.onboard_param_count = 0;
 	uav.bln_requested_params = 0;
 	ASM.num_sats = 0;
+	ASM.last_hb = 0;
+	ASM.hb_period = 0;
 	uint8_t i;
 	for (i=0;i<PARAM_COUNT_PLANE;i++) {
 		uav.param_plane_avail[i] = 0;

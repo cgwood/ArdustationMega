@@ -86,7 +86,7 @@ void doEncoder() {
 File root;
 const int chipSelect = 53;
 
-void
+uint8_t
 init_sdcard() {
 
   lcd.CursorTo(0, 6);
@@ -94,9 +94,10 @@ init_sdcard() {
 
   if (!SD.begin(chipSelect)) {
     lcd.println("SD init fail!");
-    return;
+    return 0;
   }
   lcd.println("SD init ok");
+  return 1;
 }
 
 void printDirectory(File dir, int numTabs) {

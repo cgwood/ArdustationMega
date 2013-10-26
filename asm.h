@@ -20,6 +20,9 @@ struct ArduStation {
   int batt_sum;
   int batt_sample[BATTSAMPLES]; // Average over last BATTSAMPLES readings
   uint8_t batt_i; // Which index of batt did we last write to
+  uint8_t SDok; // Whether the SD card initialised ok
+  unsigned long last_hb;   // Timestamp of last heartbeat
+  unsigned long hb_period; // Moving average of the heartbeat period
   
   int rssi_sum;
   int rssi_sample[BATTSAMPLES]; // Average over last BATTSAMPLES readings

@@ -96,6 +96,19 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		mavlink_heartbeat_t packet;
 		mavlink_msg_heartbeat_decode(msg, &packet);
 
+		// Make a note of the current time
+		unsigned long now;
+		now = millis();
+
+		// Update the moving average of heartbeat period
+		if (ASM.last_hb != 0) {
+			if (ASM.hb_period == 0)
+				ASM.hb_period = now - ASM.last_hb;
+			else
+				ASM.hb_period = 0.9*ASM.hb_period + 0.1*(now - ASM.last_hb);
+		}
+		ASM.last_hb = now;
+
 		// Update mode
 		uav.base_mode = packet.base_mode;
 

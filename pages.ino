@@ -489,14 +489,77 @@ uint8_t PageMain::_interact(uint8_t buttonid) {
 }
 
 uint8_t PageStatus::_enter() {
+	uint8_t seconds = (ASM.time/1000) % 60;
+	uint8_t minutes = (ASM.time/1000)/60 % 60;
+	uint8_t hours = (ASM.time/1000)/60/60 % 24;
+
 	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.Printf("ASM Status  %02d:%02d", hours, minutes);
+	GLCD.SelectFont(System5x7);
+	GLCD.CursorTo(0, 2);
 	GLCD.Printf("Parameters: %d/%d", download_index, uav.onboard_param_count);
+	GLCD.CursorTo(0, 3);
+	GLCD.print("GPS Status: ");
+	switch (ASM.gps_status) {
+	default:
+	case 0:
+		GLCD.println("No GPS");
+		break;
+	case 1:
+		GLCD.println("No Fix");
+		break;
+	case 2:
+		GLCD.println("Fix");
+		break;
+	}
+	GLCD.print("Sat count: ");
+	GLCD.println(ASM.num_sats);
+	GLCD.Printf("HB Period: %dms\n", ASM.hb_period);
+	if (ASM.SDok)
+		GLCD.println("SD Card found");
+	else
+		GLCD.println("SD Card not found");
+
 	return 0;
 }
 
 uint8_t PageStatus::_refresh_med() {
+	uint8_t seconds = (ASM.time/1000) % 60;
+	uint8_t minutes = (ASM.time/1000)/60 % 60;
+	uint8_t hours = (ASM.time/1000)/60/60 % 24;
+
 	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.Printf("ASM Status  %02d:%02d", hours, minutes);
+	GLCD.SelectFont(System5x7);
+
+//	GLCD.CursorTo(0, 2);
+//	GLCD.Printf("Time: %02d:%02d", hours, minutes);
+	GLCD.CursorTo(0, 2);
 	GLCD.Printf("Parameters: %d/%d", download_index, uav.onboard_param_count);
+	GLCD.CursorTo(0, 3);
+	GLCD.print("GPS Status: ");
+	switch (ASM.gps_status) {
+	default:
+	case 0:
+		GLCD.println("No GPS");
+		break;
+	case 1:
+		GLCD.println("No Fix");
+		break;
+	case 2:
+		GLCD.println("Fix");
+		break;
+	}
+	GLCD.print("Sat count: ");
+	GLCD.println(ASM.num_sats);
+	GLCD.Printf("HB Period: %dms\n", ASM.hb_period);
+	if (ASM.SDok)
+		GLCD.println("SD Card found");
+	else
+		GLCD.println("SD Card not found");
+
 	return 0;
 }
 
