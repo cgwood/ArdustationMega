@@ -474,7 +474,7 @@ void PageMain::calcangle(byte *x, byte *y)
 uint8_t PageMain::_interact(uint8_t buttonid) {
 	switch (buttonid) {
 	case B_OK:
-		gcs_passthrough = !gcs_passthrough; // quick hack to enable / disable gcs passthrough
+//		gcs_passthrough = !gcs_passthrough; // quick hack to enable / disable gcs passthrough
 		break;
 	case B_RIGHT:
 		Pages::move(1);

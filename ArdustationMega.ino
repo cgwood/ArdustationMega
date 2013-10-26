@@ -228,6 +228,12 @@ void loop() {
 		// Listen for button presses
 		buttonid = keypad.pressed();
 		switch (buttonid) {
+//		case B_OK_HOLD:
+//			Serial.println("Held OK");
+//			break;
+//		case B_CANCEL_HOLD:
+//			Serial.println("Held Cancel");
+//			break;
 		// By default all keypad presses are sent to the pages
 		default:
 			Pages::interact(buttonid);

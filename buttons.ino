@@ -132,10 +132,13 @@ uint8_t Buttons::_scanDebounced(void) {
 	if (0 == (scanCode = _scan())) {
 		//		_scanCode = 0;
 		_scanStart = millis();
+		_scanCodeLast = 0;
+		_buttonHolding = 0;
+
 		return (0);
 	}
 
-	// if the state changed, bail
+	// if the state changed, save and exit
 	if (scanCode != _scanCode) {
 		_scanCode = scanCode;
 		_scanStart = millis();
@@ -143,9 +146,46 @@ uint8_t Buttons::_scanDebounced(void) {
 		return (0);
 	}
 
-	// if we've pressed a button recently, ignore
-	if ((millis() - _lastPress) < BUTTON_REPEAT_TIMER) {
-		return (0);
+	//	// if we've pressed a button recently, ignore
+	//	if ((millis() - _lastPress) < BUTTON_REPEAT_TIMER) {
+	//		return (0);
+	//	}
+
+	// Check if we've registered this button press already
+	if (scanCode == _scanCodeLast) {
+		// Check to see if we're holding the button down
+		if (_buttonHolding) {
+			// If it's been long enough since the last repeat of the button, repeat again
+			// But only perform repeats on left, right, up and down
+			if (scanCode <= B_RIGHT && millis() - _lastPress >= BUTTON_REPEAT_TIMER) {
+				_lastPress = millis();
+				return (scanCode);
+			}
+			else {
+				return (0);
+			}
+		}
+		else {
+			// If we've held it down long enough, flag the _buttonHolding as true
+			if (millis() - _lastPress >= BUTTON_HOLD_TIMER) {
+				_lastPress = millis();
+				_buttonHolding = 1;
+				if (scanCode > B_RIGHT) {
+					// Not a directional code, invoke hold behaviour
+					if (scanCode == B_OK)
+						return (B_OK_HOLD);
+					else if (scanCode == B_CANCEL)
+						return (B_CANCEL_HOLD);
+					else
+						return 0;
+				}
+				else
+					return (scanCode);
+			}
+			else {
+				return (0);
+			}
+		}
 	}
 
 	// if the state has remained the same for long enough return the button code
@@ -158,6 +198,9 @@ uint8_t Buttons::_scanDebounced(void) {
 		//			beep.play(BEEP_BADKEY);
 		//		if (scanCode == B_OK)
 		//			beep.play(BEEP_KEY);
+
+		// Save the scan code
+		_scanCodeLast = _scanCode;
 
 		// Return what was pressed
 		return (scanCode);
