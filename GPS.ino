@@ -34,7 +34,11 @@ GPS::update(void)
     // if we did not get a message, and the idle timer has expired, re-init
     if (!result) {
         if ((tnow - _idleTimer) > idleTimeout) {
-            Debug("gps read timeout %lu %lu", (unsigned long)tnow, (unsigned long)_idleTimer);
+//            Debug("gps read timeout %lu %lu", (unsigned long)tnow, (unsigned long)_idleTimer);
+            Serial.print("gps read timeout ");
+            Serial.print((unsigned long)tnow);
+            Serial.print(", ");
+            Serial.println((unsigned long)_idleTimer);
             _status = NO_GPS;
 
             init(_nav_setting);
@@ -81,7 +85,12 @@ GPS::update(void)
     	ASM.lon = (float)g_gps->longitude / T7;
     	ASM.num_sats = g_gps->num_sats;
     	ASM.altitude = g_gps->altitude;
-    	ASM.time = g_gps->time;
+    	ASM.time = g_gps->time + nvram.nv.gpsTimezone*3600000;
+//    	Serial.print(g_gps->time);
+//    	Serial.print(" ");
+//    	Serial.print(nvram.nv.gpsTimezone*3600000);
+//    	Serial.print(" ");
+//    	Serial.println(ASM.time);
     	ASM.gps_status = _status;
     }
 }

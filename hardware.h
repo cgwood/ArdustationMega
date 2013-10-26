@@ -12,7 +12,7 @@
 #define GPS_PROTOCOL_MTK19      6
 #define GPS_PROTOCOL_AUTO       7
 
-#define GPS_PROTOCOL GPS_PROTOCOL_UBLOX
+#define GPS_PROTOCOL GPS_PROTOCOL_MTK19
 
 // Button definitions
 #define expander B0100000  // Address with three address pins grounded.

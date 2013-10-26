@@ -644,8 +644,7 @@ uint8_t PageUAVtest::_interact(uint8_t buttonid) {
 	case B_DOWN:
 		break;
 	case B_CANCEL:
-		gcs3.data_stream_request();
-		beep.play(BEEP_KEY);
+		Pages::move(0);
 		break;
 	case B_RIGHT:
 		Pages::move(1);

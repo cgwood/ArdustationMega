@@ -35,7 +35,7 @@ PROGMEM const prog_char SettingNames[]  = "Serial Speed\n"
 		 "Mute Buttons\n"
 		 "Alarm Sounds\n"
 		 "MAV Number  \n"
-		 "GPS Type    \n"
+		 "GPS Timezone\n"
 		 "SD Logging  \n"
 		 "TX Heartbeat\n"
 		 "Repeat Rate \n"
@@ -51,7 +51,7 @@ enum SETTINGS_ORDER {
 	MUTE_BUTTONS,
 	ALARM_SOUNDS,
 	MAV_NUMBER,
-	GPS_TYPE,
+	GPS_TIMEZONE,
 	SD_LOGGING,
 	TX_HEARTBEAT,
 	REPEAT_RATE,
@@ -91,20 +91,20 @@ public:
         /// Load setting from NVRAM
         ///
         void    load_setting(uint8_t *setting_id, float *setting_value);
-        void    load_setting(uint8_t *setting_id, uint16_t *setting_value);
+        void    load_setting(uint8_t *setting_id, int16_t *setting_value);
 
         /// Write setting to NVRAM
         ///
         void    write_setting(uint8_t *setting_id, float *setting_value);
-        void    write_setting(uint8_t *setting_id, uint16_t *setting_value);
+        void    write_setting(uint8_t *setting_id, int16_t *setting_value);
 
         /// Load text format of setting from NVRAM
         ///
-        void    load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]);
+        void    load_setting_text(uint8_t *setting_id, int16_t setting_value, char text_value[7]);
 
         /// Get limits for a setting's value
         ///
-        void    get_setting_bounds(uint8_t *setting_id, uint8_t *lower_val, uint8_t *upper_val);
+        void    get_setting_bounds(uint8_t *setting_id, int16_t *lower_val, int16_t *upper_val);
 
         /// Save all variables to NVRAM
         ///
@@ -124,7 +124,7 @@ public:
                 uint8_t         buttonMute;
                 uint8_t         alarmSounds;
                 uint8_t         mavNumber;
-                uint8_t         gpsType;
+                int8_t          gpsTimezone;
                 uint8_t         sdLogging;
                 uint8_t         txHeartbeats;
                 uint8_t         keypadRepeatRate;

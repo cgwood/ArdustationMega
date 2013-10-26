@@ -96,7 +96,7 @@ void PageSettings::_drawLocal(void) {
 		}
 
 		char text_value[7];
-		nvram.load_setting_text(&i, -1, text_value);
+		nvram.load_setting_text(&i, -32768, text_value);
 		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
 		GLCD.print(text_value);
 	}
@@ -126,7 +126,8 @@ void PageSettings::_clearMarker(void) {
 
 void PageSettings::_alterLocal(float alterMag) {
 	/// Bounds on values
-	uint8_t min,max,j;
+	int16_t min,max;
+	uint8_t j;
 	j = _state - 101;
 	nvram.get_setting_bounds(&j,&min,&max);
 
@@ -172,7 +173,7 @@ void PageSettings::_redrawLocal(void) {
 
 		// Find the text version of the value
 		char text_value[7];
-		nvram.load_setting_text(&i, value_local, text_value);
+		nvram.load_setting_text(&i, (int16_t)value_local, text_value);
 
 		// Write the value
 		lineno = i - _stateFirstVal;
@@ -286,7 +287,7 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 				} else {
 					_value_encoder = (int) (_value_temp / (pow(10, _scale[_state - 1] - _decPos[_state - 1])));
 					/// Bounds on values
-					uint8_t min,max;
+					int16_t min,max;
 					nvram.get_setting_bounds(&j,&min,&max);
 					rotary.configure(&_value_encoder, max, min, -4);
 				}

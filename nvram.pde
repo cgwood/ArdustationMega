@@ -69,7 +69,7 @@ void NVRAM::load_param(uint8_t *param_id, float *param_value) {
 //        _loadx(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);
 }
 
-void NVRAM::get_setting_bounds(uint8_t *setting_id, uint8_t *lower_val, uint8_t *upper_val) {
+void NVRAM::get_setting_bounds(uint8_t *setting_id, int16_t *lower_val, int16_t *upper_val) {
 	*lower_val = 0;
 
 	switch (*setting_id) {
@@ -86,19 +86,24 @@ void NVRAM::get_setting_bounds(uint8_t *setting_id, uint8_t *lower_val, uint8_t 
 	case TX_HEARTBEAT:
 		*upper_val = 1;
 		break;
+	case GPS_TIMEZONE:
+		*lower_val = -14;
+		*upper_val = 14;
+		break;
 	default:
 		*upper_val = 254;
 		break;
 	}
 }
 
-void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char text_value[7]) {
+void NVRAM::load_setting_text(uint8_t *setting_id, int16_t setting_value, char text_value[7]) {
 	// Convert numeric values to text values
-	// setting_value = -1 for loading stored value
+	// setting_value = -32768 for loading stored value
+	uint8_t strlen;
 
 	// Find out the numerical value
-	uint16_t value;
-	if (setting_value == -1)
+	int16_t value;
+	if (setting_value == -32768)
 		load_setting(setting_id,&value);
 	else
 		value = setting_value;
@@ -163,8 +168,20 @@ void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char 
 			break;
 		}
 		break;
+	case GPS_TIMEZONE:
+		if (value>=0)
+			strlen = sprintf(text_value,"+%d",value);
+		else
+			strlen = sprintf(text_value,"%d",value);
+
+		// Fill the string with trailing blank spaces
+		for (uint8_t i=strlen;i<6;i++)
+			text_value[i] = 32;
+
+		// End of string termination character
+		text_value[6] = 0;
+		break;
 	default:
-		uint8_t strlen;
 		strlen = sprintf(text_value,"%d",value);
 
 		// Fill the string with trailing blank spaces
@@ -178,12 +195,12 @@ void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char 
 }
 
 void NVRAM::load_setting(uint8_t *setting_id, float *param_value) {
-	uint16_t param_value_int;
+	int16_t param_value_int;
 	load_setting(setting_id, &param_value_int);
 	*param_value = (float)param_value_int;
 }
 
-void NVRAM::load_setting(uint8_t *setting_id, uint16_t *param_value) {
+void NVRAM::load_setting(uint8_t *setting_id, int16_t *param_value) {
 	// load from NVRAM
 	switch (*setting_id) {
 	case SERIAL_SPEED:
@@ -207,8 +224,8 @@ void NVRAM::load_setting(uint8_t *setting_id, uint16_t *param_value) {
 	case MAV_NUMBER:
 		*param_value = nv.mavNumber;
 		break;
-	case GPS_TYPE:
-		*param_value = nv.gpsType;
+	case GPS_TIMEZONE:
+		*param_value = nv.gpsTimezone;
 		break;
 	case SD_LOGGING:
 		*param_value = nv.sdLogging;
@@ -232,12 +249,12 @@ void NVRAM::load_setting(uint8_t *setting_id, uint16_t *param_value) {
 }
 
 void NVRAM::write_setting(uint8_t *setting_id, float *param_value) {
-	uint16_t param_value_int;
+	int16_t param_value_int;
 	param_value_int = (float)*param_value;
 	write_setting(setting_id, &param_value_int);
 }
 
-void NVRAM::write_setting(uint8_t *setting_id, uint16_t *param_value) {
+void NVRAM::write_setting(uint8_t *setting_id, int16_t *param_value) {
 	uint8_t updated = 1;
 
 	// Update the value
@@ -263,8 +280,8 @@ void NVRAM::write_setting(uint8_t *setting_id, uint16_t *param_value) {
 	case MAV_NUMBER:
 		nv.mavNumber = *param_value;
 		break;
-	case GPS_TYPE:
-		nv.gpsType = *param_value;
+	case GPS_TIMEZONE:
+		nv.gpsTimezone = *param_value;
 		break;
 	case SD_LOGGING:
 		nv.sdLogging = *param_value;

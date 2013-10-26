@@ -43,7 +43,7 @@ uint8_t Buttons::pressed(void) {
 // Scan the buttons
 uint8_t Buttons::_scan(void) {
 	uint8_t id;
-	uint16_t orientation;
+	int16_t orientation;
 	uint8_t scanCode;
 	//		expanderWrite(B11111101); // Turns the red LED off
 	//		expanderWrite(B11111100); // Turns the red LED on
