@@ -46,9 +46,9 @@ Beep::play(uint8_t code)
   if (code > _playing)
     return;
 
-  //        // is the code muted?
-  //        if ((code >= BEEP_MUTE_MIN) && nvram.nv.muted)
-  //                return;
+  // is the code muted?
+  if ((code >= BEEP_KEY) && nvram.nv.buttonMute)
+		  return;
 
   // start the new tune
   _playing = code;
