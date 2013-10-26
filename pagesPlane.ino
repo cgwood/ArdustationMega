@@ -1787,7 +1787,7 @@ void PagePlaneParametersTECS::_alterLocal(float alterMag) {
 //  }
 //  else {
 	// We don't do negative values here
-	if (_value_temp + alterMag < 0)
+	if (_value_temp + alterMag < 0 && _state-101 != LIM_PITCH_MIN)
 		_value_temp = 0;
 	else
 		_value_temp += alterMag;
@@ -2004,12 +2004,11 @@ uint8_t PagePlaneParametersTECS::_interact(uint8_t buttonid) {
 					_value_encoder = (int) (_value_temp);
 					rotary.configure(&_value_encoder, 1, 0, -4);
 				} else {
-					_value_encoder =
-							(int) (_value_temp
-									/ (pow(10,
-											_scale[_state - 1]
-													- _decPos[_state - 1]))); // * 100;
-					rotary.configure(&_value_encoder, 1000, 0, -4);
+					_value_encoder = (int) (_value_temp / (pow(10, _scale[_state - 1] - _decPos[_state - 1])));
+					if (_state-1 == LIM_PITCH_MIN)
+						rotary.configure(&_value_encoder, 1000, -1000, -4);
+					else
+						rotary.configure(&_value_encoder, 1000, 0, -4);
 				}
 
 				// Copy the value to temp for editing
