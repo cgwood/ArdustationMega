@@ -531,7 +531,7 @@ uint8_t PageStatus::_refresh_med() {
 
 	GLCD.CursorTo(0, 0);
 	GLCD.SelectFont(Arial_bold_14);
-	GLCD.Printf("ASM Status  %02d:%02d", hours, minutes);
+	GLCD.Printf("ASM Status  %02d:%02d\n", hours, minutes);
 	GLCD.SelectFont(System5x7);
 
 //	GLCD.CursorTo(0, 2);
