@@ -69,15 +69,25 @@ void NVRAM::load_param(uint8_t *param_id, float *param_value) {
 //        _loadx(2 + sizeof(nv) + *param_id*sizeof(float), sizeof(float), param_value);
 }
 
-void NVRAM::get_setting_bounds(uint8_t *setting_id, uint8_t &lower_val, uint8_t &upper_val) {
-	lower_val = 0;
+void NVRAM::get_setting_bounds(uint8_t *setting_id, uint8_t *lower_val, uint8_t *upper_val) {
+	*lower_val = 0;
 
 	switch (*setting_id) {
 	case SERIAL_SPEED:
-		upper_val = SERIAL_SPEED_COUNT;
+		*upper_val = SERIAL_SPEED_COUNT-1;
+		break;
+	case KEYPAD_ORIENTATION:
+		*upper_val = 3;
+		break;
+	case USE_COMPASS:
+	case MUTE_BUTTONS:
+	case ALARM_SOUNDS:
+	case SD_LOGGING:
+	case TX_HEARTBEAT:
+		*upper_val = 1;
 		break;
 	default:
-		upper_val = sizeof(uint8_t)-1;
+		*upper_val = 254;
 		break;
 	}
 }
@@ -124,6 +134,7 @@ void NVRAM::load_setting_text(uint8_t *setting_id, uint16_t setting_value, char 
 	}
 	case USE_COMPASS:
 	case ALARM_SOUNDS:
+	case SD_LOGGING:
 	case TX_HEARTBEAT:
 	case MUTE_BUTTONS:
 		if (value == 0)

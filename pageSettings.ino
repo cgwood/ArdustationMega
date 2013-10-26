@@ -125,11 +125,19 @@ void PageSettings::_clearMarker(void) {
 }
 
 void PageSettings::_alterLocal(float alterMag) {
-	// We don't do negative values here
-	if (_value_temp + alterMag < 0)
-		_value_temp = 0;
-	else
-		_value_temp += alterMag;
+	/// Bounds on values
+	uint8_t min,max,j;
+	j = _state - 101;
+	nvram.get_setting_bounds(&j,&min,&max);
+
+//	if (_value_temp + alterMag < min)
+//		_value_temp = 0;
+//	else if (_value_temp + alterMag > max)
+//		_value_temp = max;
+//	else
+//		_value_temp += alterMag;
+
+	_value_temp = constrain(_value_temp+alterMag,min,max);
 
 	// Keep the encoder value updated
 	if (_scale[_state - 101] == 99 && 99 == _decPos[_state - 101]) {
@@ -276,12 +284,11 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 					_value_encoder = (int) (_value_temp);
 					rotary.configure(&_value_encoder, 1, 0, -4);
 				} else {
-					_value_encoder =
-							(int) (_value_temp
-									/ (pow(10,
-											_scale[_state - 1]
-													- _decPos[_state - 1]))); // * 100;
-					rotary.configure(&_value_encoder, 1000, 0, -4);
+					_value_encoder = (int) (_value_temp / (pow(10, _scale[_state - 1] - _decPos[_state - 1])));
+					/// Bounds on values
+					uint8_t min,max;
+					nvram.get_setting_bounds(&j,&min,&max);
+					rotary.configure(&_value_encoder, max, min, -4);
 				}
 
 				// Copy the value to temp for editing

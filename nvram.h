@@ -104,7 +104,7 @@ public:
 
         /// Get limits for a setting's value
         ///
-        void    get_setting_bounds(uint8_t *setting_id, uint8_t &lower_val, uint8_t &upper_val);
+        void    get_setting_bounds(uint8_t *setting_id, uint8_t *lower_val, uint8_t *upper_val);
 
         /// Save all variables to NVRAM
         ///
