@@ -280,7 +280,10 @@ void loop() {
 			if (downloading) {
 				if (millis() - download_start_time >= 1000) {
 					downloading = 0;
-					Serial.println("Download timed out");
+					Serial.println("Download timed out, retrying");
+					download_start_time = millis();
+					gcs3.param_request(download_index);
+					downloading = 1;
 				}
 			}
 
