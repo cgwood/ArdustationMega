@@ -142,14 +142,9 @@ uint8_t Buttons::_scanDebounced(void) {
 	if (scanCode != _scanCode) {
 		_scanCode = scanCode;
 		_scanStart = millis();
-		_lastPress = millis() - BUTTON_REPEAT_TIMER + BUTTON_DEBOUNCE_TIMER;
+		_lastPress = millis() - nvram.nv.keypadRepeatDelay + BUTTON_DEBOUNCE_TIMER;
 		return (0);
 	}
-
-	//	// if we've pressed a button recently, ignore
-	//	if ((millis() - _lastPress) < BUTTON_REPEAT_TIMER) {
-	//		return (0);
-	//	}
 
 	// Check if we've registered this button press already
 	if (scanCode == _scanCodeLast) {
@@ -157,7 +152,7 @@ uint8_t Buttons::_scanDebounced(void) {
 		if (_buttonHolding) {
 			// If it's been long enough since the last repeat of the button, repeat again
 			// But only perform repeats on left, right, up and down
-			if (scanCode <= B_RIGHT && millis() - _lastPress >= BUTTON_REPEAT_TIMER) {
+			if (scanCode <= B_RIGHT && millis() - _lastPress >= nvram.nv.keypadRepeatDelay) {
 				_lastPress = millis();
 				return (scanCode);
 			}
@@ -167,7 +162,7 @@ uint8_t Buttons::_scanDebounced(void) {
 		}
 		else {
 			// If we've held it down long enough, flag the _buttonHolding as true
-			if (millis() - _lastPress >= BUTTON_HOLD_TIMER) {
+			if (millis() - _lastPress >= nvram.nv.keypadHoldDelay) {
 				_lastPress = millis();
 				_buttonHolding = 1;
 				if (scanCode > B_RIGHT) {
@@ -192,12 +187,6 @@ uint8_t Buttons::_scanDebounced(void) {
 	if ((millis() - _scanStart) >= BUTTON_DEBOUNCE_TIMER) {
 		_scanStart = millis();
 		_lastPress = millis();
-
-		//		// Some test code, play a beep
-		//		if (scanCode == B_CANCEL)
-		//			beep.play(BEEP_BADKEY);
-		//		if (scanCode == B_OK)
-		//			beep.play(BEEP_KEY);
 
 		// Save the scan code
 		_scanCodeLast = _scanCode;

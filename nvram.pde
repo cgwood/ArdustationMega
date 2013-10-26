@@ -29,7 +29,7 @@
 
 /// Default NVRAM contents
 struct NVRAM::nv_data NVRAM_default PROGMEM = {
-	3, // serialSpeed
+	SERIAL_57600, // serialSpeed
 	65,// lowVoltage
 	0, // useCompass
 	4, // streamRate
@@ -39,14 +39,14 @@ struct NVRAM::nv_data NVRAM_default PROGMEM = {
 	1, // GPS type
 	0, // SD Card logging
 	1, // TX Heartbeats
-	5, // Keypad repeat rate
-	5,  // Keypad repeat delay
+	150, // Keypad repeat delay
+	500,  // Keypad repeat hold delay
 	0  // Keypad repeat delay
 };
 
 void NVRAM::load(void) {
-	// check for signature
-	if (('c' != EEPROM.read(0)) || ('g' != EEPROM.read(1))) {
+	// check for signature - second digit changes as nv_data def changes
+	if (('V' != EEPROM.read(0)) || (NV_VERSION != EEPROM.read(1))) {
 		// load defaults
 		memcpy_P(&nv, &NVRAM_default, sizeof(nv));
 		_reset_params();
@@ -60,8 +60,8 @@ void NVRAM::save(void) {
 	// save to NVRAM
 	_savex(2, sizeof(nv), &nv);
 
-	EEPROM.write(0, 'c');
-	EEPROM.write(1, 'g');
+	EEPROM.write(0, 'V');
+	EEPROM.write(1, NV_VERSION);
 }
 
 void NVRAM::load_param(uint8_t *param_id, float *param_value) {
@@ -78,6 +78,14 @@ void NVRAM::get_setting_bounds(uint8_t *setting_id, int16_t *lower_val, int16_t 
 		break;
 	case KEYPAD_ORIENTATION:
 		*upper_val = 3;
+		break;
+	case REPEAT_DELAY:
+		*lower_val = 50;
+		*upper_val = 1000;
+		break;
+	case HOLD_DELAY:
+		*lower_val = 50;
+		*upper_val = 3000;
 		break;
 	case USE_COMPASS:
 	case MUTE_BUTTONS:
@@ -233,11 +241,11 @@ void NVRAM::load_setting(uint8_t *setting_id, int16_t *param_value) {
 	case TX_HEARTBEAT:
 		*param_value = nv.txHeartbeats;
 		break;
-	case REPEAT_RATE:
-		*param_value = nv.keypadRepeatRate;
-		break;
 	case REPEAT_DELAY:
 		*param_value = nv.keypadRepeatDelay;
+		break;
+	case HOLD_DELAY:
+		*param_value = nv.keypadHoldDelay;
 		break;
 	case KEYPAD_ORIENTATION:
 		*param_value = nv.keypadRotation;
@@ -289,11 +297,11 @@ void NVRAM::write_setting(uint8_t *setting_id, int16_t *param_value) {
 	case TX_HEARTBEAT:
 		nv.txHeartbeats = *param_value;
 		break;
-	case REPEAT_RATE:
-		nv.keypadRepeatRate = *param_value;
-		break;
 	case REPEAT_DELAY:
 		nv.keypadRepeatDelay = *param_value;
+		break;
+	case HOLD_DELAY:
+		nv.keypadHoldDelay = *param_value;
 		break;
 	case KEYPAD_ORIENTATION:
 		nv.keypadRotation = *param_value;

@@ -27,6 +27,8 @@
 /// @file       nvram.h
 /// @brief      non-volatile memory
 
+#define NV_VERSION 1
+
 //                                        "123456789012"
 PROGMEM const prog_char SettingNames[]  = "Serial Speed\n"
 		 "Low Voltage \n"
@@ -38,8 +40,8 @@ PROGMEM const prog_char SettingNames[]  = "Serial Speed\n"
 		 "GPS Timezone\n"
 		 "SD Logging  \n"
 		 "TX Heartbeat\n"
-		 "Repeat Rate \n"
 		 "Repeat Delay\n"
+		 "Hold Delay  \n"
 		 "Key Rotation\n";
 
 enum SETTINGS_ORDER {
@@ -54,8 +56,8 @@ enum SETTINGS_ORDER {
 	GPS_TIMEZONE,
 	SD_LOGGING,
 	TX_HEARTBEAT,
-	REPEAT_RATE,
 	REPEAT_DELAY,
+	HOLD_DELAY,
 	KEYPAD_ORIENTATION,
 	// Parameter count
 	ASM_SETTINGS_COUNT
@@ -127,8 +129,8 @@ public:
                 int8_t          gpsTimezone;
                 uint8_t         sdLogging;
                 uint8_t         txHeartbeats;
-                uint8_t         keypadRepeatRate;
                 uint8_t         keypadRepeatDelay;
+                uint16_t        keypadHoldDelay;
                 uint8_t         keypadRotation;
         };
 
