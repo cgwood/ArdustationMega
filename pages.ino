@@ -357,10 +357,14 @@ uint8_t PageMain::_refresh_slow() {
 	// Local battery level
 	batt_height = GLCD.Bottom - 32;
 	GLCD.FillRect(3, 21, 4, batt_height, WHITE); // Clear area
-	batt_ratio = constrain((get_batt() - 3.2), 0.0, 1.0); // Allows range between 3.2 and 4.2
+//	batt_ratio = constrain((get_batt() - 3.2), 0.0, 1.0); // Allows range between 3.2 and 4.2
+	batt_ratio = constrain((get_batt() - ASM.batt_min), 0.0, (ASM.batt_max-ASM.batt_min))/(ASM.batt_max-ASM.batt_min);
 	batt_height = batt_height * batt_ratio;
 	GLCD.FillRect(3, 21 + GLCD.Bottom - 32 - batt_height, 4, batt_height,
 			BLACK); // Fill area
+
+	Serial.print("batt: ");
+	Serial.println(get_batt());
 
 	// RSSI level
 	rssi = get_rssi();
@@ -370,6 +374,8 @@ uint8_t PageMain::_refresh_slow() {
 	rssi_height = rssi_height * rssi_ratio;
 	GLCD.FillRect(11, 21 + GLCD.Bottom - 32 - rssi_height, 4, rssi_height,
 			BLACK); // Fill area
+
+	Serial.println(rssi);
 
 	// Remote battery level
 	batt_height = GLCD.Bottom - 14;

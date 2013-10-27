@@ -20,6 +20,8 @@ struct ArduStation {
   int batt_sum;
   int batt_sample[BATTSAMPLES]; // Average over last BATTSAMPLES readings
   uint8_t batt_i; // Which index of batt did we last write to
+  float batt_min; // For scaling on the front page
+  float batt_max; // For scaling on the front page
   uint8_t SDok; // Whether the SD card initialised ok
   unsigned long last_hb;   // Timestamp of last heartbeat
   unsigned long hb_period; // Moving average of the heartbeat period
@@ -47,7 +49,7 @@ void
 sample_batt() {
   // Get the new reading for the moving average
   ASM.batt_sum -= ASM.batt_sample[ASM.batt_i];
-  ASM.batt_sample[ASM.batt_i] = analogRead(A8);
+  ASM.batt_sample[ASM.batt_i] = analogRead(A7);
   ASM.batt_sum += ASM.batt_sample[ASM.batt_i];
 
   // Move the index along
@@ -61,18 +63,19 @@ get_batt() {
   float v = ASM.batt_sum;
 
   v /= 30.0;//BATTSAMPLES;
-  v *= 0.0048828125;
-  return v+0.1;
+//  v *= 0.0048828125;
+  v *= 0.01731;
+  return v;
 }
 
 int get_rssi() {
   int rssi;
   
-  rssi = analogRead(A0);
+  rssi = analogRead(A15);
   
   // Scale as working on 3.3v logic
   rssi*=1.5;
   
-  return rssi;
+  return constrain(rssi,0,1023);
 }
 

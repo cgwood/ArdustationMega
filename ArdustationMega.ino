@@ -159,6 +159,8 @@ void setup() {
 	ASM.num_sats = 0;
 	ASM.last_hb = 0;
 	ASM.hb_period = 0;
+	ASM.batt_min = 9.3;
+	ASM.batt_max = 12.6;
 	uint8_t i;
 	for (i=0;i<PARAM_COUNT_PLANE;i++) {
 		uav.param_plane_avail[i] = 0;
