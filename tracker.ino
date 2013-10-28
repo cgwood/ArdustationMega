@@ -62,15 +62,21 @@ Tracker::_update()
   Pan.write(_pan);
 
   // Calculate the elevation to the UAV
-  _uavElev = toDeg(atan((uav.alt-ASM.alt)/_uavDist));
+  if (_uavDist == 0)
+	  _uavElev = 0;
+  else
+	  _uavElev = toDeg(atan((uav.alt-ASM.alt)/_uavDist));
 
   // Turn elevation into servo tilt command
-  _tilt = constrain(_tilt,0,90);
-  _tilt = 90-_tilt;
-  _tilt = _tilt + 50;
-  _tilt = constrain(_tilt,tilt_pos_lower_limit,tilt_pos_upper_limit);
-
+  _tilt = constrain(_uavElev,0,90);
+  _tilt = map(_tilt,0,90,0,180);
   Tilt.write(_tilt);
+
+//  _tilt = 90-_tilt;
+//  _tilt = _tilt + 50;
+//  _tilt = constrain(_tilt,tilt_pos_lower_limit,tilt_pos_upper_limit);
+
+//  Tilt.write(_tilt);
 //  Tilt.write((uav.roll+3.14159)*90.0/3.14159);
 }
 
