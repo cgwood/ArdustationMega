@@ -14,6 +14,7 @@ enum PARAMS_PLANE {
 	// Parameter page parameters
 	TRIM_AUTO=0,
 	ARSPD_RATIO,
+	ARSPD_AUTOCAL,
 	SCALING_SPEED,
 	LOG_BITMASK,
 	// Parameter count
@@ -23,20 +24,22 @@ enum PARAMS_PLANE {
 // Parameter page - plane params
 prog_char param_plane_0[] PROGMEM = "TRIM_AUTO";
 prog_char param_plane_1[] PROGMEM = "ARSPD_RATIO";
-prog_char param_plane_2[] PROGMEM = "SCALING_SPEED";
-prog_char param_plane_3[] PROGMEM = "LOG_BITMASK";
+prog_char param_plane_2[] PROGMEM = "ARSPD_AUTOCAL";
+prog_char param_plane_3[] PROGMEM = "SCALING_SPEED";
+prog_char param_plane_4[] PROGMEM = "LOG_BITMASK";
 
 
 //                                          "123456789012"
 PROGMEM const prog_char ParamNamesPlane[] = "InFlightTrim\n"
 											"Airsd Ratio \n"
+											"AirsdAutoCal\n"
 											"ScalingSpeed\n"
 											"Log Bitmask \n";
 
-const uint8_t ParamScales[] = {99,    0,    0,    0}; // *10^(-x)
-const uint8_t ParamDPs[] =    {99,    3,    1,    0}; // 99 in both denotes boolean
+const uint8_t ParamScales[] = {99,0,99,0,0}; // *10^(-x)
+const uint8_t ParamDPs[] =    {99,3,99,1,0}; // 99 in both denotes boolean
 
-PROGMEM const char *paramTable_plane[] = { param_plane_0, param_plane_1, param_plane_2, param_plane_3};
+PROGMEM const char *paramTable_plane[] = { param_plane_0, param_plane_1, param_plane_2, param_plane_3, param_plane_4};
 
 enum PARAMS_PLANE_CTUN {
 	// Parameter page parameters
@@ -101,8 +104,8 @@ PROGMEM const prog_char ParamNamesPlaneCTUN[] = "Roll P      \n"
 												"Yaw Roll    \n"
 												"Yaw Int     \n";
 
-const uint8_t ParamScalesCTUN[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // *10^(-x)
-const uint8_t ParamDPsCTUN[] =    {2,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2,2,2}; // 99 in both denotes boolean
+const uint8_t ParamScalesCTUN[] = {0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsCTUN[] =    {2,2,2,1,2,2,2,2,2,1,2,2,2,2,2,2,2,2}; // 99 in both denotes boolean
 
 PROGMEM const char *paramTable_plane_ctun[] = { param_plane_ctun_0, param_plane_ctun_1,
 		param_plane_ctun_2, param_plane_ctun_3, param_plane_ctun_4, param_plane_ctun_5,
@@ -140,6 +143,7 @@ PROGMEM const char *paramTable_plane_ntun[] = { param_plane_ntun_0, param_plane_
 enum PARAMS_PLANE_TECS {
 	// Parameter page parameters
 	ARSPD_FBW_MIN=0,
+	TRIM_ARSPD_CM,
 	ARSPD_FBW_MAX,
 	THR_MIN,
 	TRIM_THROTTLE,
@@ -156,20 +160,22 @@ enum PARAMS_PLANE_TECS {
 };
 
 prog_char param_plane_tecs_0[] PROGMEM = "ARSPD_FBW_MIN";
-prog_char param_plane_tecs_1[] PROGMEM = "ARSPD_FBW_MAX";
-prog_char param_plane_tecs_2[] PROGMEM = "THR_MIN";
-prog_char param_plane_tecs_3[] PROGMEM = "TRIM_THROTTLE";
-prog_char param_plane_tecs_4[] PROGMEM = "THR_MAX";
-prog_char param_plane_tecs_5[] PROGMEM = "LIM_PITCH_MIN";
-prog_char param_plane_tecs_6[] PROGMEM = "LIM_PITCH_MAX";
-prog_char param_plane_tecs_7[] PROGMEM = "TECS_SINK_MIN";
-prog_char param_plane_tecs_8[] PROGMEM = "TECS_SINK_MAX";
-prog_char param_plane_tecs_9[] PROGMEM = "TECS_CLMB_MAX";
-prog_char param_plane_tecs_10[] PROGMEM = "TECS_TIME_CONST";
-prog_char param_plane_tecs_11[] PROGMEM = "TECS_PTCH_DAMP";
+prog_char param_plane_tecs_1[] PROGMEM = "TRIM_ARSPD_CM";
+prog_char param_plane_tecs_2[] PROGMEM = "ARSPD_FBW_MAX";
+prog_char param_plane_tecs_3[] PROGMEM = "THR_MIN";
+prog_char param_plane_tecs_4[] PROGMEM = "TRIM_THROTTLE";
+prog_char param_plane_tecs_5[] PROGMEM = "THR_MAX";
+prog_char param_plane_tecs_6[] PROGMEM = "LIM_PITCH_MIN";
+prog_char param_plane_tecs_7[] PROGMEM = "LIM_PITCH_MAX";
+prog_char param_plane_tecs_8[] PROGMEM = "TECS_SINK_MIN";
+prog_char param_plane_tecs_9[] PROGMEM = "TECS_SINK_MAX";
+prog_char param_plane_tecs_10[] PROGMEM = "TECS_CLMB_MAX";
+prog_char param_plane_tecs_11[] PROGMEM = "TECS_TIME_CONST";
+prog_char param_plane_tecs_12[] PROGMEM = "TECS_PTCH_DAMP";
 
 //                                              "123456789012"
 PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
+												"Airsd Cruise\n"
 												"Airspeed Max\n"
 												"Throttle Min\n"
 												"Thrtl Cruise\n"
@@ -182,13 +188,13 @@ PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
 												"TECS T Const\n"
 												"Tecs PchDamp\n";
 
-const uint8_t ParamScalesTECS[] = {0,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
-const uint8_t ParamDPsTECS[] =    {0,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
+const uint8_t ParamScalesTECS[] = {0,2,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsTECS[] =    {0,1,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
 
 PROGMEM const char *paramTable_plane_tecs[] = { param_plane_tecs_0, param_plane_tecs_1,
 		param_plane_tecs_2, param_plane_tecs_3, param_plane_tecs_4, param_plane_tecs_5,
 		param_plane_tecs_6, param_plane_tecs_7, param_plane_tecs_8, param_plane_tecs_9,
-		param_plane_tecs_10, param_plane_tecs_11};
+		param_plane_tecs_10, param_plane_tecs_11, param_plane_tecs_12};
 
 // ------------------------------ ROVERS ------------------------------ //
 enum PARAMS_ROVER {
