@@ -42,6 +42,7 @@ public:
 	    P_PARAMETERS_TECS,
 	    P_ROVER_PARAMETERS,
 	    P_COPTER_PARAMETERS,
+	    P_TRACKER,
 	    P_HARDWARE,
 	    P_UAVTEST,
 	    P_GLCD,
@@ -192,6 +193,36 @@ protected:
 
 private:
   gText _textArea;
+};
+
+// Tracker page - for debugging or configuring the antenna tracker
+class PageTracker :
+public Pages {
+public:
+	PageTracker() {_state = 0;};
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+
+private:
+  uint8_t _state;
+  int     _value_encoder;
 };
 
 // Hardware display page

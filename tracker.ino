@@ -45,6 +45,34 @@ Tracker::get_bearing(void)
 	return _uavBear;
 }
 
+float
+Tracker::get_elevation(void)
+{
+	return _uavElev;
+}
+
+float
+Tracker::get_servo_pan(void)
+{
+	return _pan;
+}
+
+float
+Tracker::get_servo_tilt(void)
+{
+	return _tilt;
+}
+
+void
+Tracker::set_bearing(float fake_bearing) {
+	_fakeBear = fake_bearing;
+}
+
+void
+Tracker::set_elevation(float fake_elevation) {
+	_fakeElev = fake_elevation;
+}
+
 void
 Tracker::_update()
 {
@@ -62,10 +90,14 @@ Tracker::_update()
   Pan.write(_pan);
 
   // Calculate the elevation to the UAV
-  if (_uavDist == 0)
-	  _uavElev = 0;
+  if (_fakeElev == -1) {
+	  if (_uavDist == 0)
+		  _uavElev = 0;
+	  else
+		  _uavElev = toDeg(atan((uav.alt-ASM.alt)/_uavDist));
+  }
   else
-	  _uavElev = toDeg(atan((uav.alt-ASM.alt)/_uavDist));
+	  _uavElev = _fakeElev;
 
   // Turn elevation into servo tilt command
   _tilt = constrain(_uavElev,0,90);
@@ -88,7 +120,12 @@ Tracker::_calcs(float lat1, float lat2, float lon1, float lon2)
   float x = 69.1 * (lat2 - lat1);
   float y = 69.1 * (lon2 - lon1) * cos(lat1/57.3);
 
-  _uavBear = toDeg(atan2(y,x));
+  if (_fakeBear == -1)
+	  _uavBear = toDeg(atan2(y,x));
+  else
+	  _uavBear = _fakeBear;
+
   _uavDist = (float)sqrt((float)(x*x) + (float)(y*y))*1609.344;
+
 }
 

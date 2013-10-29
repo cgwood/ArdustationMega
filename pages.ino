@@ -5,6 +5,7 @@
 PageMain mainPage;
 PageStatus statusPage;
 PageSettings settingsPage;
+PageTracker trackerPage;
 PageHardware hardwarePage;
 PageUAVtest UAVtestPage;
 PageGLCDtest GLCDPage;
@@ -32,10 +33,11 @@ Pages::Pages() {
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
 	_pageids[1] = P_SETTINGS;
-	_pageids[2] = P_HARDWARE;
-	_pageids[3] = P_UAVTEST;
-	_pageids[4] = P_SD;
-	_pagecount = 5;
+	_pageids[2] = P_TRACKER;
+	_pageids[3] = P_HARDWARE;
+	_pageids[4] = P_UAVTEST;
+	_pageids[5] = P_SD;
+	_pagecount = 6;
 
 }
 
@@ -48,12 +50,13 @@ uint8_t Pages::definePages() {
 		_pageids[4] = P_PARAMETERS_CTUN; // APM Control tuning parameters
 		_pageids[5] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
 		_pageids[6] = P_PARAMETERS_TECS; // APM TECS tuning parameters
-		_pageids[7] = P_HARDWARE;
-		_pageids[8] = P_UAVTEST;
-		_pageids[9] = P_GLCD;
-		_pageids[10] = P_SD;
-		_pageids[11] = P_SETTINGS;
-		_pagecount = 12;
+		_pageids[7] = P_TRACKER;
+		_pageids[8] = P_HARDWARE;
+		_pageids[9] = P_UAVTEST;
+		_pageids[10] = P_GLCD;
+		_pageids[11] = P_SD;
+		_pageids[12] = P_SETTINGS;
+		_pagecount = 13;
 	} else if (uav.type == MAV_TYPE_HELICOPTER
 			|| uav.type == MAV_TYPE_TRICOPTER
 			|| uav.type == MAV_TYPE_QUADROTOR
@@ -64,23 +67,25 @@ uint8_t Pages::definePages() {
 		_pageids[2] = P_COMMANDS;
 		_pageids[3] = P_PID;               // ACM Rate PIDs
 		_pageids[4] = P_COPTER_PARAMETERS; // Copter parameters
+		_pageids[5] = P_TRACKER;
+		_pageids[6] = P_HARDWARE;
+		_pageids[7] = P_UAVTEST;
+		_pageids[8] = P_GLCD;
+		_pageids[9] = P_SD;
+		_pageids[10] = P_SETTINGS;
+		_pagecount = 11;
+	} else if (uav.type == MAV_TYPE_GROUND_ROVER) {
+		_pageids[0] = P_MAIN;
+		_pageids[1] = P_STATUS;
+		_pageids[2] = P_COMMANDS;
+		_pageids[3] = P_ROVER_PARAMETERS; // Rover parameters
+		_pageids[4] = P_TRACKER;
 		_pageids[5] = P_HARDWARE;
 		_pageids[6] = P_UAVTEST;
 		_pageids[7] = P_GLCD;
 		_pageids[8] = P_SD;
 		_pageids[9] = P_SETTINGS;
 		_pagecount = 10;
-	} else if (uav.type == MAV_TYPE_GROUND_ROVER) {
-		_pageids[0] = P_MAIN;
-		_pageids[1] = P_STATUS;
-		_pageids[2] = P_COMMANDS;
-		_pageids[3] = P_ROVER_PARAMETERS; // Rover parameters
-		_pageids[4] = P_HARDWARE;
-		_pageids[5] = P_UAVTEST;
-		_pageids[6] = P_GLCD;
-		_pageids[7] = P_SD;
-		_pageids[8] = P_SETTINGS;
-		_pagecount = 9;
 	} else { // Default option - AP Unknown
 		_pageids[0] = P_MAIN;
 		_pageids[2] = P_STATUS;
@@ -112,6 +117,9 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_SETTINGS:
 		return (&settingsPage);
+		break;
+	case P_TRACKER:
+		return (&trackerPage);
 		break;
 	case P_HARDWARE:
 		return (&hardwarePage);
@@ -363,9 +371,6 @@ uint8_t PageMain::_refresh_slow() {
 	GLCD.FillRect(3, 21 + GLCD.Bottom - 32 - batt_height, 4, batt_height,
 			BLACK); // Fill area
 
-	Serial.print("batt: ");
-	Serial.println(get_batt());
-
 	// RSSI level
 	rssi = get_rssi();
 	rssi_height = GLCD.Bottom - 32;
@@ -374,8 +379,6 @@ uint8_t PageMain::_refresh_slow() {
 	rssi_height = rssi_height * rssi_ratio;
 	GLCD.FillRect(11, 21 + GLCD.Bottom - 32 - rssi_height, 4, rssi_height,
 			BLACK); // Fill area
-
-	Serial.println(rssi);
 
 	// Remote battery level
 	batt_height = GLCD.Bottom - 14;
@@ -597,6 +600,100 @@ uint8_t PageStatus::_forceUpdate(uint8_t reason) {
 //		GLCD.CursorTo(0, 12);
 //		GLCD.Printf("%d/%d", download_index, uav.onboard_param_count); //Parameters:
 //	}
+	return 0;
+}
+
+uint8_t PageTracker::_enter() {
+	// This function gets called when the user switches to this page
+	GLCD.CursorTo(0, 0);
+	GLCD.println("Tracker Dev. Page");
+	GLCD.CursorTo(0, 7);
+	GLCD.print("Encoder: ");
+	return 0;
+}
+
+uint8_t PageTracker::_refresh_med() {
+	// This function gets called ten times a second
+	GLCD.CursorTo(9, 7);
+	switch (_state) {
+	default:
+	case 0:
+		GLCD.print("Nothing\n");
+		tracker.set_bearing(-1);
+		tracker.set_elevation(-1);
+		break;
+	case 1:
+		GLCD.print("Bearing\n");
+		_value_encoder = (int)tracker.get_bearing();
+		rotary.configure(&_value_encoder, 360, 0, -4);
+		tracker.set_bearing(_value_encoder);
+		tracker.set_elevation(-1);
+		break;
+	case 2:
+		GLCD.print("Elevation\n");
+		_value_encoder = (int)tracker.get_elevation();
+		rotary.configure(&_value_encoder, 90, 0, -4);
+		tracker.set_bearing(-1);
+		tracker.set_elevation(_value_encoder);
+		break;
+	}
+
+	float val;
+	uint16_t val1,val2;
+	GLCD.CursorTo(0, 2);
+	val = tracker.get_bearing();
+	val1 = floor(val); val2 = floor((val-val1)*10+0.5);
+	GLCD.Printf("Bearing:   %3d.%ddegs\n",val1,val2);
+	val = tracker.get_elevation();
+	val1 = floor(val); val2 = floor((val-val1)*10+0.5);
+	GLCD.Printf("Elevation: %3d.%ddegs\n",val1,val2);
+	val = tracker.get_servo_pan()/1.80;
+	val1 = floor(val); val2 = floor((val-val1)*10+0.5);
+	GLCD.Printf("Pan:       %3d.%d%%\n",val1,val2);
+	val = tracker.get_servo_tilt()/1.80;
+	val1 = floor(val); val2 = floor((val-val1)*10+0.5);
+	GLCD.Printf("Tilt:      %3d.%d%%\n",val1,val2);
+
+	return 0;
+}
+
+uint8_t PageTracker::_refresh_slow() {
+	// This function gets called every two seconds
+
+	return 0;
+}
+
+// Note B_RIGHT and B_LEFT code always required for moving between pages:
+uint8_t PageTracker::_interact(uint8_t buttonid) {
+	switch (buttonid) {
+	case B_UP:
+		_state = constrain(_state-1,0,2);
+		break;
+	case B_DOWN:
+		_state = constrain(_state+1,0,2);
+		break;
+	case B_ENCODER:
+		if (_state == 1)
+			tracker.set_bearing(_value_encoder);
+		else if (_state == 2)
+			tracker.set_elevation(_value_encoder);
+		break;
+	case B_OK:
+		break;
+	case B_RIGHT:
+		Pages::move(1);
+		break;
+	case B_LEFT:
+		Pages::move(-1);
+		break;
+	case B_CANCEL:
+		Pages::move(0);
+		break;
+	}
+	return 0;
+}
+
+uint8_t PageTracker::_forceUpdate(uint8_t reason) {
 	return 0;
 }
 

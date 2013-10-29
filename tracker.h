@@ -30,7 +30,12 @@ public:
   ///
   void			update(void);
   float         get_bearing(void);
+  float         get_elevation(void);
+  void          set_bearing(float fake_bearing);
+  void          set_elevation(float fake_elevation);
   float         get_dist(void);
+  float         get_servo_pan(void);
+  float         get_servo_tilt(void);
 
 private:
   float   _pan;		///< Pan  servo position
@@ -38,6 +43,8 @@ private:
   float _uavDist; ///< Distance to UAV
   float _uavBear; ///< Bearing to UAV
   float _uavElev; ///< Elevation to UAV
+  float _fakeBear; ///< Bearing to UAV
+  float _fakeElev; ///< Elevation to UAV
   float _offset;  ///< An offset for rotating servo limit point, currently not used
   //        Servo Pan;		///< Pan servo
   //        Servo Tilt;		///< Tilt servo
