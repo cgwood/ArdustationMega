@@ -4,6 +4,7 @@
 // ------ Declare each page ------ //
 PageMain mainPage;
 PageStatus statusPage;
+PageMeasure measurementPage;
 PageSettings settingsPage;
 PageTracker trackerPage;
 PageHardware hardwarePage;
@@ -32,7 +33,8 @@ Pages::Pages() {
 
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
-	_pageids[1] = P_SETTINGS;
+	_pageids[1] = P_MEASURE;
+//	_pageids[1] = P_SETTINGS;
 	_pageids[2] = P_TRACKER;
 	_pageids[3] = P_HARDWARE;
 	_pageids[4] = P_UAVTEST;
@@ -45,18 +47,19 @@ uint8_t Pages::definePages() {
 	if (uav.type == MAV_TYPE_FIXED_WING) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
-		_pageids[2] = P_COMMANDS;
-		_pageids[3] = P_PARAMETERS; // APM parameters
-		_pageids[4] = P_PARAMETERS_CTUN; // APM Control tuning parameters
-		_pageids[5] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
-		_pageids[6] = P_PARAMETERS_TECS; // APM TECS tuning parameters
-		_pageids[7] = P_TRACKER;
-		_pageids[8] = P_HARDWARE;
-		_pageids[9] = P_UAVTEST;
-		_pageids[10] = P_GLCD;
-		_pageids[11] = P_SD;
-		_pageids[12] = P_SETTINGS;
-		_pagecount = 13;
+		_pageids[2] = P_MEASURE;
+		_pageids[3] = P_COMMANDS;
+		_pageids[4] = P_PARAMETERS; // APM parameters
+		_pageids[5] = P_PARAMETERS_CTUN; // APM Control tuning parameters
+		_pageids[6] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
+		_pageids[7] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[8] = P_TRACKER;
+		_pageids[9] = P_HARDWARE;
+		_pageids[10] = P_UAVTEST;
+		_pageids[11] = P_GLCD;
+		_pageids[12] = P_SD;
+		_pageids[13] = P_SETTINGS;
+		_pagecount = 14;
 	} else if (uav.type == MAV_TYPE_HELICOPTER
 			|| uav.type == MAV_TYPE_TRICOPTER
 			|| uav.type == MAV_TYPE_QUADROTOR
@@ -117,6 +120,9 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_SETTINGS:
 		return (&settingsPage);
+		break;
+	case P_MEASURE:
+		return (&measurementPage);
 		break;
 	case P_TRACKER:
 		return (&trackerPage);
@@ -600,6 +606,123 @@ uint8_t PageStatus::_forceUpdate(uint8_t reason) {
 //		GLCD.CursorTo(0, 12);
 //		GLCD.Printf("%d/%d", download_index, uav.onboard_param_count); //Parameters:
 //	}
+	return 0;
+}
+
+uint8_t PageMeasure::_enter() {
+	// This function gets called when the user switches to this page
+	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.print("Measurements");
+	GLCD.SelectFont(System5x7, BLACK);
+	return 0;
+}
+
+uint8_t PageMeasure::_refresh_med() {
+	// This function gets called ten times a second
+
+	if (_state == 1)
+		GLCD.SelectFont(System5x7, WHITE);
+	GLCD.CursorTo(0, 3);
+	_printName(_measurementids[0]);
+	GLCD.SelectFont(System5x7, BLACK);
+
+	if (_state == 2)
+		GLCD.SelectFont(System5x7, WHITE);
+	GLCD.CursorTo(0, 6);
+	_printName(_measurementids[1]);
+	GLCD.SelectFont(System5x7, BLACK);
+
+	GLCD.CursorTo(12, 3);
+	GLCD.SelectFont(fixednums8x16);
+	_printValue(_measurementids[0]);
+	GLCD.SelectFont(System5x7, BLACK);
+	GLCD.CursorTo(12, 6);
+	GLCD.SelectFont(fixednums8x16);
+	_printValue(_measurementids[1]);
+	GLCD.SelectFont(System5x7, BLACK);
+
+
+	return 0;
+}
+
+void PageMeasure::_printName(uint8_t measurementid)
+{
+	switch (measurementid) {
+	default:
+	case M_NONE:
+		GLCD.Printf_P(PSTR("Nothing    "));
+		break;
+	case M_ROLL:
+		GLCD.Printf_P(PSTR("      Roll:"));
+		break;
+	case M_PITCH:
+		GLCD.Printf_P(PSTR("     Pitch:"));
+		break;
+	case M_AIRSPEED:
+		GLCD.Printf_P(PSTR("  Airspeed:"));
+		break;
+	case M_THROTTLE:
+		GLCD.Printf_P(PSTR("  Throttle:"));
+		break;
+	}
+}
+
+void PageMeasure::_printValue(uint8_t measurementid)
+{
+	if (measurementid == M_NONE) {
+		GLCD.Printf_P(PSTR("     "));
+	}
+	else {
+		GLCD.Printf("%3d.%d", 123, 1);
+	}
+}
+
+uint8_t PageMeasure::_refresh_slow() {
+	// This function gets called every two seconds
+	return 0;
+}
+
+// Note B_RIGHT and B_LEFT code always required for moving between pages:
+uint8_t PageMeasure::_interact(uint8_t buttonid) {
+	switch (buttonid) {
+	case B_OK:
+		if (_state == 0) {
+			_state++;
+			rotary.configure(&_measurementids[0], M_COUNT-1, 0, -4);
+		}
+		break;
+	case B_UP:
+		_state = constrain(_state-1,0,2);
+		if (_state)
+			rotary.configure(&_measurementids[_state-1], M_COUNT-1, 0, -4);
+		break;
+	case B_DOWN:
+		_state = constrain(_state+1,0,2);
+		if (_state)
+			rotary.configure(&_measurementids[_state-1], M_COUNT-1, 0, -4);
+		break;
+	case B_RIGHT:
+		Pages::move(1);
+		break;
+	case B_LEFT:
+		Pages::move(-1);
+		break;
+	case B_CANCEL:
+		if (_state > 0)
+			_state = 0;
+		else
+			Pages::move(0);
+		break;
+	}
+
+	if (_state == 0)
+		rotary.configure(NULL, M_COUNT-1, 0, -4);
+
+	return 0;
+}
+
+uint8_t PageMeasure::_forceUpdate(uint8_t reason) {
 	return 0;
 }
 

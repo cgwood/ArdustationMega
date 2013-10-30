@@ -34,6 +34,7 @@ public:
 	  enum PAGEIDS {
 	    P_MAIN = 0,
 	    P_STATUS,
+	    P_MEASURE,
 		P_SETTINGS,
 	    P_COMMANDS,
 	    P_PARAMETERS,
@@ -193,6 +194,49 @@ protected:
 
 private:
   gText _textArea;
+};
+
+class PageMeasure :
+public Pages {
+public:
+	PageMeasure() {_state = 0;_measurementids[0]=M_PITCH;_measurementids[1]=M_AIRSPEED;};
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+
+  /// Print the measurement name
+  void _printName(uint8_t measurementid);
+
+  /// Print the measurement value
+  void _printValue(uint8_t measurementid);
+private:
+  uint8_t _state;
+  int _measurementids[2];
+
+  enum MEASUREMENTS {
+	  M_NONE = 0,
+	  M_ROLL,
+	  M_PITCH,
+	  M_AIRSPEED,
+	  M_THROTTLE,
+	  M_COUNT
+  };
 };
 
 // Tracker page - for debugging or configuring the antenna tracker
