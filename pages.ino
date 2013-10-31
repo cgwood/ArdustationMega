@@ -33,8 +33,8 @@ Pages::Pages() {
 
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
-	_pageids[1] = P_MEASURE;
-//	_pageids[1] = P_SETTINGS;
+//	_pageids[1] = P_MEASURE;
+	_pageids[1] = P_SETTINGS;
 	_pageids[2] = P_TRACKER;
 	_pageids[3] = P_HARDWARE;
 	_pageids[4] = P_UAVTEST;
@@ -422,10 +422,10 @@ uint8_t PageMain::_refresh_slow() {
 	GLCD.SelectFont(System5x7);
 	GLCD.CursorToXY(59, GLCD.Bottom - 8);
 	if (uav.type == MAV_TYPE_FIXED_WING) {
-		if (uav.airspeed > 10000)
-			GLCD.print(constrain((int) (uav.airspeed / 100.0), 0, 999));
+		if (uav.airspeed > 100)
+			GLCD.print(constrain((int) (uav.airspeed), 0, 999));
 		else
-			GLCD.print(constrain(uav.airspeed / 100.0, -9.9, 99.9), 1);
+			GLCD.print(constrain(uav.airspeed, -9.9, 99.9), 1);
 	}
 	else {
 		if (uav.vel > 10000)
