@@ -204,6 +204,17 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		uav.sat_count = packet.satellites_visible;
 		break;
 	}
+	case MAVLINK_MSG_ID_VFR_HUD:
+		// decode
+		mavlink_vfr_hud_t packet;
+		mavlink_msg_vfr_hud_decode(msg, &packet);
+
+		uav.airspeed = packet.airspeed;
+		uav.groundspeed = packet.groundspeed;
+		uav.climb = packet.climb;
+		uav.heading = packet.heading;
+		uav.throttle = packet.throttle;
+		break;
 	case MAVLINK_MSG_ID_GPS_STATUS : {
 		break;
 	}
@@ -466,10 +477,10 @@ void GCS_MAVLINK::data_stream_request(void) {
 	//        MAV_DATA_STREAM_EXTRA2};
 	//    const uint16_t MAVRates[maxStreams] = {0x02, 0x02, 0x05, 0x02, 0x05, 0x02};
 
-	const int maxStreams = 3;
-	const uint8_t MAVStreams[maxStreams] = { MAV_DATA_STREAM_EXTRA1,
+	const int maxStreams = 4;
+	const uint8_t MAVStreams[maxStreams] = { MAV_DATA_STREAM_EXTRA1, MAV_DATA_STREAM_EXTRA2,
 			MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION };
-	const uint16_t MAVRates[maxStreams] = { 0x10, 0x01, 0x01 };
+	const uint16_t MAVRates[maxStreams] = { 0x05, 0x05, 0x01, 0x01 };
 
 	for (int i = 0; i < maxStreams; i++) {
 		//        mavlink_msg_request_data_stream_send(chan,

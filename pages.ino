@@ -421,10 +421,18 @@ uint8_t PageMain::_refresh_slow() {
 	// Print Velocity
 	GLCD.SelectFont(System5x7);
 	GLCD.CursorToXY(59, GLCD.Bottom - 8);
-	if (uav.vel > 10000)
-		GLCD.print(constrain((int) (uav.vel / 100.0), 0, 999));
-	else
-		GLCD.print(constrain(uav.vel / 100.0, -9.9, 99.9), 1);
+	if (uav.type == MAV_TYPE_FIXED_WING) {
+		if (uav.airspeed > 10000)
+			GLCD.print(constrain((int) (uav.airspeed / 100.0), 0, 999));
+		else
+			GLCD.print(constrain(uav.airspeed / 100.0, -9.9, 99.9), 1);
+	}
+	else {
+		if (uav.vel > 10000)
+			GLCD.print(constrain((int) (uav.vel / 100.0), 0, 999));
+		else
+			GLCD.print(constrain(uav.vel / 100.0, -9.9, 99.9), 1);
+	}
 	GLCD.print("m/s");
 
 	// Print UAV Distance from Home
@@ -615,6 +623,11 @@ uint8_t PageMeasure::_enter() {
 	GLCD.SelectFont(Arial_bold_14);
 	GLCD.print("Measurements");
 	GLCD.SelectFont(System5x7, BLACK);
+
+	_textArea1.DefineArea(GLCD.CenterX + 8, 20, GLCD.Right-2, 39, SCROLL_UP);
+	_textArea1.SelectFont(fixednums8x16, BLACK);
+	_textArea2.DefineArea(GLCD.CenterX + 8, 44, GLCD.Right-2, 63, SCROLL_UP);
+	_textArea2.SelectFont(fixednums8x16, BLACK);
 	return 0;
 }
 
@@ -633,14 +646,14 @@ uint8_t PageMeasure::_refresh_med() {
 	_printName(_measurementids[1]);
 	GLCD.SelectFont(System5x7, BLACK);
 
-	GLCD.CursorTo(12, 3);
-	GLCD.SelectFont(fixednums8x16);
-	_printValue(_measurementids[0]);
-	GLCD.SelectFont(System5x7, BLACK);
-	GLCD.CursorTo(12, 6);
-	GLCD.SelectFont(fixednums8x16);
-	_printValue(_measurementids[1]);
-	GLCD.SelectFont(System5x7, BLACK);
+//	GLCD.CursorTo(12, 3);
+//	GLCD.SelectFont(fixednums8x16);
+	_printValue(_measurementids[0], &_textArea1);
+//	GLCD.SelectFont(System5x7, BLACK);
+//	GLCD.CursorTo(12, 6);
+//	GLCD.SelectFont(fixednums8x16);
+	_printValue(_measurementids[1], &_textArea2);
+//	GLCD.SelectFont(System5x7, BLACK);
 
 
 	return 0;
@@ -662,24 +675,64 @@ void PageMeasure::_printName(uint8_t measurementid)
 	case M_AIRSPEED:
 		GLCD.Printf_P(PSTR("  Airspeed:"));
 		break;
+	case M_GROUNDSPEED:
+		GLCD.Printf_P(PSTR("Ground spd:"));
+		break;
 	case M_THROTTLE:
 		GLCD.Printf_P(PSTR("  Throttle:"));
+		break;
+	case M_CLIMBRATE:
+		GLCD.Printf_P(PSTR("Climb Rate:"));
 		break;
 	}
 }
 
-void PageMeasure::_printValue(uint8_t measurementid)
+void PageMeasure::_printValue(uint8_t measurementid, gText *area)
 {
+	float val;
+	uint16_t val1;
+	uint8_t val2;
+
+	switch (measurementid) {
+	case M_ROLL:
+		val = uav.roll*57.2957795;
+		break;
+	case M_PITCH:
+		val = uav.pitch*57.2957795;
+		break;
+	case M_AIRSPEED:
+		val = uav.airspeed;
+		break;
+	case M_GROUNDSPEED:
+		val = uav.groundspeed;
+		break;
+	case M_THROTTLE:
+		val = uav.throttle;
+		break;
+	case M_CLIMBRATE:
+		val = uav.climb;
+		break;
+	default:
+		val = 0;
+		break;
+	}
+
+	val1 = floor(val);
+	val2 = floor((val-val1)*10 + 0.5);
+
 	if (measurementid == M_NONE) {
-		GLCD.Printf_P(PSTR("     "));
+		area->ClearArea();
+//		area->print("None  ");
 	}
 	else {
-		GLCD.Printf("%3d.%d", 123, 1);
+		area->ClearArea();
+		area->print(constrain(val,-99.9,999.9), 1);
 	}
 }
 
 uint8_t PageMeasure::_refresh_slow() {
 	// This function gets called every two seconds
+	Serial.println(uav.pitch);
 	return 0;
 }
 

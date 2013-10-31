@@ -224,17 +224,20 @@ protected:
   void _printName(uint8_t measurementid);
 
   /// Print the measurement value
-  void _printValue(uint8_t measurementid);
+  void _printValue(uint8_t measurementid, gText *area);
 private:
   uint8_t _state;
   int _measurementids[2];
+  gText _textArea1, _textArea2;
 
   enum MEASUREMENTS {
 	  M_NONE = 0,
 	  M_ROLL,
 	  M_PITCH,
 	  M_AIRSPEED,
+	  M_GROUNDSPEED,
 	  M_THROTTLE,
+	  M_CLIMBRATE,
 	  M_COUNT
   };
 };

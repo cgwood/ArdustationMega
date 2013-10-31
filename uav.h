@@ -78,6 +78,11 @@ struct vehicle {
   float rollspeed; ///< Roll angular speed (rad/s)
   float pitchspeed; ///< Pitch angular speed (rad/s)
   float yawspeed; ///< Yaw angular speed (rad/s)
+  float airspeed; ///< Current airspeed in m/s
+  float groundspeed; ///< Current ground speed in m/s
+  float climb; ///< Current climb rate in meters/second
+  int16_t heading; ///< Current heading in degrees, in compass units (0..360, 0=north)
+  uint16_t throttle; ///< Current throttle setting in integer percent, 0 to 100
   uint16_t load; ///< Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000
   uint16_t voltage_battery; ///< Battery voltage, in millivolts (1 = 1 millivolt)
   uint8_t type; ///< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
