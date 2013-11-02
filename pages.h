@@ -35,6 +35,7 @@ public:
 	    P_MAIN = 0,
 	    P_STATUS,
 	    P_MEASURE,
+	    P_PLOT,
 		P_SETTINGS,
 	    P_COMMANDS,
 	    P_PARAMETERS,
@@ -229,6 +230,64 @@ private:
   uint8_t _state;
   int _measurementids[2];
   gText _textArea1, _textArea2;
+
+  enum MEASUREMENTS {
+	  M_NONE = 0,
+	  M_ROLL,
+	  M_PITCH,
+	  M_AIRSPEED,
+	  M_GROUNDSPEED,
+	  M_THROTTLE,
+	  M_CLIMBRATE,
+	  M_COUNT
+  };
+};
+
+#define PLOTW 121
+
+class PagePlot :
+public Pages {
+public:
+	PagePlot() {_state = 0;_measurementid=M_ROLL;};
+
+protected:
+  /// One off function, executes on page enter
+  virtual uint8_t _enter();
+
+  /// Force update the page
+  virtual uint8_t _forceUpdate(uint8_t reason);
+
+  /// One off function, executes on uav type change
+  virtual uint8_t _redefine(){};
+
+  /// refresh page - medium items (10Hz)
+  virtual uint8_t _refresh_med();
+
+  /// refresh page - slow items (0.5 Hz)
+  virtual uint8_t _refresh_slow();
+
+  /// Interact with the page
+  virtual uint8_t _interact(uint8_t buttonid);
+
+  /// Print the measurement name
+  void _printName(uint8_t measurementid);
+
+  /// Get the value for the measurement
+  uint8_t _getValueInt(uint8_t measurementid);
+  float _getValue(uint8_t measurementid);
+
+  /// Plots the stored values
+  void _plot();
+
+  /// Clears the last plot
+  void _clearPlot();
+
+  /// Adds a value to the buffer
+  void _addValue(uint8_t value);
+private:
+  uint8_t _state;
+  int _measurementid;
+  uint8_t _values[PLOTW];
 
   enum MEASUREMENTS {
 	  M_NONE = 0,

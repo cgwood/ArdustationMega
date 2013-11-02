@@ -480,7 +480,7 @@ void GCS_MAVLINK::data_stream_request(void) {
 	const int maxStreams = 4;
 	const uint8_t MAVStreams[maxStreams] = { MAV_DATA_STREAM_EXTRA1, MAV_DATA_STREAM_EXTRA2,
 			MAV_DATA_STREAM_EXTENDED_STATUS, MAV_DATA_STREAM_POSITION };
-	const uint16_t MAVRates[maxStreams] = { 0x05, 0x05, 0x01, 0x01 };
+	const uint16_t MAVRates[maxStreams] = { 0x10, 0x05, 0x01, 0x01 };
 
 	for (int i = 0; i < maxStreams; i++) {
 		//        mavlink_msg_request_data_stream_send(chan,

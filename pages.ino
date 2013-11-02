@@ -5,6 +5,7 @@
 PageMain mainPage;
 PageStatus statusPage;
 PageMeasure measurementPage;
+PagePlot plottingPage;
 PageSettings settingsPage;
 PageTracker trackerPage;
 PageHardware hardwarePage;
@@ -48,18 +49,19 @@ uint8_t Pages::definePages() {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
 		_pageids[2] = P_MEASURE;
-		_pageids[3] = P_COMMANDS;
-		_pageids[4] = P_PARAMETERS; // APM parameters
-		_pageids[5] = P_PARAMETERS_CTUN; // APM Control tuning parameters
-		_pageids[6] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
-		_pageids[7] = P_PARAMETERS_TECS; // APM TECS tuning parameters
-		_pageids[8] = P_TRACKER;
-		_pageids[9] = P_HARDWARE;
-		_pageids[10] = P_UAVTEST;
-		_pageids[11] = P_GLCD;
-		_pageids[12] = P_SD;
-		_pageids[13] = P_SETTINGS;
-		_pagecount = 14;
+		_pageids[3] = P_PLOT;
+		_pageids[4] = P_COMMANDS;
+		_pageids[5] = P_PARAMETERS; // APM parameters
+		_pageids[6] = P_PARAMETERS_CTUN; // APM Control tuning parameters
+		_pageids[7] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
+		_pageids[8] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[9] = P_TRACKER;
+		_pageids[10] = P_HARDWARE;
+		_pageids[11] = P_UAVTEST;
+		_pageids[12] = P_GLCD;
+		_pageids[13] = P_SD;
+		_pageids[14] = P_SETTINGS;
+		_pagecount = 15;
 	} else if (uav.type == MAV_TYPE_HELICOPTER
 			|| uav.type == MAV_TYPE_TRICOPTER
 			|| uav.type == MAV_TYPE_QUADROTOR
@@ -123,6 +125,9 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_MEASURE:
 		return (&measurementPage);
+		break;
+	case P_PLOT:
+		return (&plottingPage);
 		break;
 	case P_TRACKER:
 		return (&trackerPage);
@@ -732,7 +737,6 @@ void PageMeasure::_printValue(uint8_t measurementid, gText *area)
 
 uint8_t PageMeasure::_refresh_slow() {
 	// This function gets called every two seconds
-	Serial.println(uav.pitch);
 	return 0;
 }
 
@@ -776,6 +780,212 @@ uint8_t PageMeasure::_interact(uint8_t buttonid) {
 }
 
 uint8_t PageMeasure::_forceUpdate(uint8_t reason) {
+	return 0;
+}
+
+uint8_t PagePlot::_enter() {
+	// This function gets called when the user switches to this page
+	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.print("Plotting");
+	GLCD.SelectFont(System5x7, BLACK);
+
+	// Plot the axis markers on RHS (Essentially marks for 0,25,50,75,100 percent)
+	GLCD.DrawLine(GLCD.Right, GLCD.Bottom, GLCD.Right, GLCD.Bottom-32);
+	GLCD.DrawLine(PLOTW+1, GLCD.Bottom, GLCD.Right, GLCD.Bottom); // 0
+	GLCD.DrawLine(PLOTW+3, GLCD.Bottom-8, GLCD.Right, GLCD.Bottom-8); // 25
+	GLCD.DrawLine(PLOTW+3, GLCD.Bottom-16, GLCD.Right, GLCD.Bottom-16); // 50
+	GLCD.DrawLine(PLOTW+3, GLCD.Bottom-24, GLCD.Right, GLCD.Bottom-24); // 75
+	GLCD.DrawLine(PLOTW+1, GLCD.Bottom-32, GLCD.Right, GLCD.Bottom-32); // 100
+	return 0;
+}
+
+uint8_t PagePlot::_refresh_med() {
+	// This function gets called ten times a second
+	uint8_t value;
+	float value_float;
+
+	if (_state == 1)
+		GLCD.SelectFont(System5x7, WHITE);
+	GLCD.CursorTo(0, 2);
+	_printName(_measurementid);
+	GLCD.SelectFont(System5x7, BLACK);
+
+	if (_measurementid != M_NONE) {
+		value_float = _getValue(_measurementid);
+		GLCD.println(value_float);
+		value = _getValueInt(_measurementid);
+		_clearPlot();
+		_addValue(value);
+		_plot();
+	}
+
+
+	return 0;
+}
+
+uint8_t PagePlot::_getValueInt(uint8_t measurementid)
+{
+	uint8_t val;
+
+	switch (measurementid) {
+	case M_ROLL:
+		val = constrain(uav.roll*10,-16,16)+16; // Only give +- 90 degs
+		break;
+	case M_PITCH:
+		val = constrain(uav.pitch*10,-16,16)+16; // Only give +- 90 degs
+		break;
+	case M_AIRSPEED:
+		val = constrain(uav.airspeed,0,32);
+		break;
+	case M_GROUNDSPEED:
+		val = constrain(uav.groundspeed,0,32);
+		break;
+	case M_THROTTLE:
+		val = map(uav.throttle,0,100,0,32);
+		break;
+	case M_CLIMBRATE:
+		val = constrain(uav.climb+16,-16,16);
+		break;
+	default:
+		val = 0;
+		break;
+	}
+
+	return val;
+}
+
+float PagePlot::_getValue(uint8_t measurementid)
+{
+	float val;
+
+	switch (measurementid) {
+	case M_ROLL:
+		val = uav.roll*57.2957795;
+		break;
+	case M_PITCH:
+		val = uav.pitch*57.2957795;
+		break;
+	case M_AIRSPEED:
+		val = uav.airspeed;
+		break;
+	case M_GROUNDSPEED:
+		val = uav.groundspeed;
+		break;
+	case M_THROTTLE:
+		val = uav.throttle;
+		break;
+	case M_CLIMBRATE:
+		val = uav.climb;
+		break;
+	default:
+		val = 0;
+		break;
+	}
+
+	return val;
+}
+
+void PagePlot::_addValue(uint8_t value)
+{
+	uint8_t i;
+	for (i=0;i<(PLOTW-1);i++) {
+		_values[i] = _values[i+1];
+	}
+	_values[PLOTW-1] = value;
+}
+
+void PagePlot::_printName(uint8_t measurementid)
+{
+	switch (measurementid) {
+	default:
+	case M_NONE:
+		GLCD.Printf_P(PSTR("Nothing    "));
+		break;
+	case M_ROLL:
+		GLCD.Printf_P(PSTR("      Roll:"));
+		break;
+	case M_PITCH:
+		GLCD.Printf_P(PSTR("     Pitch:"));
+		break;
+	case M_AIRSPEED:
+		GLCD.Printf_P(PSTR("  Airspeed:"));
+		break;
+	case M_GROUNDSPEED:
+		GLCD.Printf_P(PSTR("Ground spd:"));
+		break;
+	case M_THROTTLE:
+		GLCD.Printf_P(PSTR("  Throttle:"));
+		break;
+	case M_CLIMBRATE:
+		GLCD.Printf_P(PSTR("Climb Rate:"));
+		break;
+	}
+}
+
+void PagePlot::_plot()
+{
+	uint8_t i;
+	for (i=0;i<PLOTW;i++) {
+		GLCD.SetDot(i,GLCD.Bottom-_values[i], BLACK);  // draws a BLACK pixel at x,y
+	}
+}
+
+void PagePlot::_clearPlot()
+{
+	uint8_t i;
+	for (i=0;i<PLOTW;i++) {
+		GLCD.SetDot(i,GLCD.Bottom-_values[i], WHITE);  // erases the pixel at x,y
+	}
+}
+
+uint8_t PagePlot::_refresh_slow() {
+	// This function gets called every two seconds
+//	uint8_t i,vmin,vmax;
+//	vmin = 255;
+//	vmax = 0;
+//	for (i=0;i<128;i++) {
+//		vmin = min(vmin,_values[i]);
+//		vmax = max(vmax,_values[i]);
+//	}
+//	Serial.print(vmin);
+//	Serial.print(", ");
+//	Serial.println(vmax);
+	return 0;
+}
+
+// Note B_RIGHT and B_LEFT code always required for moving between pages:
+uint8_t PagePlot::_interact(uint8_t buttonid) {
+	switch (buttonid) {
+	case B_OK:
+		_state = 1;
+		rotary.configure(&_measurementid, M_COUNT-1, 0, -4);
+		break;
+	case B_UP:
+		break;
+	case B_DOWN:
+		break;
+	case B_RIGHT:
+		Pages::move(1);
+		break;
+	case B_LEFT:
+		Pages::move(-1);
+		break;
+	case B_CANCEL:
+		if (_state > 0)
+			_state = 0;
+		else
+			Pages::move(0);
+		break;
+	}
+
+	if (_state == 0)
+		rotary.configure(NULL, M_COUNT-1, 0, -4);
+
+	return 0;
+}
+
+uint8_t PagePlot::_forceUpdate(uint8_t reason) {
 	return 0;
 }
 
