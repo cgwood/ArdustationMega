@@ -22,6 +22,7 @@ PageParams PlaneParametersPageTECS(ParamTitlePlaneTECS, ParamNamesPlaneTECS, par
 //PagePlaneParametersNTUN PlaneParametersPageNTUN;
 //PagePlaneParametersTECS PlaneParametersPageTECS;
 PageParams RoverParametersPage(ParamTitleRover, ParamNamesRover, paramTable_rover, ParamScalesRover, ParamDPsRover, PARAM_COUNT_ROVER, uav.param_rover, uav.param_rover_avail);
+PageParams RoverSonarPage(ParamTitleRoverSonar, ParamNamesRoverSonar, paramTable_rover_sonar, ParamScalesRoverSonar, ParamDPsRoverSonar, PARAM_COUNT_ROVER_SONAR, uav.param_rover_sonar, uav.param_rover_sonar_avail);
 PageParams CopterParametersPage(ParamTitleCopter, ParamNamesCopter, paramTable_copter, ParamScalesCopter, ParamDPsCopter, PARAM_COUNT_COPTER, uav.param_copter, uav.param_copter_avail);
 //PageRoverParameters RoverParametersPage;
 //PageCopterParameters CopterParametersPage;
@@ -91,13 +92,14 @@ uint8_t Pages::definePages() {
 		_pageids[1] = P_STATUS;
 		_pageids[2] = P_COMMANDS;
 		_pageids[3] = P_ROVER_PARAMETERS; // Rover parameters
-		_pageids[4] = P_TRACKER;
-		_pageids[5] = P_HARDWARE;
-		_pageids[6] = P_UAVTEST;
-		_pageids[7] = P_GLCD;
-		_pageids[8] = P_SD;
-		_pageids[9] = P_SETTINGS;
-		_pagecount = 10;
+		_pageids[4] = P_ROVER_PARAMETERS_SONAR; // Rover parameters
+		_pageids[5] = P_TRACKER;
+		_pageids[6] = P_HARDWARE;
+		_pageids[7] = P_UAVTEST;
+		_pageids[8] = P_GLCD;
+		_pageids[9] = P_SD;
+		_pageids[10] = P_SETTINGS;
+		_pagecount = 11;
 	} else { // Default option - AP Unknown
 		_pageids[0] = P_MAIN;
 		_pageids[2] = P_STATUS;
@@ -171,6 +173,9 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_ROVER_PARAMETERS:
 		return (&RoverParametersPage);
+		break;
+	case P_ROVER_PARAMETERS_SONAR:
+		return (&RoverSonarPage);
 		break;
 	case P_COPTER_PARAMETERS:
 		return (&CopterParametersPage);
