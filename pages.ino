@@ -13,12 +13,14 @@ PageUAVtest UAVtestPage;
 PageGLCDtest GLCDPage;
 PageSDtest SDPage;
 PagePID PIDPage;
-PageParams Params1(ParamTitlePlane, ParamNamesPlane, paramTable_plane, ParamScales, ParamDPs, PARAM_COUNT_PLANE, uav.param_plane, uav.param_plane_avail);
-PageParams Params2(ParamTitlePlaneCTUN, ParamNamesPlaneCTUN, paramTable_plane_ctun, ParamScalesCTUN, ParamDPsCTUN, PARAM_COUNT_PLANE_CTUN, uav.param_plane_ctun, uav.param_plane_ctun_avail);
-PagePlaneParameters PlaneParametersPage;
-PagePlaneParametersCTUN PlaneParametersPageCTUN;
-PagePlaneParametersNTUN PlaneParametersPageNTUN;
-PagePlaneParametersTECS PlaneParametersPageTECS;
+PageParams PlaneParametersPage(ParamTitlePlane, ParamNamesPlane, paramTable_plane, ParamScales, ParamDPs, PARAM_COUNT_PLANE, uav.param_plane, uav.param_plane_avail);
+PageParams PlaneParametersPageCTUN(ParamTitlePlaneCTUN, ParamNamesPlaneCTUN, paramTable_plane_ctun, ParamScalesCTUN, ParamDPsCTUN, PARAM_COUNT_PLANE_CTUN, uav.param_plane_ctun, uav.param_plane_ctun_avail);
+PageParams PlaneParametersPageNTUN(ParamTitlePlaneNTUN, ParamNamesPlaneNTUN, paramTable_plane_ntun, ParamScalesNTUN, ParamDPsNTUN, PARAM_COUNT_PLANE_NTUN, uav.param_plane_ntun, uav.param_plane_ntun_avail);
+PageParams PlaneParametersPageTECS(ParamTitlePlaneTECS, ParamNamesPlaneTECS, paramTable_plane_tecs, ParamScalesTECS, ParamDPsTECS, PARAM_COUNT_PLANE_TECS, uav.param_plane_tecs, uav.param_plane_tecs_avail);
+//PagePlaneParameters PlaneParametersPage;
+//PagePlaneParametersCTUN PlaneParametersPageCTUN;
+//PagePlaneParametersNTUN PlaneParametersPageNTUN;
+//PagePlaneParametersTECS PlaneParametersPageTECS;
 PageRoverParameters RoverParametersPage;
 PageCopterParameters CopterParametersPage;
 PageCommands CommandsPage;     ////< a page for sending commands to the APM
@@ -36,16 +38,14 @@ Pages::Pages() {
 
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
-	_pageids[1] = P_PARAMS1;
-	_pageids[2] = P_PARAMS2;
-	_pageids[3] = P_STATUS;
+	_pageids[1] = P_STATUS;
 //	_pageids[1] = P_MEASURE;
-	_pageids[4] = P_SETTINGS;
-	_pageids[5] = P_TRACKER;
-	_pageids[6] = P_HARDWARE;
-	_pageids[7] = P_UAVTEST;
-	_pageids[8] = P_SD;
-	_pagecount = 9;
+	_pageids[2] = P_SETTINGS;
+	_pageids[3] = P_TRACKER;
+	_pageids[4] = P_HARDWARE;
+	_pageids[5] = P_UAVTEST;
+	_pageids[6] = P_SD;
+	_pagecount = 7;
 
 }
 
@@ -53,10 +53,8 @@ uint8_t Pages::definePages() {
 	if (uav.type == MAV_TYPE_FIXED_WING) {
 		_pageids[0] = P_MAIN;
 		_pageids[1] = P_STATUS;
-		_pageids[2] = P_PARAMS1;
-		_pageids[3] = P_PARAMS2;
-//		_pageids[2] = P_MEASURE;
-//		_pageids[3] = P_PLOT;
+		_pageids[2] = P_MEASURE;
+		_pageids[3] = P_PLOT;
 		_pageids[4] = P_COMMANDS;
 		_pageids[5] = P_PARAMETERS; // APM parameters
 		_pageids[6] = P_PARAMETERS_CTUN; // APM Control tuning parameters
@@ -156,12 +154,6 @@ Pages::_currPage(uint8_t pageid) {
 		break;
 	case P_PID:
 		return (&PIDPage);
-		break;
-	case P_PARAMS1:
-		return (&Params1);
-		break;
-	case P_PARAMS2:
-		return (&Params2);
 		break;
 	case P_PARAMETERS:
 		return (&PlaneParametersPage);

@@ -138,6 +138,8 @@ PROGMEM const prog_char ParamNamesPlaneNTUN[] = "L1 Period   \n"
 												"WP Radius   \n"
 												"Lim Roll CD \n";
 
+PROGMEM const prog_char ParamTitlePlaneNTUN[] = "Navigation Tuning";
+
 const uint8_t ParamScalesNTUN[] = {0,0,0,2}; // *10^(-x)
 const uint8_t ParamDPsNTUN[] =    {2,2,2,2}; // 99 in both denotes boolean
 
@@ -191,6 +193,8 @@ PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
 												"TECS ClmbMax\n"
 												"TECS T Const\n"
 												"Tecs PchDamp\n";
+
+PROGMEM const prog_char ParamTitlePlaneTECS[] = "TECS Tuning";
 
 const uint8_t ParamScalesTECS[] = {0,2,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
 const uint8_t ParamDPsTECS[] =    {0,1,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
