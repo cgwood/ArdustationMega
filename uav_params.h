@@ -275,6 +275,8 @@ PROGMEM const prog_char ParamNamesRover[]  = "Throttle min\n"
 		 "FS Thr en   \n"
 		 "FS Thr value\n";
 
+PROGMEM const prog_char ParamTitleRover[] = "Parameters";
+
 PROGMEM const char *paramTable_rover[] = { param_rover_0, param_rover_1,
 		param_rover_2, param_rover_3, param_rover_4, param_rover_5,
 		param_rover_6, param_rover_7, param_rover_8, param_rover_9,
@@ -330,6 +332,8 @@ PROGMEM const prog_char ParamNamesCopter[] = "Throttle Hov\n"
 		 "Land Speed  \n"
 		 "Throttle Min\n"
 		 "Throttle Max\n";
+
+PROGMEM const prog_char ParamTitleCopter[] = "Parameters";
 
 PROGMEM const char *paramTable_copter[] = { param_copter_0, param_copter_1,
 		param_copter_2, param_copter_3, param_copter_4, param_copter_5,

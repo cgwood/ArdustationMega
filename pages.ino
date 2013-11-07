@@ -21,8 +21,10 @@ PageParams PlaneParametersPageTECS(ParamTitlePlaneTECS, ParamNamesPlaneTECS, par
 //PagePlaneParametersCTUN PlaneParametersPageCTUN;
 //PagePlaneParametersNTUN PlaneParametersPageNTUN;
 //PagePlaneParametersTECS PlaneParametersPageTECS;
-PageRoverParameters RoverParametersPage;
-PageCopterParameters CopterParametersPage;
+PageParams RoverParametersPage(ParamTitleRover, ParamNamesRover, paramTable_rover, ParamScalesRover, ParamDPsRover, PARAM_COUNT_ROVER, uav.param_rover, uav.param_rover_avail);
+PageParams CopterParametersPage(ParamTitleCopter, ParamNamesCopter, paramTable_copter, ParamScalesCopter, ParamDPsCopter, PARAM_COUNT_COPTER, uav.param_copter, uav.param_copter_avail);
+//PageRoverParameters RoverParametersPage;
+//PageCopterParameters CopterParametersPage;
 PageCommands CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page

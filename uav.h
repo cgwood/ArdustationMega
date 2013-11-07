@@ -107,12 +107,12 @@ struct vehicle {
   bool param_plane_tecs_avail[PARAM_COUNT_PLANE_TECS];
   // Copter parameters
   float param_copter[PARAM_COUNT_COPTER];
-  float param_copter_avail[PARAM_COUNT_COPTER];
+  bool param_copter_avail[PARAM_COUNT_COPTER];
   float rate_pid_copter[RATE_PID_COUNT_COPTER];
-  float rate_pid_copter_avail[RATE_PID_COUNT_COPTER];
+  bool rate_pid_copter_avail[RATE_PID_COUNT_COPTER];
   // Rover parameters
   float param_rover[PARAM_COUNT_ROVER];
-  float param_rover_avail[PARAM_COUNT_ROVER];
+  bool param_rover_avail[PARAM_COUNT_ROVER];
   // How many parameters are stored on the UAV
   int16_t onboard_param_count;
   // Have we ever connected
@@ -120,7 +120,7 @@ struct vehicle {
   // When did we connect
   unsigned long connTime;
   // have we ever requested the parameters
-  boolean bln_requested_params;
+  bool bln_requested_params;
 };
 
 // Create a vehicle instance called uav
