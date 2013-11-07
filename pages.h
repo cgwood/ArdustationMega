@@ -38,6 +38,8 @@ public:
 	    P_PLOT,
 		P_SETTINGS,
 	    P_COMMANDS,
+	    P_PARAMS1,
+	    P_PARAMS2,
 	    P_PARAMETERS,
 	    P_PARAMETERS_CTUN,
 	    P_PARAMETERS_NTUN,

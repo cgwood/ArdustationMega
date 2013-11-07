@@ -21,6 +21,8 @@ enum PARAMS_PLANE {
 	PARAM_COUNT_PLANE
 };
 
+PROGMEM const prog_char ParamTitlePlane[] = "General Params";
+
 // Parameter page - plane params
 prog_char param_plane_0[] PROGMEM = "TRIM_AUTO";
 prog_char param_plane_1[] PROGMEM = "ARSPD_RATIO";
@@ -103,6 +105,8 @@ PROGMEM const prog_char ParamNamesPlaneCTUN[] = "Roll P      \n"
 												"Yaw Damp    \n"
 												"Yaw Roll    \n"
 												"Yaw Int     \n";
+
+PROGMEM const prog_char ParamTitlePlaneCTUN[] = "Control Tuning";
 
 const uint8_t ParamScalesCTUN[] = {0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,0,0}; // *10^(-x)
 const uint8_t ParamDPsCTUN[] =    {2,2,2,1,2,2,2,2,2,1,2,2,2,2,2,2,2,2}; // 99 in both denotes boolean
