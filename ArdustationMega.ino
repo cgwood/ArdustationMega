@@ -4,7 +4,7 @@
 // Special thanks go to the ArduPilot and Mavlink dev teams and Michael Smith
 
 // Development settings
-#define JDDEV    // development settings for jDrones people
+//#define JDDEV    // development settings for jDrones people
 
 
 
