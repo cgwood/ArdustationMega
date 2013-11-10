@@ -33,6 +33,8 @@ Pages::Pages() {
 	// Hack. Would prefer to just call definePages from here
 	//	definePages();
 
+	// NOTE, THE FINAL TWO PAGES MUST BE P_STATUS AND P_SETTINGS
+
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
 	_pageids[1] = P_TRACKER;
