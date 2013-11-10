@@ -272,6 +272,9 @@ void PageParams::_uploadLocal(void) {
 
 	// Reset _state
 	_state = 0;
+
+	// Redraw the screen (gets rid of upload confirm message)
+	_drawLocal();
 }
 
 uint8_t PageParams::_redefine(void) {
