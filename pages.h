@@ -63,6 +63,9 @@ public:
   /// Move page
   static uint8_t move(int8_t dir);
 
+  /// Move to specific page
+  static uint8_t moveTo(int8_t pageid);
+
   /// Force update the page
   static void forceUpdate(uint8_t reason);
 

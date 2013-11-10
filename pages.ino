@@ -35,13 +35,12 @@ Pages::Pages() {
 
 	// Default option - AP Unknown
 	_pageids[0] = P_MAIN;
-	_pageids[1] = P_STATUS;
-//	_pageids[1] = P_MEASURE;
-	_pageids[2] = P_SETTINGS;
-	_pageids[3] = P_TRACKER;
-	_pageids[4] = P_HARDWARE;
-	_pageids[5] = P_UAVTEST;
-	_pageids[6] = P_SD;
+	_pageids[1] = P_TRACKER;
+	_pageids[2] = P_HARDWARE;
+	_pageids[3] = P_UAVTEST;
+	_pageids[4] = P_SD;
+	_pageids[5] = P_STATUS;
+	_pageids[6] = P_SETTINGS;
 	_pagecount = 7;
 
 }
@@ -49,17 +48,17 @@ Pages::Pages() {
 uint8_t Pages::definePages() {
 	if (uav.type == MAV_TYPE_FIXED_WING) {
 		_pageids[0] = P_MAIN;
-		_pageids[1] = P_STATUS;
-		_pageids[2] = P_MEASURE;
-		_pageids[3] = P_PLOT;
-		_pageids[4] = P_COMMANDS;
-		_pageids[5] = P_PARAMETERS; // APM parameters
-		_pageids[6] = P_PARAMETERS_CTUN; // APM Control tuning parameters
-		_pageids[7] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
-		_pageids[8] = P_PARAMETERS_TECS; // APM TECS tuning parameters
-		_pageids[9] = P_TRACKER;
-		_pageids[10] = P_UAVTEST;
-		_pageids[11] = P_SD;
+		_pageids[1] = P_MEASURE;
+		_pageids[2] = P_PLOT;
+		_pageids[3] = P_COMMANDS;
+		_pageids[4] = P_PARAMETERS; // APM parameters
+		_pageids[5] = P_PARAMETERS_CTUN; // APM Control tuning parameters
+		_pageids[6] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
+		_pageids[7] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[8] = P_TRACKER;
+		_pageids[9] = P_UAVTEST;
+		_pageids[10] = P_SD;
+		_pageids[11] = P_STATUS;
 		_pageids[12] = P_SETTINGS;
 		_pagecount = 13;
 	} else if (uav.type == MAV_TYPE_HELICOPTER
@@ -68,40 +67,40 @@ uint8_t Pages::definePages() {
 			|| uav.type == MAV_TYPE_HEXAROTOR
 			|| uav.type == MAV_TYPE_OCTOROTOR) {
 		_pageids[0] = P_MAIN;
-		_pageids[1] = P_STATUS;
-		_pageids[2] = P_COMMANDS;
-		_pageids[3] = P_PID;               // ACM Rate PIDs
-		_pageids[4] = P_COPTER_PARAMETERS; // Copter parameters
-		_pageids[5] = P_TRACKER;
-		_pageids[6] = P_HARDWARE;
-		_pageids[7] = P_UAVTEST;
-		_pageids[8] = P_GLCD;
-		_pageids[9] = P_SD;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_PID;               // ACM Rate PIDs
+		_pageids[3] = P_COPTER_PARAMETERS; // Copter parameters
+		_pageids[4] = P_TRACKER;
+		_pageids[5] = P_HARDWARE;
+		_pageids[6] = P_UAVTEST;
+		_pageids[7] = P_GLCD;
+		_pageids[8] = P_SD;
+		_pageids[9] = P_STATUS;
 		_pageids[10] = P_SETTINGS;
 		_pagecount = 11;
 	} else if (uav.type == MAV_TYPE_GROUND_ROVER) {
 		_pageids[0] = P_MAIN;
-		_pageids[1] = P_STATUS;
-		_pageids[2] = P_COMMANDS;
-		_pageids[3] = P_ROVER_PARAMETERS; // Rover parameters
-		_pageids[4] = P_ROVER_PARAMETERS_SONAR; // Rover parameters
-		_pageids[5] = P_TRACKER;
-		_pageids[6] = P_HARDWARE;
-		_pageids[7] = P_UAVTEST;
-		_pageids[8] = P_GLCD;
-		_pageids[9] = P_SD;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_ROVER_PARAMETERS; // Rover parameters
+		_pageids[3] = P_ROVER_PARAMETERS_SONAR; // Rover parameters
+		_pageids[4] = P_TRACKER;
+		_pageids[5] = P_HARDWARE;
+		_pageids[6] = P_UAVTEST;
+		_pageids[7] = P_GLCD;
+		_pageids[8] = P_SD;
+		_pageids[9] = P_STATUS;
 		_pageids[10] = P_SETTINGS;
 		_pagecount = 11;
 	} else { // Default option - AP Unknown
 		_pageids[0] = P_MAIN;
-		_pageids[2] = P_STATUS;
-		_pageids[3] = P_COMMANDS;
-		_pageids[4] = P_HARDWARE;
-		_pageids[5] = P_UAVTEST;
-		_pageids[6] = P_GLCD;
-		_pageids[7] = P_SD;
-		_pageids[8] = P_SETTINGS;
-		_pagecount = 9;
+		_pageids[1] = P_COMMANDS;
+		_pageids[2] = P_HARDWARE;
+		_pageids[3] = P_UAVTEST;
+		_pageids[4] = P_GLCD;
+		_pageids[5] = P_SD;
+		_pageids[6] = P_STATUS;
+		_pageids[7] = P_SETTINGS;
+		_pagecount = 8;
 	}
 	pageindex = 0;
 
@@ -183,13 +182,35 @@ uint8_t Pages::move(int8_t dir) {
 	} else
 		return (0);
 
-	if (pageindex >= _pagecount) { //P_COUNT) {
+	if (pageindex >= _pagecount-2) { //P_COUNT) {
 		pageindex--;
 		return (0);
 	}
 
-	// Beep about it
-	//	beep.play(BEEP_KEY);
+	// Draw all of the new page now
+	lcd.ClearArea();
+	GLCD.ClearScreen();
+	_currPage(pageindex)->_enter();
+	_currPage(pageindex)->_refresh_slow();
+	_currPage(pageindex)->_refresh_med();
+	return (0);
+}
+
+uint8_t Pages::moveTo(int8_t pageid) {
+	uint8_t i;
+
+	// Find the page index from pageid
+	for (i=0;i<_pagecount;i++) {
+		if (_pageids[i] == pageid) {
+			pageindex = i;
+			break;
+		}
+	}
+
+	if (i==_pagecount) {
+//		Serial.println("Invalid page id");
+		return 0;
+	}
 
 	// Draw all of the new page now
 	lcd.ClearArea();
@@ -508,11 +529,14 @@ uint8_t PageMain::_interact(uint8_t buttonid) {
 	case B_OK:
 //		gcs_passthrough = !gcs_passthrough; // quick hack to enable / disable gcs passthrough
 		break;
+	case B_OK_HOLD:
+		Pages::moveTo(P_SETTINGS);
+		break;
 	case B_RIGHT:
 		Pages::move(1);
 		break;
 	case B_LEFT:
-		Pages::move(-1);
+		Pages::moveTo(P_STATUS);
 		break;
 	case B_CANCEL:
 		Pages::move(0);
@@ -606,11 +630,11 @@ uint8_t PageStatus::_interact(uint8_t buttonid) {
 	case B_OK:
 		break;
 	case B_RIGHT:
-		Pages::move(1);
+		Pages::move(0);
 		break;
-	case B_LEFT:
-		Pages::move(-1);
-		break;
+//	case B_LEFT:
+//		Pages::move(-1);
+//		break;
 	case B_CANCEL:
 		Pages::move(0);
 		break;
@@ -764,10 +788,11 @@ uint8_t PageMeasure::_interact(uint8_t buttonid) {
 			rotary.configure(&_measurementids[_state-1], M_COUNT-1, 0, -4);
 		break;
 	case B_RIGHT:
-		Pages::move(1);
+//		Pages::move(1);
+		Pages::move(P_MAIN);
 		break;
 	case B_LEFT:
-		Pages::move(-1);
+//		Pages::move(-1);
 		break;
 	case B_CANCEL:
 		if (_state > 0)

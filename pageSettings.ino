@@ -325,10 +325,10 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 		break;
 	case B_LEFT:
 		// Navigation
-		if (_state == 0)
-			Pages::move(-1);
+//		if (_state == 0)
+//			Pages::move(-1);
 		// Editing
-		else if (_state > 100 && _state < 200
+		if (_state > 100 && _state < 200
 				&& !(_scale[_state - 101] == 99 && 99 == _decPos[_state - 101])) {
 			_alterLocal(-10 * pow(10, _scale[_state - 101] - _decPos[_state - 101]));
 			_redrawLocal();
@@ -339,10 +339,10 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 		break;
 	case B_RIGHT:
 		// Navigation
-		if (_state == 0)
-			Pages::move(1);
+//		if (_state == 0)
+//			Pages::move(1);
 		// Editing
-		else if (_state > 100 && _state < 200
+		if (_state > 100 && _state < 200
 				&& !(_scale[_state - 101] == 99 && 99 == _decPos[_state - 101])) {
 			_alterLocal(10 * pow(10, _scale[_state - 101] - _decPos[_state - 101]));
 			_redrawLocal();

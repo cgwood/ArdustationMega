@@ -387,7 +387,7 @@ PageCommands::_interact(uint8_t buttonid)
             _state = 0;
             _updated = true;
           }
-          
+          break;
   }
   _paintMarker();
 }
