@@ -335,12 +335,12 @@ uint8_t PageParams::_interact(uint8_t buttonid) {
 	case B_DOWN:
 		// Navigation
 		if (_state == 0) {
-			if (_stateFirstVal < _paramCount - LINECOUNT) {
+			if (_stateFirstVal < _paramCount - _linecount) {
 				_stateFirstVal++;
 				_drawLocal();
 			}
 		} else if (_state > 0 && _state < _paramCount) {
-			if (_state == (_stateFirstVal + LINECOUNT)) {
+			if (_state == (_stateFirstVal + _linecount)) {
 				_stateFirstVal++;
 				_drawLocal();
 			}
