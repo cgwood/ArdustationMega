@@ -17,15 +17,9 @@ PageParams PlaneParametersPage(ParamTitlePlane, ParamNamesPlane, paramTable_plan
 PageParams PlaneParametersPageCTUN(ParamTitlePlaneCTUN, ParamNamesPlaneCTUN, paramTable_plane_ctun, ParamScalesCTUN, ParamDPsCTUN, PARAM_COUNT_PLANE_CTUN, uav.param_plane_ctun, uav.param_plane_ctun_avail);
 PageParams PlaneParametersPageNTUN(ParamTitlePlaneNTUN, ParamNamesPlaneNTUN, paramTable_plane_ntun, ParamScalesNTUN, ParamDPsNTUN, PARAM_COUNT_PLANE_NTUN, uav.param_plane_ntun, uav.param_plane_ntun_avail);
 PageParams PlaneParametersPageTECS(ParamTitlePlaneTECS, ParamNamesPlaneTECS, paramTable_plane_tecs, ParamScalesTECS, ParamDPsTECS, PARAM_COUNT_PLANE_TECS, uav.param_plane_tecs, uav.param_plane_tecs_avail);
-//PagePlaneParameters PlaneParametersPage;
-//PagePlaneParametersCTUN PlaneParametersPageCTUN;
-//PagePlaneParametersNTUN PlaneParametersPageNTUN;
-//PagePlaneParametersTECS PlaneParametersPageTECS;
 PageParams RoverParametersPage(ParamTitleRover, ParamNamesRover, paramTable_rover, ParamScalesRover, ParamDPsRover, PARAM_COUNT_ROVER, uav.param_rover, uav.param_rover_avail);
 PageParams RoverSonarPage(ParamTitleRoverSonar, ParamNamesRoverSonar, paramTable_rover_sonar, ParamScalesRoverSonar, ParamDPsRoverSonar, PARAM_COUNT_ROVER_SONAR, uav.param_rover_sonar, uav.param_rover_sonar_avail);
 PageParams CopterParametersPage(ParamTitleCopter, ParamNamesCopter, paramTable_copter, ParamScalesCopter, ParamDPsCopter, PARAM_COUNT_COPTER, uav.param_copter, uav.param_copter_avail);
-//PageRoverParameters RoverParametersPage;
-//PageCopterParameters CopterParametersPage;
 PageCommands CommandsPage;     ////< a page for sending commands to the APM
 
 // Index of current page
