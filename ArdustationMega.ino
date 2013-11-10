@@ -70,6 +70,7 @@
 #include "pagesPlane.h"	        // Contains the Plane LCD pages
 #include "pagesRover.h"	        // Contains the Rover LCD pages
 #include "pagesCopter.h"	    // Contains the Copter LCD pages
+#include "pagesParams.h"
 
 
 // GPS declarations

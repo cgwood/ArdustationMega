@@ -21,6 +21,8 @@ enum PARAMS_PLANE {
 	PARAM_COUNT_PLANE
 };
 
+PROGMEM const prog_char ParamTitlePlane[] = "General Params";
+
 // Parameter page - plane params
 prog_char param_plane_0[] PROGMEM = "TRIM_AUTO";
 prog_char param_plane_1[] PROGMEM = "ARSPD_RATIO";
@@ -104,6 +106,8 @@ PROGMEM const prog_char ParamNamesPlaneCTUN[] = "Roll P      \n"
 												"Yaw Roll    \n"
 												"Yaw Int     \n";
 
+PROGMEM const prog_char ParamTitlePlaneCTUN[] = "Control Tuning";
+
 const uint8_t ParamScalesCTUN[] = {0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,0,0,0}; // *10^(-x)
 const uint8_t ParamDPsCTUN[] =    {2,2,2,1,2,2,2,2,2,1,2,2,2,2,2,2,2,2}; // 99 in both denotes boolean
 
@@ -133,6 +137,8 @@ PROGMEM const prog_char ParamNamesPlaneNTUN[] = "L1 Period   \n"
 												"L1 Damping  \n"
 												"WP Radius   \n"
 												"Lim Roll CD \n";
+
+PROGMEM const prog_char ParamTitlePlaneNTUN[] = "Navigation Tuning";
 
 const uint8_t ParamScalesNTUN[] = {0,0,0,2}; // *10^(-x)
 const uint8_t ParamDPsNTUN[] =    {2,2,2,2}; // 99 in both denotes boolean
@@ -187,6 +193,8 @@ PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
 												"TECS ClmbMax\n"
 												"TECS T Const\n"
 												"Tecs PchDamp\n";
+
+PROGMEM const prog_char ParamTitlePlaneTECS[] = "TECS Tuning";
 
 const uint8_t ParamScalesTECS[] = {0,2,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
 const uint8_t ParamDPsTECS[] =    {0,1,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
@@ -267,11 +275,89 @@ PROGMEM const prog_char ParamNamesRover[]  = "Throttle min\n"
 		 "FS Thr en   \n"
 		 "FS Thr value\n";
 
+PROGMEM const prog_char ParamTitleRover[] = "Parameters";
+
 PROGMEM const char *paramTable_rover[] = { param_rover_0, param_rover_1,
 		param_rover_2, param_rover_3, param_rover_4, param_rover_5,
 		param_rover_6, param_rover_7, param_rover_8, param_rover_9,
 		param_rover_10, param_rover_11, param_rover_12, param_rover_13,
 		param_rover_14, param_rover_15, param_rover_16, param_rover_17, param_rover_18 };
+
+
+enum PARAMS_ROVER_SONAR {
+	// Parameter page parameters
+	SONAR_PIN=0,
+	SONAR_SCALING,
+	SONAR_OFFSET,
+	SONAR_FUNCTION,
+	SONAR_MIN_CM,
+	SONAR_MAX_CM,
+	SONAR1_ENABLE,
+	SONAR_STOP_PIN,
+	SONAR_SETTLE_MS,
+	SONAR2_PIN,
+	SONAR2_SCALING,
+	SONAR2_OFFSET,
+	SONAR2_FUNCTION,
+	SONAR2_MIN_CM,
+	SONAR2_MAX_CM,
+	SONAR2_ENABLE,
+	SONAR2_STOP_PIN,
+	SONAR2_SETTLE_MS,
+	// Parameter count
+	PARAM_COUNT_ROVER_SONAR
+};
+
+const uint8_t ParamScalesRoverSonar[] = {0,0,0,0,0,0,99,0,0,0,0,0,0,0,0,99,0,0}; // *10^(-x)
+const uint8_t ParamDPsRoverSonar[] =    {0,0,0,0,0,0,99,0,0,0,0,0,0,0,0,99,0,0}; // 99 in both denotes boolean
+
+// Parameter page - rover params
+prog_char param_rover_sonar_0[] PROGMEM = "SONAR_PIN";
+prog_char param_rover_sonar_1[] PROGMEM = "SONAR_SCALING";
+prog_char param_rover_sonar_2[] PROGMEM = "SONAR_OFFSET";
+prog_char param_rover_sonar_3[] PROGMEM = "SONAR_FUNCTION";
+prog_char param_rover_sonar_4[] PROGMEM = "SONAR_MIN_CM";
+prog_char param_rover_sonar_5[] PROGMEM = "SONAR_MAX_CM";
+prog_char param_rover_sonar_6[] PROGMEM = "SONAR_ENABLE";
+prog_char param_rover_sonar_7[] PROGMEM = "SONAR_STOP_PIN";
+prog_char param_rover_sonar_8[] PROGMEM = "SONAR_SETTLE_MS";
+prog_char param_rover_sonar_9[] PROGMEM = "SONAR2_PIN";
+prog_char param_rover_sonar_10[] PROGMEM = "SONAR2_SCALING";
+prog_char param_rover_sonar_11[] PROGMEM = "SONAR2_OFFSET";
+prog_char param_rover_sonar_12[] PROGMEM = "SONAR2_FUNCTION";
+prog_char param_rover_sonar_13[] PROGMEM = "SONAR2_MIN_CM";
+prog_char param_rover_sonar_14[] PROGMEM = "SONAR2_MAX_CM";
+prog_char param_rover_sonar_15[] PROGMEM = "SONAR2_ENABLE";
+prog_char param_rover_sonar_16[] PROGMEM = "SONAR2_STOP_PIN";
+prog_char param_rover_sonar_17[] PROGMEM = "SONAR2_SETTLE_MS";
+
+//                                                "123456789012"
+PROGMEM const prog_char ParamNamesRoverSonar[]  = "Sonar 1 Pin \n"
+												  "Snr1 Scaling\n"
+												  "Snr1 Offset \n"
+												  "Snr1 Func.  \n"
+												  "Snr1 Min CM \n"
+												  "Snr1 Max CM \n"
+												  "Snr1 Enable \n"
+												  "Snr1 StopPin\n"
+												  "Snr1 Settle \n"
+												  "Sonar 2 Pin \n"
+												  "Snr2 Scaling\n"
+												  "Snr2 Offset \n"
+												  "Snr2 Func.  \n"
+												  "Snr2 Min CM \n"
+												  "Snr2 Max CM \n"
+												  "Snr2 Enable \n"
+												  "Snr2 StopPin\n"
+												  "Snr2 Settle \n";
+
+PROGMEM const prog_char ParamTitleRoverSonar[] = "Sonar Settings";
+
+PROGMEM const char *paramTable_rover_sonar[] = { param_rover_sonar_0, param_rover_sonar_1,
+		param_rover_sonar_2, param_rover_sonar_3, param_rover_sonar_4, param_rover_sonar_5,
+		param_rover_sonar_6, param_rover_sonar_7, param_rover_sonar_8, param_rover_sonar_9,
+		param_rover_sonar_10, param_rover_sonar_11, param_rover_sonar_12, param_rover_sonar_13,
+		param_rover_sonar_14, param_rover_sonar_15, param_rover_sonar_16, param_rover_sonar_17 };
 
 // ------------------------------ ROTARY WING ------------------------------ //
 enum PARAMS_COPTER {
@@ -322,6 +408,8 @@ PROGMEM const prog_char ParamNamesCopter[] = "Throttle Hov\n"
 		 "Land Speed  \n"
 		 "Throttle Min\n"
 		 "Throttle Max\n";
+
+PROGMEM const prog_char ParamTitleCopter[] = "Parameters";
 
 PROGMEM const char *paramTable_copter[] = { param_copter_0, param_copter_1,
 		param_copter_2, param_copter_3, param_copter_4, param_copter_5,

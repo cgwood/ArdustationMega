@@ -317,6 +317,16 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 					Pages::forceUpdate(Pages::R_PARAM);
 				}
 			}
+			for (uint8_t i = 0; i < PARAM_COUNT_ROVER_SONAR; i++) {
+				strcpy_P(txt_id, (char*) pgm_read_word(&(paramTable_rover_sonar[i])));
+				if (strncmp(txt_id, (const char*) packet.param_id, 16) == 0) {
+					uav.param_rover_sonar[i] = packet.param_value;
+					uav.param_rover_sonar_avail[i] = 1;
+
+					// Update the parameter pages
+					Pages::forceUpdate(Pages::R_PARAM);
+				}
+			}
 		} else if (uav.type == MAV_TYPE_HELICOPTER
 				|| uav.type == MAV_TYPE_TRICOPTER
 				|| uav.type == MAV_TYPE_QUADROTOR
