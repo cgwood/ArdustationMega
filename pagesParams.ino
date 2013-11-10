@@ -172,11 +172,16 @@ void PageParams::_clearMarker(void) {
 }
 
 void PageParams::_alterLocal(float alterMag) {
-	// We don't do negative values here
-	if (_value_temp + alterMag < 0)
-		_value_temp = 0;
+	// Assume we don't allow negative values
+	if (_state-101 != LIM_PITCH_MIN || _ParamScales != ParamScalesTECS)
+		_value_temp = constrain(_value_temp+alterMag,0,9999);
 	else
-		_value_temp += alterMag;
+		_value_temp = constrain(_value_temp+alterMag,-9999,9999);
+
+//	if (_value_temp + alterMag < 0)
+//		_value_temp = 0;
+//	else
+//		_value_temp += alterMag;
 
 	// Keep the encoder value updated
 	if (_ParamScales[_state - 101] == 99 && 99 == _ParamDPs[_state - 101]) {
@@ -381,8 +386,11 @@ uint8_t PageParams::_interact(uint8_t buttonid) {
 					_value_encoder = (int) (_value_temp);
 					rotary.configure(&_value_encoder, 1, 0, -4);
 				} else {
-					_value_encoder = (int) (_value_temp / (pow(10, _ParamScales[_state - 1] - _ParamDPs[_state - 1]))); // * 100;
-					rotary.configure(&_value_encoder, 9999, 0, -4);
+					_value_encoder = (int) (_value_temp / (pow(10, _ParamScales[_state - 1] - _ParamDPs[_state - 1])));
+					if (_state-1 != LIM_PITCH_MIN || _ParamScales != ParamScalesTECS)
+						rotary.configure(&_value_encoder, 9999, 0, -4);
+					else
+						rotary.configure(&_value_encoder, 9999, -9999, -4);
 				}
 
 				// Update the state
