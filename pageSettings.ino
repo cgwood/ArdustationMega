@@ -21,9 +21,20 @@ PageSettings::PageSettings() {
 	// Ensure we're at the top of the page not editing anything to start with
 	_state = 0;
 	_stateFirstVal = 0;
+
+	_linecount = LCD_ROWS-2;
+
+	_settingsLCD = gText(0, 16, LCD_COLUMNS, _linecount, SystemFont5x7);
 }
 
 uint8_t PageSettings::_enter(void) {
+	// Draw the header
+	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.Printf_P(PSTR("ASM Settings"));
+	GLCD.SelectFont(System5x7);
+
+	// Draw the content
 	_drawLocal();
 }
 
@@ -53,16 +64,16 @@ void PageSettings::_drawLocal(void) {
 	uint32_t value;
 	float value_local;
 
-	lcd.ClearArea();
+	_settingsLCD.ClearArea();
 	// Write the value names down the left hand side
 	i = 0;
-	for (j = 0; j < _stateFirstVal + LINECOUNT; j++) { //Need to go from zero to read through the string
+	for (j = 0; j < _stateFirstVal + _linecount; j++) { //Need to go from zero to read through the string
 		// If there are less settings than available lines, quit at end of list
 		if (j >= _settingsCount)
 			break;
 
 		if (j >= _stateFirstVal)
-			lcd.CursorTo(0, j - _stateFirstVal);
+			_settingsLCD.CursorTo(0, j - _stateFirstVal);
 
 		k = 0;
 
@@ -74,14 +85,14 @@ void PageSettings::_drawLocal(void) {
 				break;
 			else {
 				if (j >= _stateFirstVal && k++ < PARAMNAMEFIELDWIDTH)
-					lcd.write(c);
+					_settingsLCD.write(c);
 			}
 		}
 	}
 
 	// Write the values
-	for (lineno = 0; lineno < LINECOUNT; lineno++) {
-		lcd.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
+	for (lineno = 0; lineno < _linecount; lineno++) {
+		_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
 
 		i = _stateFirstVal + lineno;
 		if (i >= _settingsCount)
@@ -97,19 +108,19 @@ void PageSettings::_drawLocal(void) {
 
 		char text_value[7];
 		nvram.load_setting_text(&i, -32768, text_value);
-		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
-		GLCD.print(text_value);
+		_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
+		_settingsLCD.print(text_value);
 	}
 }
 
 /// Draw the "choosing" marker
 void PageSettings::_paintMarker(void) {
 	if (_state > 0 && _state < 100) {
-		lcd.CursorTo(PARAMNAMEFIELDWIDTH, _state - 1 - _stateFirstVal);
-		lcd.write('>');
+		_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH, _state - 1 - _stateFirstVal);
+		_settingsLCD.write('>');
 	} else if (_state > 100 && _state < 200) {
-		lcd.CursorTo(PARAMNAMEFIELDWIDTH, _state - 101 - _stateFirstVal);
-		lcd.write('#');
+		_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH, _state - 101 - _stateFirstVal);
+		_settingsLCD.write('#');
 	}
 }
 
@@ -117,10 +128,10 @@ void PageSettings::_paintMarker(void) {
 void PageSettings::_clearMarker(void) {
 	if (_state > 0 && _state < 200) {
 		if (_state > 100)
-			lcd.CursorTo(PARAMNAMEFIELDWIDTH, _state - 101 - _stateFirstVal);
+			_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH, _state - 101 - _stateFirstVal);
 		else
-			lcd.CursorTo(PARAMNAMEFIELDWIDTH, _state - 1 - _stateFirstVal);
-		lcd.write(' ');
+			_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH, _state - 1 - _stateFirstVal);
+		_settingsLCD.write(' ');
 	}
 }
 
@@ -177,8 +188,8 @@ void PageSettings::_redrawLocal(void) {
 
 		// Write the value
 		lineno = i - _stateFirstVal;
-		GLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
-		GLCD.print(text_value);
+		_settingsLCD.CursorTo(PARAMNAMEFIELDWIDTH + 2, lineno);
+		_settingsLCD.print(text_value);
 	}
 }
 
@@ -243,12 +254,12 @@ uint8_t PageSettings::_interact(uint8_t buttonid) {
 	case B_DOWN:
 		// Navigation
 		if (_state == 0) {
-			if (_stateFirstVal < _settingsCount - LINECOUNT) {
+			if (_stateFirstVal < _settingsCount - _linecount) {
 				_stateFirstVal++;
 				_drawLocal();
 			}
 		} else if (_state > 0 && _state < _settingsCount) {
-			if (_state == (_stateFirstVal + LINECOUNT)) {
+			if (_state == (_stateFirstVal + _linecount)) {
 				_stateFirstVal++;
 				_drawLocal();
 			}

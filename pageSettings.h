@@ -41,6 +41,11 @@ protected:
   void            _redrawLocal();
   void            _voidLocal(void);
   void            _writeChanges(void);
+
+private:
+	uint8_t _linecount;
+	gText _settingsLCD;
+
 private:
   /// current state of the internal navigation state machine
   uint8_t                 _state;

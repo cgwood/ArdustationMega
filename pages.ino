@@ -58,12 +58,10 @@ uint8_t Pages::definePages() {
 		_pageids[7] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
 		_pageids[8] = P_PARAMETERS_TECS; // APM TECS tuning parameters
 		_pageids[9] = P_TRACKER;
-		_pageids[10] = P_HARDWARE;
-		_pageids[11] = P_UAVTEST;
-		_pageids[12] = P_GLCD;
-		_pageids[13] = P_SD;
-		_pageids[14] = P_SETTINGS;
-		_pagecount = 15;
+		_pageids[10] = P_UAVTEST;
+		_pageids[11] = P_SD;
+		_pageids[12] = P_SETTINGS;
+		_pagecount = 13;
 	} else if (uav.type == MAV_TYPE_HELICOPTER
 			|| uav.type == MAV_TYPE_TRICOPTER
 			|| uav.type == MAV_TYPE_QUADROTOR

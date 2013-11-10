@@ -496,6 +496,10 @@ private:
   /// text to be displayed for APM settings, up to xxx characters
   const prog_char *_textCommands;
   
+  /// Local LCD
+  uint8_t _linecount;
+  gText _cmdLCD;
+
   /// current state of the internal navigation state machine
   uint8_t                     _state;
   

@@ -4,8 +4,6 @@
 #define COMMANDFIELDWIDTH 18
 #define CMDVALCOUNT       6
 
-#define LINECOUNT 8
-
 
 PROGMEM const prog_char textCommands[] =
 		  //123456789012345678
@@ -74,16 +72,26 @@ PROGMEM const prog_char confirmReset_Home[] =
 
 PageCommands::PageCommands()
 {
-  /// Copy the header and types to internal storage
-  _textCommands = textCommands;
+	/// Copy the header and types to internal storage
+	_textCommands = textCommands;
+
+	// Set up the local LCD def
+	_linecount = LCD_ROWS-2;
+	_cmdLCD = gText(0, 16, LCD_COLUMNS, _linecount, SystemFont5x7);
 }
 
 
 uint8_t
 PageCommands::_enter()
 {     
-//  lcd.ClearArea();
-  _drawLocal();
+	// Draw the header
+	GLCD.CursorTo(0, 0);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.Printf_P(PSTR("UAV Commands"));
+	GLCD.SelectFont(System5x7);
+
+	// Draw the contents
+	_drawLocal();
 }
 
 
@@ -126,13 +134,13 @@ PageCommands::_drawLocal(void)
   const prog_char *str;
   str = _textCommands;
   
-  lcd.ClearArea();
+  _cmdLCD.ClearArea();
   row = 0;
   
   i=0;
-  for(j=0;j<_stateFirstVal+LINECOUNT;j++) { //Need to go from zero to read through the string
+  for(j=0;j<_stateFirstVal+_linecount;j++) { //Need to go from zero to read through the string
     if (j>=_stateFirstVal)
-      lcd.CursorTo(1,j-_stateFirstVal);
+      _cmdLCD.CursorTo(1,j-_stateFirstVal);
       
     k=0;
 
@@ -144,7 +152,7 @@ PageCommands::_drawLocal(void)
         break;
       else {
         if (j>=_stateFirstVal && j<CMDVALCOUNT && k++<COMMANDFIELDWIDTH)
-          lcd.write(c);
+          _cmdLCD.write(c);
       }
     }
   }
@@ -158,8 +166,8 @@ void
 PageCommands::_paintMarker(void)
 {
   if (_state > 0 && _state < 100) {
-    lcd.CursorTo(0,_state-1 - _stateFirstVal);
-    lcd.write('>');
+    _cmdLCD.CursorTo(0,_state-1 - _stateFirstVal);
+    _cmdLCD.write('>');
   }
 }
 
@@ -168,8 +176,8 @@ void
 PageCommands::_clearMarker(void)
 {
   if (_state > 0 && _state < 200) {
-    lcd.CursorTo(0,_state-1 - _stateFirstVal);
-    lcd.write(' ');
+    _cmdLCD.CursorTo(0,_state-1 - _stateFirstVal);
+    _cmdLCD.write(' ');
   }
 }
 
@@ -204,7 +212,7 @@ PageCommands::_commandConfirmMessage(const prog_char *str)
   uint8_t         c;
   uint8_t         row;
   
-  lcd.ClearArea();
+  _cmdLCD.ClearArea();
   row = 0;
   
   for (;;) {
@@ -212,11 +220,11 @@ PageCommands::_commandConfirmMessage(const prog_char *str)
     if (0 == c)
       break;
     if ('\n' == c) {
-      lcd.CursorTo(0, ++row);
+      _cmdLCD.CursorTo(0, ++row);
       continue;
     }
     // emit
-    lcd.write(c);
+    _cmdLCD.write(c);
   }
 }
 
@@ -315,14 +323,14 @@ PageCommands::_interact(uint8_t buttonid)
   case B_DOWN:
           // Navigation
           if (_state == 0) {
-            if (_stateFirstVal < CMDVALCOUNT-LINECOUNT) {
+            if (_stateFirstVal < CMDVALCOUNT-_linecount) {
               _stateFirstVal++;
               _updated = true;
             }
           }
           // Picking
           else if (_state > 0 && _state < CMDVALCOUNT) {
-            if (_state == (_stateFirstVal + LINECOUNT)) {
+            if (_state == (_stateFirstVal + _linecount)) {
               _stateFirstVal++;
               _updated = true;
             }
