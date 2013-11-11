@@ -790,11 +790,10 @@ uint8_t PageMeasure::_interact(uint8_t buttonid) {
 			rotary.configure(&_measurementids[_state-1], M_COUNT-1, 0, -4);
 		break;
 	case B_RIGHT:
-//		Pages::move(1);
-		Pages::move(P_MAIN);
+		Pages::move(1);
 		break;
 	case B_LEFT:
-//		Pages::move(-1);
+		Pages::move(-1);
 		break;
 	case B_CANCEL:
 		if (_state > 0)
