@@ -13,6 +13,7 @@
 enum PARAMS_PLANE {
 	// Parameter page parameters
 	TRIM_AUTO=0,
+	THR_PASS_STAB,
 	ARSPD_RATIO,
 	ARSPD_AUTOCAL,
 	SCALING_SPEED,
@@ -25,23 +26,25 @@ PROGMEM const prog_char ParamTitlePlane[] = "General Params";
 
 // Parameter page - plane params
 prog_char param_plane_0[] PROGMEM = "TRIM_AUTO";
-prog_char param_plane_1[] PROGMEM = "ARSPD_RATIO";
-prog_char param_plane_2[] PROGMEM = "ARSPD_AUTOCAL";
-prog_char param_plane_3[] PROGMEM = "SCALING_SPEED";
-prog_char param_plane_4[] PROGMEM = "LOG_BITMASK";
+prog_char param_plane_1[] PROGMEM = "THR_PASS_STAB";
+prog_char param_plane_2[] PROGMEM = "ARSPD_RATIO";
+prog_char param_plane_3[] PROGMEM = "ARSPD_AUTOCAL";
+prog_char param_plane_4[] PROGMEM = "SCALING_SPEED";
+prog_char param_plane_5[] PROGMEM = "LOG_BITMASK";
 
 
 //                                          "123456789012"
 PROGMEM const prog_char ParamNamesPlane[] = "InFlightTrim\n"
+											"ThrPass Stab\n"
 											"Airsd Ratio \n"
 											"AirsdAutoCal\n"
 											"ScalingSpeed\n"
 											"Log Bitmask \n";
 
-const uint8_t ParamScales[] = {99,0,99,0,0}; // *10^(-x)
-const uint8_t ParamDPs[] =    {99,3,99,1,0}; // 99 in both denotes boolean
+const uint8_t ParamScales[] = {99,99,0,99,0,0}; // *10^(-x)
+const uint8_t ParamDPs[] =    {99,99,3,99,1,0}; // 99 in both denotes boolean
 
-PROGMEM const char *paramTable_plane[] = { param_plane_0, param_plane_1, param_plane_2, param_plane_3, param_plane_4};
+PROGMEM const char *paramTable_plane[] = { param_plane_0, param_plane_1, param_plane_2, param_plane_3, param_plane_4, param_plane_5};
 
 enum PARAMS_PLANE_CTUN {
 	// Parameter page parameters
@@ -159,8 +162,10 @@ enum PARAMS_PLANE_TECS {
 	TECS_SINK_MIN,
 	TECS_SINK_MAX,
 	TECS_CLMB_MAX,
+	TECS_RLL2THR,
 	TECS_TIME_CONST,
 	TECS_PTCH_DAMP,
+	TECS_INTEG_GAIN,
 	// Parameter count
 	PARAM_COUNT_PLANE_TECS
 };
@@ -176,8 +181,10 @@ prog_char param_plane_tecs_7[] PROGMEM = "LIM_PITCH_MAX";
 prog_char param_plane_tecs_8[] PROGMEM = "TECS_SINK_MIN";
 prog_char param_plane_tecs_9[] PROGMEM = "TECS_SINK_MAX";
 prog_char param_plane_tecs_10[] PROGMEM = "TECS_CLMB_MAX";
-prog_char param_plane_tecs_11[] PROGMEM = "TECS_TIME_CONST";
-prog_char param_plane_tecs_12[] PROGMEM = "TECS_PTCH_DAMP";
+prog_char param_plane_tecs_11[] PROGMEM = "TECS_RLL2THR";
+prog_char param_plane_tecs_12[] PROGMEM = "TECS_TIME_CONST";
+prog_char param_plane_tecs_13[] PROGMEM = "TECS_PTCH_DAMP";
+prog_char param_plane_tecs_14[] PROGMEM = "TECS_INTEG_GAIN";
 
 //                                              "123456789012"
 PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
@@ -191,18 +198,21 @@ PROGMEM const prog_char ParamNamesPlaneTECS[] = "Airspeed Min\n"
 												"TECS SinkMin\n"
 												"TECS SinkMax\n"
 												"TECS ClmbMax\n"
+												"Roll 2 Thrtl\n"
 												"TECS T Const\n"
-												"Tecs PchDamp\n";
+												"TECS PchDamp\n"
+												"TECS Integrl\n";
 
 PROGMEM const prog_char ParamTitlePlaneTECS[] = "TECS Tuning";
 
-const uint8_t ParamScalesTECS[] = {0,2,0,0,0,0,2,2,0,0,0,0,0}; // *10^(-x)
-const uint8_t ParamDPsTECS[] =    {0,1,0,0,0,0,1,1,2,2,2,2,2}; // 99 in both denotes boolean
+const uint8_t ParamScalesTECS[] = {0,2,0,0,0,0,2,2,0,0,0,0,0,0,0}; // *10^(-x)
+const uint8_t ParamDPsTECS[] =    {0,1,0,0,0,0,1,1,2,2,2,0,2,2,2}; // 99 in both denotes boolean
 
 PROGMEM const char *paramTable_plane_tecs[] = { param_plane_tecs_0, param_plane_tecs_1,
 		param_plane_tecs_2, param_plane_tecs_3, param_plane_tecs_4, param_plane_tecs_5,
 		param_plane_tecs_6, param_plane_tecs_7, param_plane_tecs_8, param_plane_tecs_9,
-		param_plane_tecs_10, param_plane_tecs_11, param_plane_tecs_12};
+		param_plane_tecs_10, param_plane_tecs_11, param_plane_tecs_12, param_plane_tecs_13,
+		param_plane_tecs_14};
 
 // ------------------------------ ROVERS ------------------------------ //
 enum PARAMS_ROVER {

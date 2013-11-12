@@ -55,8 +55,8 @@ uint8_t Pages::definePages() {
 		_pageids[3] = P_COMMANDS;
 		_pageids[4] = P_PARAMETERS; // APM parameters
 		_pageids[5] = P_PARAMETERS_CTUN; // APM Control tuning parameters
-		_pageids[6] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
-		_pageids[7] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[6] = P_PARAMETERS_TECS; // APM TECS tuning parameters
+		_pageids[7] = P_PARAMETERS_NTUN; // APM Navigation tuning parameters
 		_pageids[8] = P_TRACKER;
 		_pageids[9] = P_UAVTEST;
 		_pageids[10] = P_SD;
