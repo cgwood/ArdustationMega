@@ -10,6 +10,24 @@
 #define UAV_PARAMS_H_
 
 // ------------------------------ FIXED WING ------------------------------ //
+
+// Flight mode enumeration, taken from APM:Plane 2.75
+enum FlightMode {
+    MANUAL        = 0,
+    CIRCLE        = 1,
+    STABILIZE     = 2,
+    TRAINING      = 3,
+    ACRO          = 4,
+    FLY_BY_WIRE_A = 5,
+    FLY_BY_WIRE_B = 6,
+    CRUISE        = 7,
+    AUTO          = 10,
+    RTL           = 11,
+    LOITER        = 12,
+    GUIDED        = 15,
+    INITIALISING  = 16
+};
+
 enum PARAMS_PLANE {
 	// Parameter page parameters
 	TRIM_AUTO=0,

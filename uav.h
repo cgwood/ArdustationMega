@@ -18,7 +18,9 @@ struct vehicle {
   uint8_t type; ///< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
   uint8_t autopilot; ///< Autopilot type / class. defined in MAV_AUTOPILOT ENUM
   uint8_t sysid; ///< MAV System ID
+  uint32_t custom_mode; ///< A bitfield for use for autopilot-specific flags.
   uint8_t base_mode; ///< System mode bitfield, see MAV_MODE_FLAGS ENUM in mavlink/include/mavlink_types.h
+  uint8_t system_status; ///< System status flag, see MAV_STATE ENUM
   float lat;
   float lon;
   float alt;

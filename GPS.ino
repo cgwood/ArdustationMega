@@ -35,10 +35,10 @@ GPS::update(void)
     if (!result) {
         if ((tnow - _idleTimer) > idleTimeout) {
 //            Debug("gps read timeout %lu %lu", (unsigned long)tnow, (unsigned long)_idleTimer);
-            Serial.print("gps read timeout ");
-            Serial.print((unsigned long)tnow);
-            Serial.print(", ");
-            Serial.println((unsigned long)_idleTimer);
+//            Serial.print("gps read timeout ");
+//            Serial.print((unsigned long)tnow);
+//            Serial.print(", ");
+//            Serial.println((unsigned long)_idleTimer);
             _status = NO_GPS;
 
             init(_nav_setting);

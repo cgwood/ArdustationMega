@@ -109,8 +109,23 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg) {
 		}
 		ASM.last_hb = now;
 
-		// Update mode
+//		if (uav.custom_mode != packet.custom_mode) {
+//			Serial.print("Custom mode: ");
+//			Serial.println(packet.custom_mode);
+//		}
+//		if (uav.base_mode != packet.base_mode) {
+//			Serial.print("base_mode: ");
+//			Serial.println(packet.base_mode);
+//		}
+//		if (uav.system_status != packet.system_status) {
+//			Serial.print("system_status: ");
+//			Serial.println(packet.system_status);
+//		}
+
+		// Update modes and status
+		uav.custom_mode = packet.custom_mode;
 		uav.base_mode = packet.base_mode;
+		uav.system_status = packet.system_status;
 
 		if (uav.sysid != msg->sysid) {
 			Serial.println("Connected to a new UAV");

@@ -375,20 +375,64 @@ uint8_t PageMain::_refresh_med() {
 	if (uav.sysid != 0 && _last_base_mode != uav.base_mode) {
 		_last_base_mode = uav.base_mode; // Only update when mode changes
 
-		GLCD.CursorToXY(20, 20);
-		GLCD.print("           ");
+//		GLCD.CursorToXY(20, 20);
+//		GLCD.print("           ");
 		GLCD.CursorToXY(20, 20);
 		GLCD.SelectFont(System5x7);
-		if (uav.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) {
-			GLCD.print("Armed");
-		} else {
-			GLCD.print("Safe");
-		}
-
-		if (uav.base_mode & MAV_MODE_FLAG_STABILIZE_ENABLED) {
-			GLCD.print(", Stab");
-		} else {
-			GLCD.print(", Acro");
+//		if (uav.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) {
+//			GLCD.print("Armed");
+//		} else {
+//			GLCD.print("Safe");
+//		}
+//
+//		if (uav.base_mode & MAV_MODE_FLAG_STABILIZE_ENABLED) {
+//			GLCD.print(", Stab");
+//		} else {
+//			GLCD.print(", Acro");
+//		}
+		switch (uav.custom_mode) {
+		case MANUAL:
+			GLCD.Printf_P(PSTR("Manual      "));
+			break;
+		case CIRCLE:
+			GLCD.Printf_P(PSTR("Circle      "));
+			break;
+		case STABILIZE:
+			GLCD.Printf_P(PSTR("Stabilise  "));
+			break;
+		case TRAINING:
+			GLCD.Printf_P(PSTR("Training   "));
+			break;
+		case ACRO:
+			GLCD.Printf_P(PSTR("Acro       "));
+			break;
+		case FLY_BY_WIRE_A:
+			GLCD.Printf_P(PSTR("FBW-A      "));
+			break;
+		case FLY_BY_WIRE_B:
+			GLCD.Printf_P(PSTR("FBW-B      "));
+			break;
+		case CRUISE:
+			GLCD.Printf_P(PSTR("Cruise     "));
+			break;
+		case AUTO:
+			GLCD.Printf_P(PSTR("Auto       "));
+			break;
+		case RTL:
+			GLCD.Printf_P(PSTR("RTL        "));
+			break;
+		case LOITER:
+			GLCD.Printf_P(PSTR("Loiter     "));
+			break;
+		case GUIDED:
+			GLCD.Printf_P(PSTR("Guided     "));
+			break;
+		case INITIALISING:
+			GLCD.Printf_P(PSTR("Startup    "));
+			break;
+		default:
+			GLCD.Printf_P(PSTR("\n"));
+			break;
 		}
 	}
 }
