@@ -265,40 +265,40 @@ uint8_t PageMain::_enter() {
 	GLCD.CursorToXY(3, 3);
 	GLCD.SelectFont(Arial_bold_14);
 	if (uav.sysid == 0) {
-		GLCD.print("No Connection");
+		GLCD.Printf_P(PSTR("No Connection"));
 	} else {
 		switch (uav.autopilot) {
 		case MAV_AUTOPILOT_GENERIC:
-			GLCD.Printf("MAV-%03i", uav.sysid);
+			GLCD.Printf_P(PSTR("MAV"));//-%03i", uav.sysid));
 			break;
 		case MAV_AUTOPILOT_PIXHAWK:
-			GLCD.Printf("PIX-%03i", uav.sysid);
+			GLCD.Printf_P(PSTR("PIX"));//-%03i", uav.sysid));
 			break;
 		case MAV_AUTOPILOT_ARDUPILOTMEGA:
 			switch (uav.type) {
 			case MAV_TYPE_HELICOPTER:
-				GLCD.Printf("Heli-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Heli"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_TRICOPTER:
-				GLCD.Printf("Tri-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Tri"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_QUADROTOR:
-				GLCD.Printf("Quad-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Quad"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_HEXAROTOR:
-				GLCD.Printf("Hex-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Hex"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_OCTOROTOR:
-				GLCD.Printf("Oct-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Oct"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_FIXED_WING:
-				GLCD.Printf("Plane-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Plane"));//-%03i", uav.sysid));
 				break;
 			case MAV_TYPE_GROUND_ROVER:
-				GLCD.Printf("Rover-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("Rover"));//-%03i", uav.sysid));
 				break;
 			default:
-				GLCD.Printf("APM-%03i", uav.sysid);
+				GLCD.Printf_P(PSTR("APM"));//-%03i", uav.sysid));
 				break;
 			}
 //			if (uav.type == MAV_TYPE_QUADROTOR)
@@ -311,13 +311,13 @@ uint8_t PageMain::_enter() {
 //				GLCD.Printf("AxM-%03i", uav.sysid);
 			break;
 		case MAV_AUTOPILOT_UDB:
-			GLCD.Printf("UDB-%03i", uav.sysid);
+			GLCD.Printf_P(PSTR("UDB"));//-%03i", uav.sysid);
 			break;
 		case MAV_AUTOPILOT_PX4:
-			GLCD.Printf("PX4-%03i", uav.sysid);
+			GLCD.Printf_P(PSTR("PX4"));//-%03i", uav.sysid);
 			break;
 		default:
-			GLCD.Printf("MAV-%03i", uav.sysid);
+			GLCD.Printf_P(PSTR("MAV"));//-%03i", uav.sysid);
 		}
 	}
 	GLCD.SelectFont(System5x7);
@@ -325,15 +325,15 @@ uint8_t PageMain::_enter() {
 	// Remote Battery bar on right side of screen
 	GLCD.DrawRect(GLCD.Right - 8, 2, 6, GLCD.Bottom - 12);
 
-	// Bearing to UAV, circle
-	if (uav.sysid != 0) {
-		x0 = GLCD.Right - 27;
-		y0 = 16;
-		x1 = x0;
-		y1 = y0;
-		GLCD.DrawCircle(GLCD.Right - 27, 16, 12);
-		//GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
-	}
+//	// Bearing to UAV, circle
+//	if (uav.sysid != 0) {
+//		x0 = GLCD.Right - 27;
+//		y0 = 16;
+//		x1 = x0;
+//		y1 = y0;
+//		GLCD.DrawCircle(GLCD.Right - 27, 16, 12);
+//		//GLCD.DrawLine(GLCD.Right-27, 16, GLCD.Right-27+5, 16-5);
+//	}
 
 	// Local Battery bar on left side of screen
 	GLCD.DrawRect(2, 20, 6, GLCD.Bottom - 30);
@@ -392,49 +392,55 @@ uint8_t PageMain::_refresh_med() {
 //		}
 		switch (uav.custom_mode) {
 		case MANUAL:
-			GLCD.Printf_P(PSTR("Manual      "));
+			GLCD.Printf_P(PSTR("Manual  "));
 			break;
 		case CIRCLE:
-			GLCD.Printf_P(PSTR("Circle      "));
+			GLCD.Printf_P(PSTR("Circle  "));
 			break;
 		case STABILIZE:
-			GLCD.Printf_P(PSTR("Stabilise  "));
+			GLCD.Printf_P(PSTR("Stab    "));
 			break;
 		case TRAINING:
-			GLCD.Printf_P(PSTR("Training   "));
+			GLCD.Printf_P(PSTR("Training"));
 			break;
 		case ACRO:
-			GLCD.Printf_P(PSTR("Acro       "));
+			GLCD.Printf_P(PSTR("Acro    "));
 			break;
 		case FLY_BY_WIRE_A:
-			GLCD.Printf_P(PSTR("FBW-A      "));
+			GLCD.Printf_P(PSTR("FBW-A   "));
 			break;
 		case FLY_BY_WIRE_B:
-			GLCD.Printf_P(PSTR("FBW-B      "));
+			GLCD.Printf_P(PSTR("FBW-B   "));
 			break;
 		case CRUISE:
-			GLCD.Printf_P(PSTR("Cruise     "));
+			GLCD.Printf_P(PSTR("Cruise  "));
 			break;
 		case AUTO:
-			GLCD.Printf_P(PSTR("Auto       "));
+			GLCD.Printf_P(PSTR("Auto    "));
 			break;
 		case RTL:
-			GLCD.Printf_P(PSTR("RTL        "));
+			GLCD.Printf_P(PSTR("RTL     "));
 			break;
 		case LOITER:
-			GLCD.Printf_P(PSTR("Loiter     "));
+			GLCD.Printf_P(PSTR("Loiter  "));
 			break;
 		case GUIDED:
-			GLCD.Printf_P(PSTR("Guided     "));
+			GLCD.Printf_P(PSTR("Guided  "));
 			break;
 		case INITIALISING:
-			GLCD.Printf_P(PSTR("Startup    "));
+			GLCD.Printf_P(PSTR("Startup "));
 			break;
 		default:
-			GLCD.Printf_P(PSTR("\n"));
+			GLCD.Printf_P(PSTR("        "));
 			break;
 		}
 	}
+
+	// Now print waypoint distance info
+	GLCD.CursorToXY(74, 20);
+	GLCD.Printf_P(PSTR("<999m"));
+	GLCD.CursorToXY(56, 28);
+	GLCD.Printf_P(PSTR("ETA:53s"));
 }
 
 uint8_t PageMain::_refresh_slow() {
@@ -511,21 +517,27 @@ uint8_t PageMain::_refresh_slow() {
 	}
 	GLCD.print("m/s");
 
-	// Print UAV Distance from Home
-	if (uav.sysid != 0) {
-		GLCD.SelectFont(System5x7);
-		GLCD.CursorToXY(GLCD.Right - 40, 30);
-		GLCD.Printf("%4dm",(int) constrain(tracker.get_dist(), -999, 9999));
-//		GLCD.print((int) constrain(tracker.get_dist(), -999, 9999));
-//		GLCD.print('m');
-	}
+//	// Print UAV Distance from Home
+//	if (uav.sysid != 0) {
+//		GLCD.SelectFont(System5x7);
+//		GLCD.CursorToXY(GLCD.Right - 40, 30);
+//		GLCD.Printf("%4dm",(int) constrain(tracker.get_dist(), -999, 9999));
+////		GLCD.print((int) constrain(tracker.get_dist(), -999, 9999));
+////		GLCD.print('m');
+//	}
+//
+//	// Draw line showing bearing to UAV
+//	if (uav.sysid != 0) {
+//		GLCD.DrawLine(x0, y0, x1, y1, WHITE);
+//		this->calcangle(&x1, &y1);
+//		GLCD.DrawLine(x0, y0, x1, y1, BLACK);
+//	}
 
-	// Draw line showing bearing to UAV
-	if (uav.sysid != 0) {
-		GLCD.DrawLine(x0, y0, x1, y1, WHITE);
-		this->calcangle(&x1, &y1);
-		GLCD.DrawLine(x0, y0, x1, y1, BLACK);
-	}
+	// Display waypoint info
+	GLCD.CursorToXY(56, 3);
+	GLCD.SelectFont(Arial_bold_14);
+	GLCD.print("WP:00/00");
+	GLCD.SelectFont(System5x7);
 }
 
 // Displaying roll angle of uav using demo from glcd clock example
